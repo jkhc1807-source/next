@@ -89,27 +89,27 @@ export const Select = ({
         <div className={styles.errorArea}>
           {error && <p className={styles.errorText}>{error}</p>}
         </div>
+        {isOpen && (
+          <ul className={`${styles.selectDropdown} ${styles[direction]} ${styles[align]} gm-animate`} role="listbox">
+            {options.map((opt) => (
+              <li 
+                key={opt.value} 
+                className={`${styles.selectOption} ${opt.value === value ? styles.selected : ""}`} 
+                onClick={() => { onChange(opt.value); setIsOpen(false); }}
+                role="option"
+                aria-selected={opt.value === value}
+              >
+                {opt.label}
+                {opt.value === value && (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className={styles.checkIcon}>
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-      {isOpen && (
-        <ul className={`${styles.selectDropdown} ${styles[direction]} ${styles[align]} gm-animate`} role="listbox">
-          {options.map((opt) => (
-            <li 
-              key={opt.value} 
-              className={`${styles.selectOption} ${opt.value === value ? styles.selected : ""}`} 
-              onClick={() => { onChange(opt.value); setIsOpen(false); }}
-              role="option"
-              aria-selected={opt.value === value}
-            >
-              {opt.label}
-              {opt.value === value && (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className={styles.checkIcon}>
-                  <path d="M20 6L9 17l-5-5" />
-                </svg>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };

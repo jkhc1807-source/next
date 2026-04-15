@@ -419,7 +419,15 @@ export default function Home() {
                 <span className="gm-label">Interactive Carousel & Accordion</span>
                 <Carousel items={[
                   <div key="c1" style={{ background: '#000', color: '#fff', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 1</h3></div>,
-                  <div key="c2" style={{ background: '#f3f3f3', color: '#000', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 2</h3></div>
+                  <div key="c2" style={{ background: '#f3f3f3', color: '#000', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 2</h3></div>,
+                  <div key="c3" style={{ background: '#000', color: '#fff', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 3</h3></div>,
+                  <div key="c4" style={{ background: '#f3f3f3', color: '#000', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 4</h3></div>,
+                  <div key="c5" style={{ background: '#000', color: '#fff', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 5</h3></div>,
+                  <div key="c6" style={{ background: '#f3f3f3', color: '#000', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 6</h3></div>,
+                  <div key="c7" style={{ background: '#000', color: '#fff', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 7</h3></div>,
+                  <div key="c8" style={{ background: '#f3f3f3', color: '#000', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 8</h3></div>,
+                  <div key="c9" style={{ background: '#000', color: '#fff', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 9</h3></div>,
+                  <div key="c10" style={{ background: '#f3f3f3', color: '#000', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h3>Premium Presentation 10</h3></div>
                 ]} slidesPerView="auto" spaceBetween={32} />
                 
                 <div className="gm-flex-col-gap-16">

@@ -4,13 +4,13 @@
   transition: var(--gm-transition);
   display: flex;
   flex-direction: column;
-  gap: var(--gm-spacing-md);
 }
 
 .inputMain {
   display: flex;
   flex-direction: column;
   width: 100%;
+  position: relative; /* Dropdown positioning base */
 }
 
 .selectContainer.disabled {
@@ -97,12 +97,14 @@
   left: auto;
 }
 
-.selectDropdown.bottom {
+.bottom {
   top: calc(100% + var(--gm-spacing-sm));
+  bottom: auto;
 }
 
-.selectDropdown.top {
+.top {
   bottom: calc(100% + var(--gm-spacing-sm));
+  top: auto;
 }
 
 .selectOption {

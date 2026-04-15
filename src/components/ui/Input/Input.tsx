@@ -9,34 +9,55 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   size?: "sm" | "md" | "lg";
 }
 
-export const Input = ({ label, error, onClear, rightIcon, className = "", size = "md", value, onChange, type, ...props }: InputProps) => {
+export const Input = ({ label, error, onClear, rightIcon, className = "", size = "md", value, onChange, type, defaultValue, ...props }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [internalValue, setInternalValue] = useState(defaultValue || "");
+  
+  const isControlled = value !== undefined;
+  const currentValue = isControlled ? value : internalValue;
+  
   const sizeClass = size === "sm" ? styles.sm : size === "lg" ? styles.lg : styles.md;
   const isDisabled = props.disabled;
   const isPassword = type === "password";
-  const hasValue = value !== undefined && value !== null && String(value).length > 0;
-  const showClear = hasValue && (onClear || (onChange && !props.readOnly)) && !isDisabled;
+  const hasValue = currentValue !== undefined && currentValue !== null && String(currentValue).length > 0;
+  
+  // onClear가 있거나 onChange가 있거나, 비제어 상태일 때도 지우기 버튼 노출 가능 [확실]
+  // DatePicker처럼 readOnly이면서 onClear를 사용하는 경우를 위해 조건 수정
+  const canClear = (!props.readOnly || onClear) && !isDisabled;
+  const showClear = hasValue && canClear;
+  
   const hasToggle = isPassword && !isDisabled;
   const hasRightIcon = !!rightIcon && !isPassword;
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isControlled) {
+      setInternalValue(e.target.value);
+    }
+    if (onChange) {
+      onChange(e);
+    }
+  };
+
   const handleClear = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (onClear) onClear();
-    else if (onChange) {
-      const event = { target: { value: "" } } as React.ChangeEvent<HTMLInputElement>;
+    if (!isControlled) {
+      setInternalValue("");
+    }
+    
+    if (onClear) {
+      onClear();
+    }
+    
+    if (onChange) {
+      const event = { 
+        target: { ...props, value: "" },
+        currentTarget: { ...props, value: "" }
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
       onChange(event);
     }
   };
 
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
-
-  const getPaddingRight = () => {
-    let padding = 20; 
-    if (showClear) padding += 44;
-    if (hasToggle) padding += 44;
-    if (hasRightIcon) padding += 44;
-    return `${padding}px`;
-  };
 
   return (
     <div className={`${styles.inputGroup} ${sizeClass} ${className}`}>
@@ -46,10 +67,9 @@ export const Input = ({ label, error, onClear, rightIcon, className = "", size =
           <input
             {...props}
             type={inputType}
-            value={value}
-            onChange={onChange}
+            value={isControlled ? value : internalValue}
+            onChange={handleInputChange}
             className={`${styles.input} ${error ? styles.error : ""}`}
-            style={{ paddingRight: getPaddingRight() }}
           />
           <div className={styles.inputActions}>
             {showClear && (
@@ -73,11 +93,7 @@ export const Input = ({ label, error, onClear, rightIcon, className = "", size =
                 )}
               </button>
             )}
-            {hasRightIcon && (
-              <div className={styles.rightIconWrapper}>
-                {rightIcon}
-              </div>
-            )}
+            {hasRightIcon && <div className={styles.rightIconWrapper}>{rightIcon}</div>}
           </div>
         </div>
         <div className={styles.errorArea}>

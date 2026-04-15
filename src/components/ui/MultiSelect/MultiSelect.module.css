@@ -14,6 +14,11 @@
   line-height: 1.4;
 }
 
+.triggerWrapper {
+  position: relative;
+  width: 100%;
+}
+
 .selectTrigger {
   min-height: 68px;
   padding: 12px 20px;
@@ -135,7 +140,6 @@
   background: white;
   border: 2px solid black;
   border-radius: 16px;
-  margin-top: var(--gm-spacing-sm);
   padding: var(--gm-spacing-sm);
   overflow-y: auto;
   z-index: var(--gm-z-dropdown);
@@ -152,9 +156,15 @@
   left: auto;
 }
 
+.bottom {
+  top: calc(100% + var(--gm-spacing-sm));
+  bottom: auto;
+}
+
 .top {
   bottom: calc(100% + var(--gm-spacing-sm));
-  margin-bottom: var(--gm-spacing-sm);
+  top: auto;
+  margin-bottom: 0;
 }
 
 .selectOption {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./Textarea.module.css";
 
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> { 
@@ -8,17 +8,43 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
   maxLength?: number; 
 }
 
-export const Textarea = ({ label, error, onClear, maxLength, className = "", value, onChange, ...props }: TextareaProps) => {
-  const currentLength = value ? value.toString().length : 0;
-  const hasValue = value && String(value).length > 0;
+export const Textarea = ({ label, error, onClear, maxLength, className = "", value, onChange, defaultValue, ...props }: TextareaProps) => {
+  const [internalValue, setInternalValue] = useState(defaultValue || "");
+  const isControlled = value !== undefined;
+  const currentValue = isControlled ? value : internalValue;
+  
+  const currentLength = currentValue ? currentValue.toString().length : 0;
+  const hasValue = currentValue !== undefined && currentValue !== null && String(currentValue).length > 0;
   const isDisabled = props.disabled;
-  const showClear = hasValue && (onClear || (onChange && !props.readOnly)) && !isDisabled;
+  
+  // onClear가 있거나 onChange가 있거나, 비제어 상태일 때도 지우기 버튼 노출 가능 [확실]
+  const canClear = !props.readOnly && !isDisabled;
+  const showClear = hasValue && canClear;
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!isControlled) {
+      setInternalValue(e.target.value);
+    }
+    if (onChange) {
+      onChange(e);
+    }
+  };
 
   const handleClear = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (onClear) onClear();
-    else if (onChange) {
-      const event = { target: { value: "" } } as React.ChangeEvent<HTMLTextAreaElement>;
+    if (!isControlled) {
+      setInternalValue("");
+    }
+    
+    if (onClear) {
+      onClear();
+    }
+    
+    if (onChange) {
+      const event = { 
+        target: { ...props, value: "" },
+        currentTarget: { ...props, value: "" }
+      } as unknown as React.ChangeEvent<HTMLTextAreaElement>;
       onChange(event);
     }
   };
@@ -30,8 +56,8 @@ export const Textarea = ({ label, error, onClear, maxLength, className = "", val
         <div className={styles.inputWrapper}>
           <textarea 
             {...props} 
-            value={value} 
-            onChange={onChange} 
+            value={isControlled ? value : internalValue} 
+            onChange={handleTextareaChange} 
             className={`${styles.textarea} ${error ? styles.error : ""} ${isDisabled ? styles.disabled : ""}`} 
           />
           {showClear && (

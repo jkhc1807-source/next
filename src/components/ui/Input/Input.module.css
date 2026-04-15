@@ -5,6 +5,11 @@
   width: 100%;
 }
 
+/* Size Helper Classes (Ensure CSS Modules exports these) [확실] */
+.sm { display: flex; }
+.md { display: flex; }
+.lg { display: flex; }
+
 .inputMain {
   display: flex;
   flex-direction: column;
@@ -14,9 +19,11 @@
 .inputWrapper {
   position: relative;
   width: 100%;
+  display: flex;
+  align-items: center;
 }
 
-/* Base Input Style (Restored to Master Quality) */
+/* Base Input Style */
 .input {
   width: 100%;
   border: 2px solid var(--gm-gray-200);
@@ -25,34 +32,41 @@
   outline: none;
   background: var(--gm-gray-50);
   color: black;
-  display: flex;
-  align-items: center;
+  box-sizing: border-box;
 }
 
-/* Size Variations (Non-destructive) */
+/* Size Variations */
 .sm .input {
-  min-height: 48px;
-  padding: 0 var(--gm-spacing-md);
+  height: 48px;
+  padding: 0 44px 0 var(--gm-spacing-md);
   font-size: 14px;
   border-radius: 12px;
 }
 .sm .inputActionBtn {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 
 .md .input {
-  min-height: 60px;
-  padding: 0 var(--gm-spacing-lg);
+  height: 60px;
+  padding: 0 52px 0 var(--gm-spacing-lg);
   font-size: 16px;
   border-radius: 16px;
 }
+.md .inputActionBtn {
+  width: 44px;
+  height: 44px;
+}
 
 .lg .input {
-  min-height: 72px;
-  padding: 0 var(--gm-spacing-xl);
+  height: 72px;
+  padding: 0 60px 0 var(--gm-spacing-xl);
   font-size: 18px;
   border-radius: 20px;
+}
+.lg .inputActionBtn {
+  width: 52px;
+  height: 52px;
 }
 
 .input:focus {
@@ -67,50 +81,36 @@
   background: rgba(238, 0, 0, 0.02);
 }
 
-.input.error:focus {
-  box-shadow: 0 0 0 6px rgba(238, 0, 0, 0.05);
-}
-
-/* Disabled State */
-.input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: var(--gm-gray-100);
-  border-color: var(--gm-gray-300);
-  color: var(--gm-gray-500);
-}
-
-/* ReadOnly State */
-.input[readonly] {
-  background: var(--gm-gray-50);
-  border-color: var(--gm-gray-200);
-  cursor: default;
-  color: var(--gm-gray-500);
-}
-
 .inputActions {
   position: absolute;
-  right: 8px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 8px;
+  z-index: 2;
 }
 
 .inputActionBtn {
-  width: 44px;
-  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--gm-border-radius-sm);
+  border-radius: 10px;
   color: var(--gm-gray-400);
-  transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   background: none;
   border: none;
   cursor: pointer;
-  text-decoration: none !important;
+}
+
+.rightIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gm-gray-400);
+  pointer-events: none;
+  padding-left: 4px;
 }
 
 .inputActionBtn:hover {
@@ -118,49 +118,17 @@
   color: black;
 }
 
-.inputActionBtn:disabled {
-  cursor: not-allowed;
-  opacity: 0.3;
-}
-
-.rightIconWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  color: var(--gm-gray-400);
-}
-
 .label {
   font-size: 12px;
   font-weight: 800;
-  text-transform: none;
-  letter-spacing: -0.01em;
   color: black;
   margin-bottom: 8px;
   display: block;
-  line-height: 1.4;
-}
-
-.errorArea {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .errorText {
   color: var(--gm-error);
   font-size: 13px;
   font-weight: 700;
-  padding-left: var(--gm-spacing-xs);
   margin-top: 8px;
-  animation: slideDownFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  display: block;
-}
-
-@keyframes slideDownFade {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
 }

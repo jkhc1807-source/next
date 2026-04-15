@@ -126,89 +126,91 @@ export const MultiSelect = ({ label, options, value, onChange, placeholder = "Se
       style={style}
     >
       {label && <label className={styles.label}>{label}</label>}
-      <div 
-        className={`${styles.selectTrigger} ${isOpen ? styles.active : ""}`} 
-        onClick={handleToggle} 
-        ref={triggerRef}
-        role="combobox"
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-        aria-controls="multiselect-dropdown"
-      >
-        <div className={styles.selectValues}>
-          {isMounted && value.length > 0 ? (
-            <>
-              {visibleOptions.map((opt) => (
-                <span key={opt?.value} className={styles.selectTag}>
-                  {opt?.label}
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); if (!disabled) onChange(value.filter((x) => x !== opt?.value)); }} 
-                    className={styles.tagClose}
-                    aria-label={`Remove ${opt?.label}`}
-                  >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                  </button>
-                </span>
-              ))}
-              {remainingCount > 0 && (
-                <div className={styles.badgeWrapper}>
-                  <Badge variant="success">외 {remainingCount}건</Badge>
-                </div>
-              )}
-            </>
-          ) : <span className={styles.placeholder}>{isMounted && value.length > 0 ? "" : placeholder}</span>}
-        </div>
-        <div className={styles.triggerActions}>
-          {isMounted && value.length > 0 && !disabled && (
-            <button 
-              type="button" 
-              onClick={handleClearAll} 
-              className={styles.clearAllBtn}
-              aria-label="Clear all selections"
+      <div className={styles.triggerWrapper}>
+        <div 
+          className={`${styles.selectTrigger} ${isOpen ? styles.active : ""}`} 
+          onClick={handleToggle} 
+          ref={triggerRef}
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-controls="multiselect-dropdown"
+        >
+          <div className={styles.selectValues}>
+            {isMounted && value.length > 0 ? (
+              <>
+                {visibleOptions.map((opt) => (
+                  <span key={opt?.value} className={styles.selectTag}>
+                    {opt?.label}
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); if (!disabled) onChange(value.filter((x) => x !== opt?.value)); }} 
+                      className={styles.tagClose}
+                      aria-label={`Remove ${opt?.label}`}
+                    >
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                    </button>
+                  </span>
+                ))}
+                {remainingCount > 0 && (
+                  <div className={styles.badgeWrapper}>
+                    <Badge variant="success">외 {remainingCount}건</Badge>
+                  </div>
+                )}
+              </>
+            ) : <span className={styles.placeholder}>{isMounted && value.length > 0 ? "" : placeholder}</span>}
+          </div>
+          <div className={styles.triggerActions}>
+            {isMounted && value.length > 0 && !disabled && (
+              <button 
+                type="button" 
+                onClick={handleClearAll} 
+                className={styles.clearAllBtn}
+                aria-label="Clear all selections"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+            <svg 
+              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" 
+              style={{ transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)', transform: isOpen ? 'rotate(180deg)' : 'none', flexShrink: 0 }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-          )}
-          <svg 
-            width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" 
-            style={{ transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)', transform: isOpen ? 'rotate(180deg)' : 'none', flexShrink: 0 }}
-          >
-            <path d="M6 9l6 6 6-6" />
-          </svg>
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </div>
         </div>
+        {isMounted && isOpen && (
+          <ul 
+            id="multiselect-dropdown"
+            className={`${styles.selectDropdown} ${styles[direction]} ${styles[align]} gm-animate`} 
+            onClick={(e) => e.stopPropagation()}
+            role="listbox"
+          >
+            {options.map((opt) => (
+              <li 
+                key={opt.value} 
+                className={`${styles.selectOption} ${value.includes(opt.value) ? styles.selected : ""}`} 
+                onClick={() => toggleOption(opt.value)}
+                role="option"
+                aria-selected={value.includes(opt.value)}
+              >
+                {opt.label}
+                {value.includes(opt.value) && (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className={styles.checkIcon}>
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       <div className={styles.measureContainer} ref={measureRef} aria-hidden="true">
         {selectedOptions.map((opt) => (
           <span key={opt?.value} className={styles.selectTag}>{opt?.label}<div style={{ width: '10px' }} /></span>
         ))}
       </div>
-      {isMounted && isOpen && (
-        <ul 
-          id="multiselect-dropdown"
-          className={`${styles.selectDropdown} ${styles[direction]} ${styles[align]} gm-animate`} 
-          onClick={(e) => e.stopPropagation()}
-          role="listbox"
-        >
-          {options.map((opt) => (
-            <li 
-              key={opt.value} 
-              className={`${styles.selectOption} ${value.includes(opt.value) ? styles.selected : ""}`} 
-              onClick={() => toggleOption(opt.value)}
-              role="option"
-              aria-selected={value.includes(opt.value)}
-            >
-              {opt.label}
-              {value.includes(opt.value) && (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className={styles.checkIcon}>
-                  <path d="M20 6L9 17l-5-5" />
-                </svg>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };

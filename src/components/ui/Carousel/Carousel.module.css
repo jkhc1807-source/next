@@ -1,39 +1,47 @@
 .carouselWrapper {
   width: 100%;
   position: relative;
-  padding-bottom: 40px; /* 인디케이터 공간 확보 */
+  padding: 40px 0 80px 0;
+  overflow: hidden;
 }
 
 .mySwiper {
   width: 100%;
   border: none !important;
-  overflow: visible !important; /* 슬라이드 개별 테두리가 잘 보이기 위해 노출 */
+  overflow: visible !important;
 }
 
 .slide {
-  height: 350px !important;
-  width: 80% !important; /* PC/모바일 공통: 양옆 슬라이드가 보이도록 너비 제한 */
+  height: 420px !important;
   display: flex !important;
   justify-content: center;
   align-items: center;
-  border: 1px solid #000;
-  border-radius: 16px;
+  border: 2px solid #000;
+  border-radius: 24px;
   overflow: hidden !important;
   box-sizing: border-box;
   background: #fff;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.5s ease, filter 0.5s ease; 
+  opacity: 0.2;
+  transform: scale(0.8);
 }
 
-/* 슬라이드 내부의 모든 자식 요소가 슬라이드 전체를 꽉 채우게 강제 */
+:global(.swiper-slide-active) {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
 .slide > * {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
   display: flex !important;
   flex-direction: column;
-  justify-content: flex-end; /* 기본적으로 좌측 하단 배치 지향 */
+  justify-content: flex-end;
   align-items: flex-start;
-  padding: var(--gm-spacing-xxl) !important; /* PC 글자 여백 (넉넉하게) */
+  padding: var(--gm-spacing-xxl) !important;
   box-sizing: border-box !important;
   text-align: left !important;
   gap: var(--gm-spacing-md);
@@ -42,122 +50,94 @@
 /* --- Navigation Buttons --- */
 :global(.swiper-button-next),
 :global(.swiper-button-prev) {
-  width: 44px !important;
-  height: 44px !important;
-  background-color: rgba(255, 255, 255, 0.9) !important;
-  border: 1px solid #000 !important;
+  width: 52px !important;
+  height: 52px !important;
+  background-color: #fff !important;
+  border: 2px solid #000 !important;
   border-radius: 50% !important;
   color: #000 !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  margin-top: 0 !important;
+  margin-top: -10px !important;
+  z-index: 30;
 }
 
 :global(.swiper-button-next):after,
 :global(.swiper-button-prev):after {
-  font-size: 16px !important;
-  font-weight: bold !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
 }
 
-:global(.swiper-button-next) {
-  right: 16px !important;
-}
+:global(.swiper-button-next) { right: 2% !important; }
+:global(.swiper-button-prev) { left: 2% !important; }
 
-:global(.swiper-button-prev) {
-  left: 16px !important;
-}
-
-:global(.swiper-button-next):hover,
-:global(.swiper-button-prev):hover {
-  background-color: #000 !important;
-  color: #fff !important;
-}
-
-/* --- Pagination (Indicators) --- */
+/* --- Pagination (Instagram Exact Positioning Fix) --- */
 :global(.swiper-pagination-bullets-dynamic) {
-  /* Swiper가 계산하는 width를 무시하고 80px로 강제 고정 (도트 5개용) */
-  width: 80px !important;
-  max-width: 80px !important;
+  /* 인디케이터 컨테이너 자체를 화면 중앙으로 강제 이동 [확실] */
   left: 50% !important;
   transform: translateX(-50%) !important;
-  bottom: 32px !important;
-  overflow: hidden !important; /* 이 부분이 핵심: 5개 이외의 점을 자름 */
-  padding: 0 4px !important;
+  bottom: 25px !important;
+  
+  /* 5개만 보여주기 위한 물리적 너비 제한 (Instagram 규격) [확실] */
+  width: 80px !important; 
+  max-width: 80px !important;
+  height: 32px !important;
+  
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   display: flex !important;
-  align-items: center !important;
-  height: 24px !important;
-  pointer-events: none;
-  z-index: 10 !important;
+  align-items: center;
+  justify-content: flex-start; /* 내부 이동은 Swiper가 담당 */
+  padding: 0 !important;
+  white-space: nowrap !important;
 }
 
-/* Swiper 내부에서 실제로 움직이는 도트 그룹 */
-:global(.swiper-pagination-bullets-dynamic .swiper-pagination-bullet) {
-  pointer-events: auto;
-  position: relative !important;
+:global(.swiper-pagination-bullet) {
   width: 8px !important;
   height: 8px !important;
-  margin: 0 4px !important;
-  flex-shrink: 0;
-  border-radius: 50%;
-  
-  /* 어떤 배경에서도 잘 보이는 콤보: 진한 블랙 + 밝은 화이트 테두리 */
-  background: rgba(0, 0, 0, 0.45) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-  
-  opacity: 1 !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  transform: scale(0.33); /* 기본: 보이지 않을 정도로 작게 */
-}
-
-/* 1. 중앙 활성 (1.0) - 소-중-대-중-소 중 '대' */
-:global(.swiper-pagination-bullet-active-main) {
-  background: #ffffff !important;
-  border-color: #000000 !important;
-  transform: scale(1.1) !important; /* 약간만 크게 */
-  opacity: 1 !important;
-}
-
-/* 2. 활성 바로 옆 (0.7) - 소-중-대-중-소 중 '중' */
-:global(.swiper-pagination-bullet-active-next),
-:global(.swiper-pagination-bullet-active-prev) {
-  transform: scale(0.7) !important;
-  opacity: 0.8 !important;
-}
-
-/* 3. 그 바깥쪽 (0.4) - 소-중-대-중-소 중 '소' */
-:global(.swiper-pagination-bullet-active-next-next),
-:global(.swiper-pagination-bullet-active-prev-prev) {
-  transform: scale(0.4) !important;
+  background: #fff !important;
+  border: 1.5px solid #000 !important;
   opacity: 0.4 !important;
+  margin: 0 4px !important;
+  flex-shrink: 0 !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* 활성 점 강조 및 위치 동기화 */
+:global(.swiper-pagination-bullet-active-main) {
+  transform: scale(1.4) !important;
+  opacity: 1 !important;
+  background: #000 !important;
+  border-color: #fff !important;
+}
+
+:global(.swiper-pagination-bullet-active-prev),
+:global(.swiper-pagination-bullet-active-next) {
+  transform: scale(0.85) !important;
+  opacity: 0.6 !important;
+}
+
+:global(.swiper-pagination-bullet-active-prev-prev),
+:global(.swiper-pagination-bullet-active-next-next) {
+  transform: scale(0.55) !important;
+  opacity: 0.3 !important;
 }
 
 @media (max-width: 768px) {
   .carouselWrapper {
-    padding-bottom: 50px;
-  }
-
-  .mySwiper {
-    border-radius: 12px;
-    overflow: visible !important;
+    padding: 30px 0 70px 0;
   }
 
   .slide {
-    width: 85% !important; /* 슬라이드 너비 유지 */
-    padding: 0 !important; /* 패딩 제거하여 배경을 테두리까지 꽉 채움 */
-  }
-
-  .slide > * {
-    padding: var(--gm-spacing-xl) var(--gm-spacing-lg) !important; /* 모바일 글자 여백 */
+    height: 340px !important;
+    border-radius: 16px;
   }
 
   :global(.swiper-button-next),
   :global(.swiper-button-prev) {
     display: none !important;
-  }
-
-  :global(.swiper-pagination-bullets-dynamic) {
-    bottom: 16px !important;
   }
 }
