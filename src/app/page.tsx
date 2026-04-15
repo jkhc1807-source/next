@@ -33,6 +33,9 @@ import {
   Tooltip,
   Drawer,
   SearchBar,
+  Steps,
+  SegmentedControl,
+  CommandPalette,
 
   type ToastType, // 타입 추가
   type ToastItem, // 타입 추가
@@ -65,6 +68,11 @@ export default function Home() {
   const [radioValue, setRadioValue] = useState("medium");
   const [switchState, setSwitchState] = useState(true);
   const [passwordValue, setPasswordValue] = useState("gemini_master_123");
+
+  // --- States for New Components ---
+  const [currentStep, setCurrentStep] = useState(1);
+  const [segmentedValue, setSegmentedValue] = useState("daily");
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false);
 
   // --- Constants ---
   const options = [
@@ -458,11 +466,42 @@ export default function Home() {
               </div>
 
               <div className="gm-flex-col-gap-48">
-                <span className="gm-label">Loading & Placeholder States</span>
+                <span className="gm-label">Loading & Placeholder States (Animated)</span>
                 <div className="gm-flex-col-gap-48">
-                  <Card title="Skeletons">
-                    <div className="gm-flex-col-gap-16">
-                      <Skeleton variant="card" style={{ height: '120px' }} />
+                  <Card title="Dynamic Skeletons">
+                    <div className="gm-flex-col-gap-32">
+                      {/* Avatar + Lines */}
+                      <div className="gm-flex-wrap" style={{ alignItems: 'center', gap: '16px' }}>
+                        <Skeleton variant="circular" width={60} height={60} />
+                        <div style={{ flex: 1 }}>
+                          <Skeleton variant="text" width="40%" height={20} />
+                          <Skeleton variant="text" width="20%" height={14} />
+                        </div>
+                      </div>
+
+                      {/* Multi-row text */}
+                      <div className="gm-flex-col-gap-12">
+                        <span className="gm-label">Article Preview</span>
+                        <Skeleton variant="text" rows={4} />
+                      </div>
+
+                      {/* Card layout */}
+                      <div className="gm-flex-wrap" style={{ gap: '20px' }}>
+                        <div style={{ flex: 1, minWidth: '200px' }}>
+                          <Skeleton variant="card" height={160} />
+                          <div className="gm-mt-12">
+                            <Skeleton variant="text" width="80%" />
+                            <Skeleton variant="text" width="40%" />
+                          </div>
+                        </div>
+                        <div style={{ flex: 1, minWidth: '200px' }}>
+                          <Skeleton variant="card" height={160} />
+                          <div className="gm-mt-12">
+                            <Skeleton variant="text" width="80%" />
+                            <Skeleton variant="text" width="40%" />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </Card>
                   <EmptyState title="No Search Results" description="Adjust your parameters and try again." />
@@ -527,6 +566,64 @@ export default function Home() {
                 <span className="gm-label">Core Navigation</span>
                 <Breadcrumb items={[{label: 'Admin', href: '#'}, {label: 'Library', href: '#'}, {label: 'Interactive Specs', active: true}]} />
                 <Pagination totalPages={10} currentPage={1} onPageChange={() => {}} />
+              </div>
+
+            </div>
+          </section>
+
+          {/* 06. ADVANCED FLOWS & NAVIGATION */}
+          <section className="gm-animate">
+            <header className="gm-section-header">
+              <span className="gm-label">06. Advanced Navigation</span>
+              <h2 className="gm-title-md">Workflow & Command Systems</h2>
+            </header>
+
+            <div className="gm-flex-col-gap-60">
+              
+              {/* Steps Component */}
+              <div className="gm-flex-col-gap-24">
+                <span className="gm-label">Multi-Step Process (Interactive)</span>
+                <Steps 
+                  current={currentStep}
+                  steps={[
+                    { title: "Configuration", description: "Define system parameters" },
+                    { title: "Verification", description: "Security & Integrity check" },
+                    { title: "Deployment", description: "Publish to production" }
+                  ]}
+                />
+                <div className="gm-flex-wrap" style={{ gap: '12px' }}>
+                  <Button size="sm" variant="outline" onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}>Prev Step</Button>
+                  <Button size="sm" onClick={() => setCurrentStep(Math.min(3, currentStep + 1))}>Next Step</Button>
+                </div>
+              </div>
+
+              {/* Segmented Control */}
+              <div className="gm-flex-col-gap-24">
+                <span className="gm-label">Segmented Selection (Premium Switcher)</span>
+                <div className="gm-flex-col-gap-16">
+                  <SegmentedControl 
+                    value={segmentedValue}
+                    onChange={setSegmentedValue}
+                    options={[
+                      { label: "Daily Metrics", value: "daily" },
+                      { label: "Weekly Analysis", value: "weekly" },
+                      { label: "Monthly Reports", value: "monthly" }
+                    ]}
+                  />
+                  <div className="gm-label" style={{ color: 'var(--gm-gray-400)' }}>Active: {segmentedValue.toUpperCase()}</div>
+                </div>
+              </div>
+
+              {/* Command Palette Trigger */}
+              <div className="gm-flex-col-gap-24">
+                <span className="gm-label">Command System</span>
+                <Card>
+                  <div className="gm-flex-col-gap-16" style={{ alignItems: 'center', textAlign: 'center', padding: '20px' }}>
+                    <h3 className="gm-title-sm">Press <kbd style={{ background: 'var(--gm-gray-100)', padding: '4px 8px', borderRadius: '6px' }}>⌘ K</kbd> to search</h3>
+                    <p className="gm-hero-desc">Or use the manual trigger below to explore the command palette.</p>
+                    <Button variant="primary" onClick={() => setIsPaletteOpen(true)}>Open Command Palette</Button>
+                  </div>
+                </Card>
               </div>
 
             </div>
@@ -599,6 +696,18 @@ export default function Home() {
       </Drawer>
 
       <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      <CommandPalette 
+        isOpen={isPaletteOpen}
+        onClose={() => setIsPaletteOpen(false)}
+        onOpen={() => setIsPaletteOpen(true)}
+        items={[
+          { id: '1', label: 'Go to Dashboard', category: 'Navigation', onClick: () => handleShowToast("Navigating to Dashboard...", "info") },
+          { id: '2', label: 'Create New User', category: 'Action', onClick: () => handleShowToast("Opening User Creator...", "success") },
+          { id: '3', label: 'System Reboot', category: 'Danger', description: 'Immediate hardware restart', onClick: () => handleShowToast("Rebooting system...", "error") },
+          { id: '4', label: 'Clear Cache', category: 'Maintenance', onClick: () => handleShowToast("Cache cleared.", "success") },
+        ]}
+      />
 
       <footer className="gm-footer gm-mt-100">
         <div className="gm-container gm-footer-inner">

@@ -1,33 +1,73 @@
 .skeleton {
-  width: 100%;
-  height: 20px;
-  background: var(--gm-gray-100);
-  border-radius: 4px;
   position: relative;
   overflow: hidden;
+  background-color: var(--gm-gray-100);
+  width: 100%;
+  border-radius: 8px;
 }
 
-.skeletonCircular {
-  border-radius: 50%;
-}
-
-.skeletonCard {
-  border-radius: var(--gm-border-radius);
-  height: 120px;
-}
-
+/* Shimmer 효과: 대각선으로 흐르는 은은한 빛 [확실] */
 .skeleton::after {
   content: "";
   position: absolute;
   top: 0;
+  right: 0;
+  bottom: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-  animation: shimmer 1.5s infinite;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.8s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* 기본 애니메이션에 부드러운 펄스(Pulse) 배경색 변화 추가 [확실] */
+.skeleton {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* 형태별 스타일 정의 */
+.text {
+  height: 16px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.circular {
+  border-radius: 50%;
+}
+
+.rectangular {
+  height: 40px;
+}
+
+.card {
+  height: 200px;
+  border-radius: 16px;
+}
+
+/* 텍스트 뭉치용 헬퍼 [확실] */
+.textWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 }

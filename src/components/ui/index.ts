@@ -29,4 +29,7 @@ export * from "./Toast";
 export * from "./Tooltip";
 export * from "./Drawer";
 export * from "./SearchBar";
+export * from "./Steps";
+export * from "./SegmentedControl";
+export * from "./CommandPalette";
 
