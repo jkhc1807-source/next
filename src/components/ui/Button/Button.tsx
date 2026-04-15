@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Button.module.css";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "danger";
+  variant?: "primary" | "secondary" | "outline" | "danger" | "success" | "warning";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
   fullWidth?: boolean;
@@ -30,6 +30,10 @@ export const Button = ({
       ? styles.btnSecondary
       : variant === "danger"
       ? styles.btnDanger
+      : variant === "success"
+      ? styles.btnSuccess
+      : variant === "warning"
+      ? styles.btnWarning
       : styles.btnOutline;
 
   // Size class mapping

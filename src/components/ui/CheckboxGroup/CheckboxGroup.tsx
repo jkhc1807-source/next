@@ -15,6 +15,7 @@ interface CheckboxGroupProps {
   value: string[];
   onChange: (value: string[]) => void;
   direction?: "horizontal" | "vertical";
+  size?: "sm" | "md" | "lg";
   className?: string;
 }
 
@@ -24,6 +25,7 @@ export const CheckboxGroup = ({
   value,
   onChange,
   direction = "vertical",
+  size = "md",
   className = "",
 }: CheckboxGroupProps) => {
   const handleToggle = (optionValue: string) => {
@@ -41,6 +43,7 @@ export const CheckboxGroup = ({
           <Checkbox
             key={option.value}
             label={option.label}
+            size={size}
             checked={value.includes(option.value)}
             onChange={() => handleToggle(option.value)}
             disabled={option.disabled}

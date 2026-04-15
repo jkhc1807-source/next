@@ -16,17 +16,43 @@
   width: 100%;
 }
 
+/* Base Input Style (Restored to Master Quality) */
 .input {
   width: 100%;
-  padding: var(--gm-spacing-lg) var(--gm-spacing-lg);
   border: 2px solid var(--gm-gray-200);
-  border-radius: 16px;
-  font-size: 16px;
   font-weight: 600;
   transition: var(--gm-transition);
   outline: none;
   background: var(--gm-gray-50);
   color: black;
+  display: flex;
+  align-items: center;
+}
+
+/* Size Variations (Non-destructive) */
+.sm .input {
+  min-height: 48px;
+  padding: 0 var(--gm-spacing-md);
+  font-size: 14px;
+  border-radius: 12px;
+}
+.sm .inputActionBtn {
+  width: 36px;
+  height: 36px;
+}
+
+.md .input {
+  min-height: 60px;
+  padding: 0 var(--gm-spacing-lg);
+  font-size: 16px;
+  border-radius: 16px;
+}
+
+.lg .input {
+  min-height: 72px;
+  padding: 0 var(--gm-spacing-xl);
+  font-size: 18px;
+  border-radius: 20px;
 }
 
 .input:focus {
@@ -64,12 +90,12 @@
 
 .inputActions {
   position: absolute;
-  right: 8px; /* 우측 끝 여백 */
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  gap: 0; /* 개별 버튼이 44px를 차지하므로 gap은 0으로 설정하여 계산 가독성 확보 */
+  gap: 0;
 }
 
 .inputActionBtn {
@@ -109,7 +135,7 @@
 .label {
   font-size: 12px;
   font-weight: 800;
-  text-transform: none; /* 대문자 강제 해제 */
+  text-transform: none;
   letter-spacing: -0.01em;
   color: black;
   margin-bottom: 8px;
@@ -136,10 +162,5 @@
 
 @keyframes slideDownFade {
   from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }

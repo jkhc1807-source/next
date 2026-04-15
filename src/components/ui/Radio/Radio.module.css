@@ -4,7 +4,51 @@
   gap: var(--gm-spacing-md);
   cursor: pointer;
   transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  min-height: 44px;
+}
+
+.sm {
+  min-height: 48px;
+}
+.sm .radioInner, .sm .radioCircle {
+  width: 20px;
+  height: 20px;
+}
+.sm .radioDot {
+  width: 10px;
+  height: 10px;
+}
+.sm .radioLabel {
+  font-size: 13px;
+}
+
+.md {
+  min-height: 60px;
+}
+.md .radioInner, .md .radioCircle {
+  width: 24px;
+  height: 24px;
+}
+.md .radioDot {
+  width: 12px;
+  height: 12px;
+}
+.md .radioLabel {
+  font-size: 15px;
+}
+
+.lg {
+  min-height: 72px;
+}
+.lg .radioInner, .lg .radioCircle {
+  width: 28px;
+  height: 28px;
+}
+.lg .radioDot {
+  width: 14px;
+  height: 14px;
+}
+.lg .radioLabel {
+  font-size: 17px;
 }
 
 .radioGroup.disabled {
@@ -32,8 +76,6 @@
 
 .radioInner {
   position: relative;
-  width: 24px;
-  height: 24px;
 }
 
 .radioInput {
@@ -64,8 +106,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
-  width: 12px;
-  height: 12px;
   background: black;
   border-radius: 50%;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -76,7 +116,6 @@
 }
 
 .radioLabel {
-  font-size: 15px;
   font-weight: 600;
   color: black;
 }

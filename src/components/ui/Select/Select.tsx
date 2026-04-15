@@ -2,10 +2,31 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./Select.module.css";
 
-interface SelectProps { label?: string; options: { label: string; value: string }[]; value: string; onChange: (value: string) => void; placeholder?: string; className?: string; disabled?: boolean; error?: string; }
+interface SelectProps { 
+  label?: string; 
+  options: { label: string; value: string }[]; 
+  value: string; 
+  onChange: (value: string) => void; 
+  placeholder?: string; 
+  className?: string; 
+  disabled?: boolean; 
+  error?: string; 
+  size?: "sm" | "md" | "lg";
+}
 
-export const Select = ({ label, options, value, onChange, placeholder = "Select option", className = "", disabled, error }: SelectProps) => {
+export const Select = ({ 
+  label, 
+  options, 
+  value, 
+  onChange, 
+  placeholder = "Select option", 
+  className = "", 
+  disabled, 
+  error,
+  size = "md"
+}: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const sizeClass = size === "sm" ? styles.sm : size === "lg" ? styles.lg : styles.md;
   const [isMounted, setIsMounted] = useState(false);
   const [direction, setDirection] = useState<"top" | "bottom">("bottom");
   const [align, setAlign] = useState<"left" | "right">("left");
@@ -28,11 +49,9 @@ export const Select = ({ label, options, value, onChange, placeholder = "Select 
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
 
-        // 수직 위치
         const spaceBelow = windowHeight - rect.bottom;
         setDirection(spaceBelow < 300 ? "top" : "bottom");
 
-        // 수평 위치
         const spaceRight = windowWidth - rect.left;
         setAlign(spaceRight < 300 ? "right" : "left");
       }
@@ -40,10 +59,10 @@ export const Select = ({ label, options, value, onChange, placeholder = "Select 
     }
   };
 
-  if (!isMounted) return <div className={`${styles.selectContainer} ${disabled ? styles.disabled : ""} ${className}`}>{label && <label className={styles.label}>{label}</label>}</div>;
+  if (!isMounted) return <div className={`${styles.selectContainer} ${sizeClass} ${disabled ? styles.disabled : ""} ${className}`}>{label && <label className={styles.label}>{label}</label>}</div>;
 
   return (
-    <div className={`${styles.selectContainer} ${disabled ? styles.disabled : ""} ${className}`} ref={containerRef}>
+    <div className={`${styles.selectContainer} ${sizeClass} ${disabled ? styles.disabled : ""} ${className}`} ref={containerRef}>
       {label && <label className={styles.label}>{label}</label>}
       <div className={styles.inputMain}>
         <div 

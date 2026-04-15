@@ -13,6 +13,7 @@ interface DatePickerProps {
   error?: string;
   minDate?: string; // Format: YYYY-MM-DD
   maxDate?: string; // Format: YYYY-MM-DD
+  size?: "sm" | "md" | "lg";
 }
 
 export const DatePicker = ({
@@ -24,6 +25,7 @@ export const DatePicker = ({
   error,
   minDate,
   maxDate,
+  size = "md",
 }: DatePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<"days" | "months" | "years">("days");
@@ -191,7 +193,7 @@ export const DatePicker = ({
     ));
   };
 
-  const renderYears = () => {
+  const renderMonthsYears = () => {
     const currentYear = viewDate.getFullYear();
     const years = [];
     for (let i = currentYear - 10; i <= currentYear + 9; i++) {
@@ -217,6 +219,7 @@ export const DatePicker = ({
         readOnly
         disabled={disabled}
         error={error}
+        size={size}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         onClear={() => onChange?.("")}
         rightIcon={
@@ -282,7 +285,7 @@ export const DatePicker = ({
 
           {view === "years" && (
             <div className={styles.yearsGrid}>
-              {renderYears()}
+              {renderMonthsYears()}
             </div>
           )}
 

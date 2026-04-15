@@ -118,6 +118,32 @@ button { cursor: pointer; border: none; background: none; outline: none; font-fa
 /* Avatar Stack */
 .gm-avatar-stack + .gm-avatar-stack { margin-left: -12px; }
 
+/* --- Custom Scrollbar (Global) --- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gm-gray-200);
+  border-radius: 10px;
+  border: 2px solid var(--gm-white);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gm-gray-400);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gm-gray-200) transparent;
+}
+
 @media (max-width: 768px) {
   .gm-container { padding: 0 20px; }
   .gm-hero-title { font-size: 42px; }

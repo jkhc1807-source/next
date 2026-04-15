@@ -6,10 +6,12 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   onClear?: () => void;
   rightIcon?: React.ReactNode;
+  size?: "sm" | "md" | "lg";
 }
 
-export const Input = ({ label, error, onClear, rightIcon, className = "", value, onChange, type, ...props }: InputProps) => {
+export const Input = ({ label, error, onClear, rightIcon, className = "", size = "md", value, onChange, type, ...props }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const sizeClass = size === "sm" ? styles.sm : size === "lg" ? styles.lg : styles.md;
   const isDisabled = props.disabled;
   const isPassword = type === "password";
   const hasValue = value !== undefined && value !== null && String(value).length > 0;
@@ -28,9 +30,8 @@ export const Input = ({ label, error, onClear, rightIcon, className = "", value,
 
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
-  // Calculate padding based on icons (Touch target is 44px)
   const getPaddingRight = () => {
-    let padding = 20; // Default right padding
+    let padding = 20; 
     if (showClear) padding += 44;
     if (hasToggle) padding += 44;
     if (hasRightIcon) padding += 44;
@@ -38,7 +39,7 @@ export const Input = ({ label, error, onClear, rightIcon, className = "", value,
   };
 
   return (
-    <div className={`${styles.inputGroup} ${className}`}>
+    <div className={`${styles.inputGroup} ${sizeClass} ${className}`}>
       {label && <label className={styles.label}>{label}</label>}
       <div className={styles.inputMain}>
         <div className={styles.inputWrapper}>

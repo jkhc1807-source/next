@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./Dropdown.module.css";
 
 interface DropdownItem {
-  label: string;
+  label?: string;
   description?: string;
   shortcut?: string;
   onClick?: () => void;
@@ -90,30 +90,32 @@ export const Dropdown = ({
       {isOpen && (
         <div className={`${styles.menu} ${styles[placement]} ${styles[align]} gm-animate`} role="menu" onClick={(e) => e.stopPropagation()}>
           {items.map((item, index) => (
-            <React.Fragment key={`${item.label}-${index}`}>
+            <React.Fragment key={`${item.label || item.header || 'item'}-${index}`}>
               {item.header && <div className={styles.menuHeader}>{item.header}</div>}
-              <button
-                className={`${styles.item} ${item.variant ? styles[item.variant] : ""} ${item.disabled ? styles.disabled : ""} ${item.description ? styles.hasDesc : ""}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (!item.disabled && item.onClick) {
-                    item.onClick();
-                    setIsOpen(false);
-                  }
-                }}
-                disabled={item.disabled}
-                role="menuitem"
-              >
-                {item.icon && <span className={styles.icon}>{item.icon}</span>}
-                <div className={styles.itemContent}>
-                  <div className={styles.labelWrapper}>
-                    <span className={styles.label}>{item.label}</span>
-                    {item.shortcut && <span className={styles.shortcut}>{item.shortcut}</span>}
+              {item.label && (
+                <button
+                  className={`${styles.item} ${item.variant ? styles[item.variant] : ""} ${item.disabled ? styles.disabled : ""} ${item.description ? styles.hasDesc : ""}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!item.disabled && item.onClick) {
+                      item.onClick();
+                      setIsOpen(false);
+                    }
+                  }}
+                  disabled={item.disabled}
+                  role="menuitem"
+                >
+                  {item.icon && <span className={styles.icon}>{item.icon}</span>}
+                  <div className={styles.itemContent}>
+                    <div className={styles.labelWrapper}>
+                      <span className={styles.label}>{item.label}</span>
+                      {item.shortcut && <span className={styles.shortcut}>{item.shortcut}</span>}
+                    </div>
+                    {item.description && <p className={styles.description}>{item.description}</p>}
                   </div>
-                  {item.description && <p className={styles.description}>{item.description}</p>}
-                </div>
-              </button>
+                </button>
+              )}
               {item.divider && <div className={styles.divider} />}
             </React.Fragment>
           ))}

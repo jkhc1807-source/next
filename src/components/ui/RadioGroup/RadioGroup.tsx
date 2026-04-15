@@ -16,6 +16,7 @@ interface RadioGroupProps {
   onChange: (value: string) => void;
   name: string;
   direction?: "horizontal" | "vertical";
+  size?: "sm" | "md" | "lg";
   className?: string;
 }
 
@@ -26,6 +27,7 @@ export const RadioGroup = ({
   onChange,
   name,
   direction = "vertical",
+  size = "md",
   className = "",
 }: RadioGroupProps) => {
   return (
@@ -38,6 +40,7 @@ export const RadioGroup = ({
             label={option.label}
             name={name}
             value={option.value}
+            size={size}
             checked={value === option.value}
             onChange={(e) => onChange(e.target.value)}
             disabled={option.disabled}

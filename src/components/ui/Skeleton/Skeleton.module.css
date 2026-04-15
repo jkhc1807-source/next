@@ -7,6 +7,15 @@
   overflow: hidden;
 }
 
+.skeletonCircular {
+  border-radius: 50%;
+}
+
+.skeletonCard {
+  border-radius: var(--gm-border-radius);
+  height: 120px;
+}
+
 .skeleton::after {
   content: "";
   position: absolute;

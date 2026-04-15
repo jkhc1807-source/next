@@ -19,18 +19,39 @@
   pointer-events: none;
 }
 
+/* Master Base Style */
 .selectTrigger {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--gm-spacing-lg) var(--gm-spacing-lg);
   border: 2px solid var(--gm-gray-200);
-  border-radius: 16px;
   background: var(--gm-gray-50);
   cursor: pointer;
   font-weight: 700;
-  font-size: 16px;
   transition: var(--gm-transition);
+  width: 100%;
+}
+
+/* Size Logic Applied to Container */
+.sm .selectTrigger {
+  min-height: 48px;
+  padding: 0 var(--gm-spacing-md);
+  font-size: 14px;
+  border-radius: 12px;
+}
+
+.md .selectTrigger {
+  min-height: 60px;
+  padding: 0 var(--gm-spacing-lg);
+  font-size: 16px;
+  border-radius: 16px;
+}
+
+.lg .selectTrigger {
+  min-height: 72px;
+  padding: 0 var(--gm-spacing-xl);
+  font-size: 18px;
+  border-radius: 20px;
 }
 
 .selectTrigger.active {
@@ -42,10 +63,6 @@
 .selectTrigger.error {
   border-color: var(--gm-error);
   background: rgba(238, 0, 0, 0.02);
-}
-
-.selectTrigger.error:focus {
-  box-shadow: 0 0 0 6px rgba(238, 0, 0, 0.05);
 }
 
 .value {
@@ -89,7 +106,7 @@
 }
 
 .selectOption {
-  min-height: 44px; /* Touch target optimized */
+  min-height: 44px;
   padding: 8px 16px;
   border-radius: 12px;
   cursor: pointer;
@@ -116,12 +133,6 @@
 
 .checkIcon {
   color: black;
-  animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.5); }
-  to { opacity: 1; transform: scale(1); }
 }
 
 .label {
@@ -146,10 +157,4 @@
   font-weight: 800;
   padding-left: var(--gm-spacing-xs);
   margin-top: var(--gm-spacing-sm);
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
 }

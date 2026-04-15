@@ -1,0 +1,89 @@
+.searchWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: var(--gm-gray-50);
+  border: 2px solid var(--gm-gray-200);
+  border-radius: 20px;
+  transition: var(--gm-transition);
+  padding: 0 12px;
+  height: 64px;
+}
+
+.searchWrapper:focus-within {
+  background: white;
+  border-color: black;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.searchIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--gm-gray-400);
+  transition: color 0.3s;
+}
+
+.searchWrapper:focus-within .searchIcon {
+  color: black;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: none;
+  height: 100%;
+  padding: 0 12px;
+  font-size: 17px;
+  font-weight: 600;
+  color: black;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--gm-gray-400);
+  font-weight: 500;
+}
+
+.clearBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gm-gray-100);
+  border: none;
+  border-radius: 50%;
+  color: var(--gm-gray-500);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-right: 4px;
+}
+
+.clearBtn:hover {
+  background: black;
+  color: white;
+}
+
+.searchEdge {
+  position: absolute;
+  right: 20px;
+  width: 1px;
+  height: 24px;
+  background: var(--gm-gray-200);
+  display: none; /* 필요 시 구분선으로 사용 */
+}
+
+@media (max-width: 768px) {
+  .searchWrapper {
+    height: 56px;
+    border-radius: 16px;
+  }
+  .searchInput {
+    font-size: 15px;
+  }
+}

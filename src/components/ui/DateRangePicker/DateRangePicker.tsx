@@ -14,6 +14,7 @@ interface DateRangePickerProps {
   endPlaceholder?: string;
   error?: string;
   disabled?: boolean;
+  size?: "sm" | "md" | "lg";
 }
 
 export const DateRangePicker = ({
@@ -26,6 +27,7 @@ export const DateRangePicker = ({
   endPlaceholder = "End Date",
   error,
   disabled,
+  size = "md",
 }: DateRangePickerProps) => {
   return (
     <div className={styles.rangeContainer}>
@@ -39,6 +41,7 @@ export const DateRangePicker = ({
             disabled={disabled}
             maxDate={endDate} // Cannot select start date after end date
             error={error ? " " : undefined}
+            size={size}
           />
         </div>
         <div className={styles.separator}>
@@ -54,6 +57,7 @@ export const DateRangePicker = ({
             disabled={disabled}
             minDate={startDate} // Cannot select end date before start date
             error={error ? " " : undefined}
+            size={size}
           />
         </div>
       </div>

@@ -29,9 +29,11 @@ import {
   Table,
   Tabs,
   Textarea,
-  ToastContainer, // 수정됨
+  ToastContainer,
   Tooltip,
   Drawer,
+  SearchBar,
+
   type ToastType, // 타입 추가
   type ToastItem, // 타입 추가
 } from "@/components/ui";
@@ -59,7 +61,7 @@ export default function Home() {
   
   const [startDate, setStartDate] = useState("2026-04-15");
   const [endDate, setEndDate] = useState("2026-04-20");
-  const [checkedItems, setCheckedItems] = useState<string[]>(["read"]);
+  const [checkedItems, setCheckedItems] = useState<string[]>(["read", "write"]);
   const [radioValue, setRadioValue] = useState("medium");
   const [switchState, setSwitchState] = useState(true);
   const [passwordValue, setPasswordValue] = useState("gemini_master_123");
@@ -72,6 +74,19 @@ export default function Home() {
     { label: "Tailwind CSS", value: "tailwind" },
     { label: "Node.js", value: "node" },
     { label: "Python", value: "py" },
+  ];
+
+  const groupOptions = [
+    { label: "Read Access", value: "read" },
+    { label: "Write Access", value: "write" },
+    { label: "Delete Access", value: "delete", disabled: true },
+    { label: "Admin Sync", value: "sync" },
+  ];
+
+  const radioOptions = [
+    { label: "Small 48px", value: "small" },
+    { label: "Medium 60px", value: "medium" },
+    { label: "Large 72px", value: "large" },
   ];
 
   const domainOptions = [
@@ -198,7 +213,7 @@ export default function Home() {
             </div>
           </section>
 
-          {/* 03. INTELLIGENT INPUTS */}
+          {/* 03. FORM ELEMENTS */}
           <section className="gm-animate">
             <header className="gm-section-header">
               <span className="gm-label">03. Forms</span>
@@ -206,9 +221,18 @@ export default function Home() {
             </header>
 
             <div className="gm-flex-col-gap-60" style={{ maxWidth: '800px' }}>
-              
+
+              <div className="gm-flex-col-gap-12">
+                <span className="gm-label">Premium Search Bar</span>
+                <SearchBar 
+                  placeholder="Search projects, members, or settings..." 
+                  onSearch={(val) => handleShowToast(`Searching for: ${val}`, "info")}
+                />
+              </div>
+
               <div className="gm-flex-col-gap-12">
                 <span className="gm-label">Composite Email (Dynamic Domain)</span>
+
                 <div className="gm-flex-col-gap-16">
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                     <div style={{ flex: 1 }}>
@@ -244,9 +268,23 @@ export default function Home() {
               </div>
 
               <div className="gm-flex-col-gap-12">
+                <span className="gm-label">Field Size Variations</span>
+                <div className="gm-flex-col-gap-16">
+                  <Input size="sm" placeholder="Small Input 48px" />
+                  <Input size="md" placeholder="Medium Input 60px (Default)" />
+                  <Input size="lg" placeholder="Large Input 72px" />
+                </div>
+              </div>
+
+              <div className="gm-flex-col-gap-12">
                 <span className="gm-label">Advanced Selections</span>
                 <div className="gm-flex-col-gap-32">
                   <Select label="Single Choice" options={options} value={selectValue} onChange={setSelectValue} />
+                  <div className="gm-flex-col-gap-16">
+                    <span className="gm-label">Select Sizes</span>
+                    <Select size="sm" options={options} value={selectValue} onChange={setSelectValue} placeholder="Small Select" />
+                    <Select size="lg" options={options} value={selectValue} onChange={setSelectValue} placeholder="Large Select" />
+                  </div>
                   <MultiSelect label="Capabilities (Responsive + Clear All)" options={options} value={multiValue} onChange={setMultiValue} />
                 </div>
               </div>
@@ -272,20 +310,47 @@ export default function Home() {
                   </div>
                   
                   <div className="gm-flex-col-gap-16">
-                    <span className="gm-label">Checkboxes</span>
+                    <span className="gm-label">Checkboxes (Size Variations & States)</span>
                     <div className="gm-flex-wrap" style={{ gap: '32px' }}>
-                      <Checkbox label="Enabled" defaultChecked />
+                      <Checkbox label="Small 48px" size="sm" defaultChecked />
+                      <Checkbox label="Medium 60px" size="md" defaultChecked />
+                      <Checkbox label="Large 72px" size="lg" defaultChecked />
                       <Checkbox label="Disabled" disabled />
                       <Checkbox label="Disabled Active" disabled defaultChecked />
                     </div>
                   </div>
 
                   <div className="gm-flex-col-gap-16">
-                    <span className="gm-label">Radio Buttons</span>
+                    <span className="gm-label">Radio Buttons (Size Variations & States)</span>
                     <div className="gm-flex-wrap" style={{ gap: '32px' }}>
-                      <Radio label="Normal" name="gr1" defaultChecked />
-                      <Radio label="Disabled" name="gr2" disabled />
-                      <Radio label="Disabled Active" name="gr3" disabled defaultChecked />
+                      <Radio label="Small 48px" name="sz1" size="sm" defaultChecked />
+                      <Radio label="Medium 60px" name="sz2" size="md" defaultChecked />
+                      <Radio label="Large 72px" name="sz3" size="lg" defaultChecked />
+                      <Radio label="Disabled" name="ds1" disabled />
+                      <Radio label="Disabled Active" name="ds2" disabled defaultChecked />
+                    </div>
+                  </div>
+
+                  <div className="gm-flex-col-gap-32" style={{ borderTop: '1px solid var(--gm-gray-100)', paddingTop: '32px' }}>
+                    <div className="gm-flex-col-gap-16">
+                      <span className="gm-label">Complex Selection Groups (Group Size Control)</span>
+                      <div className="gm-flex-wrap" style={{ gap: '60px', alignItems: 'flex-start' }}>
+                        <CheckboxGroup 
+                          label="Access Control Group (Small)" 
+                          size="sm"
+                          options={groupOptions} 
+                          value={checkedItems} 
+                          onChange={setCheckedItems} 
+                        />
+                        <RadioGroup 
+                          label="Size Selection Group (Large)" 
+                          name="size-group"
+                          size="lg"
+                          options={radioOptions} 
+                          value={radioValue} 
+                          onChange={setRadioValue} 
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
