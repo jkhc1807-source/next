@@ -1,0 +1,145 @@
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gm-spacing-sm);
+  width: 100%;
+}
+
+.inputMain {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  padding: var(--gm-spacing-lg) var(--gm-spacing-lg);
+  border: 2px solid var(--gm-gray-200);
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: var(--gm-transition);
+  outline: none;
+  background: var(--gm-gray-50);
+  color: black;
+}
+
+.input:focus {
+  border-color: black;
+  background: white;
+  box-shadow: 0 0 0 6px rgba(0,0,0,0.03);
+}
+
+/* Error State */
+.input.error {
+  border-color: var(--gm-error);
+  background: rgba(238, 0, 0, 0.02);
+}
+
+.input.error:focus {
+  box-shadow: 0 0 0 6px rgba(238, 0, 0, 0.05);
+}
+
+/* Disabled State */
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--gm-gray-100);
+  border-color: var(--gm-gray-300);
+  color: var(--gm-gray-500);
+}
+
+/* ReadOnly State */
+.input[readonly] {
+  background: var(--gm-gray-50);
+  border-color: var(--gm-gray-200);
+  cursor: default;
+  color: var(--gm-gray-500);
+}
+
+.inputActions {
+  position: absolute;
+  right: 8px; /* 우측 끝 여백 */
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0; /* 개별 버튼이 44px를 차지하므로 gap은 0으로 설정하여 계산 가독성 확보 */
+}
+
+.inputActionBtn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--gm-border-radius-sm);
+  color: var(--gm-gray-400);
+  transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none !important;
+}
+
+.inputActionBtn:hover {
+  background: var(--gm-gray-200);
+  color: black;
+}
+
+.inputActionBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+.rightIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--gm-gray-400);
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: none; /* 대문자 강제 해제 */
+  letter-spacing: -0.01em;
+  color: black;
+  margin-bottom: 8px;
+  display: block;
+  line-height: 1.4;
+}
+
+.errorArea {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.errorText {
+  color: var(--gm-error);
+  font-size: 13px;
+  font-weight: 700;
+  padding-left: var(--gm-spacing-xs);
+  margin-top: 8px;
+  animation: slideDownFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  display: block;
+}
+
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

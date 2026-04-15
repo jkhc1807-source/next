@@ -1,0 +1,155 @@
+.selectContainer {
+  position: relative;
+  width: 100%;
+  transition: var(--gm-transition);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gm-spacing-md);
+}
+
+.inputMain {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.selectContainer.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.selectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--gm-spacing-lg) var(--gm-spacing-lg);
+  border: 2px solid var(--gm-gray-200);
+  border-radius: 16px;
+  background: var(--gm-gray-50);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+  transition: var(--gm-transition);
+}
+
+.selectTrigger.active {
+  border-color: black;
+  background: white;
+  box-shadow: 0 0 0 6px rgba(0,0,0,0.03);
+}
+
+.selectTrigger.error {
+  border-color: var(--gm-error);
+  background: rgba(238, 0, 0, 0.02);
+}
+
+.selectTrigger.error:focus {
+  box-shadow: 0 0 0 6px rgba(238, 0, 0, 0.05);
+}
+
+.value {
+  color: black;
+}
+
+.placeholder {
+  color: var(--gm-gray-400);
+}
+
+.selectDropdown {
+  position: absolute;
+  width: 100%;
+  max-height: 300px;
+  background: white;
+  border: 2px solid black;
+  border-radius: 16px;
+  box-shadow: var(--gm-shadow-lg);
+  z-index: var(--gm-z-dropdown);
+  padding: var(--gm-spacing-sm);
+  list-style: none;
+  overflow-y: auto;
+}
+
+.left {
+  left: 0;
+  right: auto;
+}
+
+.right {
+  right: 0;
+  left: auto;
+}
+
+.selectDropdown.bottom {
+  top: calc(100% + var(--gm-spacing-sm));
+}
+
+.selectDropdown.top {
+  bottom: calc(100% + var(--gm-spacing-sm));
+}
+
+.selectOption {
+  min-height: 44px; /* Touch target optimized */
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--gm-gray-400);
+  text-decoration: none !important;
+}
+
+.selectOption:hover {
+  background: var(--gm-gray-50);
+  color: black;
+}
+
+.selectOption.selected {
+  background: var(--gm-gray-50);
+  color: black;
+  font-weight: 800;
+}
+
+.checkIcon {
+  color: black;
+  animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: black;
+  margin-bottom: 8px;
+  display: block;
+  line-height: 1.4;
+}
+
+.errorArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.errorText {
+  color: var(--gm-error);
+  font-size: 12px;
+  font-weight: 800;
+  padding-left: var(--gm-spacing-xs);
+  margin-top: var(--gm-spacing-sm);
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

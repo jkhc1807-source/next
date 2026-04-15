@@ -1,0 +1,127 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gm-spacing-md);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: var(--gm-transition);
+  border-radius: var(--gm-border-radius);
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none !important;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn:disabled:hover, .btn:disabled:active {
+  transform: none;
+  box-shadow: none;
+}
+
+.btnPrimary {
+  background: black;
+  color: white;
+}
+
+.btnPrimary:hover {
+  box-shadow: var(--gm-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.btnSecondary {
+  background: var(--gm-gray-100);
+  color: black;
+}
+
+.btnSecondary:hover {
+  background: var(--gm-gray-200);
+}
+
+.btnOutline {
+  background: transparent;
+  border: 3px solid black;
+  color: black;
+}
+
+.btnOutline:hover {
+  background: black;
+  color: white;
+}
+
+.btnDanger {
+  background: var(--gm-error);
+  color: white;
+}
+
+.btnDanger:hover {
+  background: #cc0000;
+  box-shadow: 0 12px 30px rgba(238, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.btnSm {
+  height: 48px;
+  padding: 0 var(--gm-spacing-lg);
+  font-size: 12px;
+}
+
+.btnMd {
+  height: 60px;
+  padding: 0 var(--gm-spacing-xl);
+  font-size: 14px;
+}
+
+.btnLg {
+  height: 72px;
+  padding: 0 var(--gm-spacing-xxl);
+  font-size: 16px;
+  border-radius: 16px;
+}
+
+.btnIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullWidth {
+  width: 100%;
+  display: flex;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  width: 20px;
+  height: 20px;
+}
+
+.spinnerCircle {
+  opacity: 0.25;
+}
+
+.spinnerPath {
+  opacity: 0.75;
+}
+
+.btn:has(.spinner) {
+  cursor: wait;
+  opacity: 0.8;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

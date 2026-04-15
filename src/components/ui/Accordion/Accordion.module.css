@@ -1,0 +1,169 @@
+.accordion {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* 분리형 (Separated - Default) */
+.separated {
+  gap: var(--gm-spacing-lg);
+}
+
+.separated .accordionItem {
+  background: white;
+  border: 2px solid var(--gm-gray-200); /* 테두리 두께 2px로 상향 및 색상 강화 */
+  border-radius: 24px;
+  transition: var(--gm-transition);
+  overflow: hidden;
+}
+
+.separated .accordionItem:not(.disabled):hover {
+  border-color: black; /* 호버 시 블랙으로 강조 */
+  box-shadow: var(--gm-shadow-md);
+  transform: translateY(-2px);
+}
+
+.separated .accordionHeader.active {
+  background: black;
+  color: white;
+}
+
+.separated .accordionHeader.active .accordionIcon {
+  color: white;
+}
+
+/* 그룹형 (Grouped) */
+.grouped {
+  border: 2px solid var(--gm-gray-200); /* 테두리 두께 2px로 상향 */
+  border-radius: 24px;
+  background: white;
+  overflow: hidden;
+}
+
+.grouped .accordionItem {
+  border-bottom: 2px solid var(--gm-gray-100);
+}
+
+.grouped .accordionItem:last-child {
+  border-bottom: none;
+}
+
+.grouped .accordionHeader {
+  padding: 28px 40px;
+}
+
+.grouped .accordionHeader.active {
+  background: var(--gm-gray-50);
+  color: black;
+}
+
+.grouped .accordionHeader.active .accordionIcon {
+  color: black;
+}
+
+/* 공통 스타일 */
+.accordionHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--gm-spacing-xl) 40px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: black;
+  outline: none;
+  text-decoration: none !important;
+}
+
+.accordionIcon {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--gm-gray-400);
+}
+
+.accordionHeader.active .accordionIcon {
+  transform: rotate(180deg);
+}
+
+.accordionBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+}
+
+.accordionBody.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.accordionContent {
+  overflow: hidden;
+  padding: var(--gm-spacing-lg) 40px 40px;
+  font-size: 16px;
+  color: var(--gm-gray-500);
+  line-height: 1.8;
+  font-weight: 500;
+}
+
+/* 분리형 활성화 효과 */
+.separated .accordionItem:has(.active):not(.error):not(.disabled) {
+  border-color: black;
+  box-shadow: var(--gm-shadow-lg);
+}
+
+/* Disabled State */
+.accordionItem.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.accordionItem.disabled .accordionHeader {
+  background: var(--gm-gray-50);
+  color: var(--gm-gray-400);
+}
+
+/* Error State */
+.accordionItem.error {
+  border-color: var(--gm-error);
+  border-width: 2px;
+}
+
+.accordionItem.error .accordionHeader {
+  color: var(--gm-error);
+}
+
+.accordionItem.error .accordionHeader.active {
+  background: var(--gm-error);
+  color: white;
+}
+
+.accordionItem.error .accordionHeader.active .accordionIcon {
+  color: white;
+}
+
+.accordionItem.error .accordionIcon {
+  color: var(--gm-error);
+}
+
+@media (max-width: 768px) {
+  .accordionHeader {
+    padding: var(--gm-spacing-lg) 20px;
+    font-size: 17px;
+    min-height: 44px;
+  }
+  .accordionContent {
+    padding: var(--gm-spacing-lg) 20px var(--gm-spacing-xl);
+    font-size: 15px;
+  }
+  .grouped .accordionHeader {
+    padding: var(--gm-spacing-lg) 20px;
+  }
+}

@@ -1,0 +1,75 @@
+.avatarWrapper {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--gm-black);
+  color: var(--gm-white);
+  font-weight: 800;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  overflow: hidden;
+  user-select: none;
+  border: 1px solid var(--gm-gray-200);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+  height: 100%;
+}
+
+.circle { border-radius: 50%; }
+.square { border-radius: 12px; }
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.avatarWrapper:hover .image {
+  transform: scale(1.1);
+}
+
+.initials {
+  line-height: 1;
+}
+
+/* Sizes */
+.sm { width: 32px; height: 32px; font-size: 10px; }
+.md { width: 48px; height: 48px; font-size: 14px; }
+.lg { width: 64px; height: 44px; font-size: 18px; } /* 44px은 오타 수정 필요 */
+.lg { width: 64px; height: 64px; font-size: 18px; }
+.xl { width: 96px; height: 96px; font-size: 28px; }
+
+/* Status Dot */
+.status {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 25%;
+  height: 25%;
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--gm-white);
+  z-index: 1;
+}
+
+.online { background-color: #00C853; }
+.offline { background-color: var(--gm-gray-400); }
+.away { background-color: #FFAB00; }
+.busy { background-color: var(--gm-error); }
+
+/* Stacked Group Effect */
+.avatarWrapper + .avatarWrapper {
+  margin-left: -12px;
+}
+
+.avatarWrapper:hover {
+  z-index: 2;
+}

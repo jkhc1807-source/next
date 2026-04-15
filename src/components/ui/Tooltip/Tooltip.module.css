@@ -1,0 +1,95 @@
+.tooltipWrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltip {
+  position: absolute;
+  background: var(--gm-black);
+  color: var(--gm-white);
+  padding: var(--gm-spacing-sm) var(--gm-spacing-md);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: normal; /* Allow wrapping on small screens */
+  max-width: 200px; /* Prevent huge tooltips */
+  min-width: 80px;
+  width: max-content;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Arrow */
+.tooltip::after {
+  content: "";
+  position: absolute;
+  border-width: 5px;
+  border-style: solid;
+}
+
+/* Positioning */
+.top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  margin-bottom: 5px;
+}
+.top.visible { transform: translateX(-50%) translateY(-12px); }
+.top::after {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-color: var(--gm-black) transparent transparent transparent;
+}
+
+.bottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  margin-top: 5px;
+}
+.bottom.visible { transform: translateX(-50%) translateY(12px); }
+.bottom::after {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-color: transparent transparent var(--gm-black) transparent;
+}
+
+.left {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px);
+  margin-right: 5px;
+}
+.left.visible { transform: translateY(-50%) translateX(-12px); }
+.left::after {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-color: transparent transparent transparent var(--gm-black);
+}
+
+.right {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+  margin-left: 5px;
+}
+.right.visible { transform: translateY(-50%) translateX(12px); }
+.right::after {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-color: transparent var(--gm-black) transparent transparent;
+}

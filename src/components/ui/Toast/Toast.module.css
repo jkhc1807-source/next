@@ -1,0 +1,109 @@
+.toastContainer {
+  position: fixed;
+  bottom: var(--gm-spacing-xl);
+  right: var(--gm-spacing-xl);
+  display: flex;
+  flex-direction: column-reverse; /* 최신 토스트가 아래로 쌓이게 */
+  gap: 16px;
+  z-index: var(--gm-z-toast);
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  min-width: 440px;
+  max-width: 600px;
+  min-height: 80px;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  color: white;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toastContent {
+  flex: 1;
+}
+
+.toastTitle {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: white;
+  transform-origin: left;
+  width: 100%;
+  z-index: 5;
+}
+
+/* Variants Color Glow */
+.success .iconWrapper { color: #00E676; background: rgba(0, 230, 118, 0.1); }
+.error .iconWrapper { color: #FF5252; background: rgba(255, 82, 82, 0.1); }
+.warning .iconWrapper { color: #FFD740; background: rgba(255, 215, 64, 0.1); }
+.info .iconWrapper { color: #40C4FF; background: rgba(64, 196, 255, 0.1); }
+
+.success .progressBar { background: #00E676; }
+.error .progressBar { background: #FF5252; }
+.warning .progressBar { background: #FFD740; }
+.info .progressBar { background: #40C4FF; }
+
+@media (max-width: 768px) {
+  .toastContainer {
+    left: var(--gm-spacing-md);
+    right: var(--gm-spacing-md);
+    bottom: var(--gm-spacing-md);
+  }
+  .toast {
+    min-width: 0;
+    width: 100%;
+    padding: 16px 20px;
+    min-height: 64px;
+  }
+}

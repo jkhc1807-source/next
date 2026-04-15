@@ -1,0 +1,116 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--gm-spacing-xl);
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.paginationBtn {
+  height: 56px;
+  padding: 0 28px;
+  background: white;
+  border: 2px solid var(--gm-gray-200);
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: var(--gm-transition);
+  color: black;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gm-spacing-md);
+  text-decoration: none !important;
+  flex-shrink: 0;
+}
+
+.paginationBtn:hover:not(:disabled) {
+  border-color: black;
+  transform: translateY(-2px);
+  box-shadow: var(--gm-shadow-md);
+}
+
+.paginationBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.paginationBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: var(--gm-gray-50);
+}
+
+.paginationList {
+  display: flex;
+  align-items: center;
+  gap: var(--gm-spacing-sm);
+  min-width: 0;
+}
+
+.paginationItem {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: white;
+  border: 2px solid var(--gm-gray-100);
+  cursor: pointer;
+  color: var(--gm-gray-400);
+  text-decoration: none !important;
+  flex-shrink: 0;
+}
+
+.paginationItem:hover {
+  border-color: black;
+  color: black;
+  transform: translateY(-2px);
+}
+
+.paginationItem.active {
+  background: black;
+  color: white;
+  border-color: black;
+  box-shadow: var(--gm-shadow-md);
+}
+
+@media (max-width: 768px) {
+  .pagination { 
+    gap: var(--gm-spacing-sm); 
+    justify-content: space-between;
+  }
+  .paginationBtn { 
+    height: 48px; 
+    padding: 0 14px; 
+    font-size: 0; 
+    border-radius: 12px;
+  }
+  .paginationBtn span { display: none; }
+  .paginationBtn svg { margin: 0; width: 20px; height: 20px; }
+
+  .paginationList { 
+    gap: var(--gm-spacing-xs); 
+    overflow-x: auto;
+    padding: 4px 10px;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+  .paginationList::-webkit-scrollbar { display: none; }
+  
+  .paginationItem { 
+    width: 44px; 
+    height: 44px; 
+    font-size: 14px; 
+    border-radius: 12px;
+  }
+}

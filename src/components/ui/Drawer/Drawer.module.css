@@ -1,0 +1,109 @@
+.drawerRoot {
+  position: fixed;
+  inset: 0;
+  z-index: var(--gm-z-modal-backdrop);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.drawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--gm-shadow-lg);
+  z-index: var(--gm-z-modal);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.right {
+  right: 0;
+  border-left: 1px solid var(--gm-gray-100);
+  animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.left {
+  left: 0;
+  border-right: 1px solid var(--gm-gray-100);
+  animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* Sizes */
+.sm { width: 320px; }
+.md { width: 480px; }
+.lg { width: 720px; }
+
+.header {
+  padding: var(--gm-spacing-xl) var(--gm-spacing-xxl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gm-gray-100);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: black;
+}
+
+.closeBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gm-gray-400);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.closeBtn:hover {
+  background: var(--gm-gray-100);
+  color: black;
+  transform: rotate(90deg);
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--gm-spacing-xxl);
+}
+
+.footer {
+  padding: var(--gm-spacing-xl) var(--gm-spacing-xxl);
+  border-top: 1px solid var(--gm-gray-100);
+  display: flex;
+  gap: var(--gm-spacing-md);
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .drawer { width: 85% !important; }
+  .header { padding: var(--gm-spacing-lg) var(--gm-spacing-xl); }
+  .body { padding: var(--gm-spacing-xl); }
+  .footer { padding: var(--gm-spacing-lg) var(--gm-spacing-xl); }
+}

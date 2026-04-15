@@ -1,0 +1,79 @@
+.tabs {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.tabsNav {
+  display: flex;
+  gap: 40px;
+  border-bottom: 2px solid var(--gm-gray-100);
+  margin-bottom: 40px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-wrap: nowrap;
+  padding-bottom: 2px;
+  position: relative;
+  cursor: grab;
+  user-select: none;
+}
+
+.tabsNav.dragging {
+  cursor: grabbing;
+}
+
+.tabsNav::-webkit-scrollbar {
+  display: none;
+}
+
+.tabBtn {
+  padding-bottom: var(--gm-spacing-lg);
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gm-gray-400);
+  position: relative;
+  transition: var(--gm-transition);
+  cursor: pointer;
+  background: none;
+  border: none;
+  white-space: nowrap;
+  text-decoration: none !important;
+  min-height: 44px;
+}
+
+.tabBtn:hover {
+  color: black;
+}
+
+.tabBtn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.tabBtn.active {
+  color: black;
+}
+
+.indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: black;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tabsContent {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

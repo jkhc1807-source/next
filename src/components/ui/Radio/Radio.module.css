@@ -1,0 +1,82 @@
+.radioGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gm-spacing-md);
+  cursor: pointer;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 44px;
+}
+
+.radioGroup.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.radioGroup.disabled .radioCircle {
+  background: var(--gm-gray-100);
+  border-color: var(--gm-gray-200);
+}
+
+.radioGroup.disabled .radioLabel {
+  color: var(--gm-gray-400);
+}
+
+.radioInner input:disabled:checked ~ .radioCircle {
+  border-color: var(--gm-gray-300);
+  background: white;
+}
+
+.radioInner input:disabled:checked ~ .radioDot {
+  background: var(--gm-gray-300);
+}
+
+.radioInner {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: inherit;
+  z-index: 1;
+}
+
+.radioCircle {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--gm-gray-200);
+  border-radius: 50%;
+  background: var(--gm-gray-50);
+  transition: var(--gm-transition);
+}
+
+.radioInput:checked ~ .radioCircle {
+  border-color: black;
+  background: white;
+}
+
+.radioDot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 12px;
+  height: 12px;
+  background: black;
+  border-radius: 50%;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.radioInput:checked ~ .radioDot {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.radioLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: black;
+}

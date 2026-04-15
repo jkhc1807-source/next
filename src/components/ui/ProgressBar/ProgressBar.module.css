@@ -1,0 +1,114 @@
+.progressContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.labelWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gm-black);
+}
+
+.valueBadge {
+  background: var(--gm-gray-100);
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--gm-gray-200);
+  line-height: 1;
+}
+
+.percentage {
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--gm-black);
+  font-family: 'Geist Mono', monospace;
+}
+
+.track {
+  width: 100%;
+  background: var(--gm-gray-100);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--gm-gray-200);
+}
+
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, #333333 0%, #000000 100%);
+  border-radius: 999px;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.barGlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  filter: blur(2px);
+}
+
+/* Sizes */
+.sm .track { height: 6px; }
+.md .track { height: 12px; }
+.lg .track { height: 20px; }
+
+.lg .label { font-size: 13px; }
+.lg .percentage { font-size: 12px; }
+
+/* Variants */
+.success .bar { background: linear-gradient(90deg, #00E676 0%, #00C853 100%); }
+.error .bar { background: linear-gradient(90deg, #FF5252 0%, #D50000 100%); }
+.warning .bar { background: linear-gradient(90deg, #FFD740 0%, #FFAB00 100%); }
+.info .bar { background: linear-gradient(90deg, #40C4FF 0%, #2196F3 100%); }
+
+/* Animated State */
+.animated .bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100px;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  100% { transform: translateX(400%) skewX(-20deg); }
+}
+
+/* 호버 시 트랙 강조 */
+.progressContainer:hover .track {
+  border-color: var(--gm-gray-300);
+  background: var(--gm-gray-200);
+}

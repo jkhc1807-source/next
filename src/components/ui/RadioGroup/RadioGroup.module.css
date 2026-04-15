@@ -1,0 +1,32 @@
+.groupContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gm-spacing-md);
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.groupLabel {
+  font-size: 12px;
+  font-weight: 800;
+  color: black;
+  margin-bottom: 8px;
+  display: block;
+  line-height: 1.4;
+}
+
+.optionsWrapper {
+  display: flex;
+  gap: var(--gm-spacing-lg);
+}
+
+.vertical {
+  flex-direction: column;
+  gap: var(--gm-spacing-md);
+}
+
+.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+}

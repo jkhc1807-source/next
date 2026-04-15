@@ -1,0 +1,129 @@
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gm-spacing-sm);
+  width: 100%;
+}
+
+.inputMain {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: black;
+  margin-bottom: 8px;
+  display: block;
+  line-height: 1.4;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--gm-spacing-lg) 60px 50px var(--gm-spacing-lg); /* 버튼과 카운터 공간 확보 */
+  border: 2px solid var(--gm-gray-200);
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: var(--gm-transition);
+  outline: none;
+  background: var(--gm-gray-50);
+  min-height: 160px;
+  resize: vertical;
+  font-family: inherit;
+  display: block;
+  line-height: 1.6;
+  color: black;
+}
+
+.textarea:focus {
+  border-color: black;
+  background: white;
+  box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.03);
+}
+
+.textarea.error {
+  border-color: var(--gm-error);
+}
+
+.textarea.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--gm-gray-100);
+  border-color: var(--gm-gray-300);
+  color: var(--gm-gray-500);
+}
+
+.clearBtn {
+  position: absolute;
+  top: var(--gm-spacing-sm);
+  right: var(--gm-spacing-sm);
+  width: 44px; /* Touch target optimized */
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid var(--gm-gray-200);
+  border-radius: var(--gm-border-radius-sm);
+  color: var(--gm-gray-400);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 5;
+  text-decoration: none !important;
+}
+
+.clearBtn:hover {
+  background: black;
+  color: white;
+  border-color: black;
+}
+
+.charCounter {
+  position: absolute;
+  bottom: var(--gm-spacing-md);
+  right: var(--gm-spacing-md);
+  display: flex;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--gm-gray-400);
+  background: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--gm-gray-100);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.charCounter span.error {
+  color: var(--gm-error);
+}
+
+.errorArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.errorText {
+  color: var(--gm-error);
+  font-size: 12px;
+  font-weight: 800;
+  padding-left: var(--gm-spacing-xs);
+  margin-top: var(--gm-spacing-sm);
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
