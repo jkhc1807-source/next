@@ -88,6 +88,14 @@
   vertical-align: middle;
   background: white;
   white-space: nowrap;
+  line-height: 1; /* 높이 편차 방지를 위한 고정 라인 높이 */
+}
+
+/* 셀 내부 요소들이 높이를 벌리지 않도록 조정 */
+.table td > div {
+  display: flex;
+  align-items: center;
+  min-height: 24px; /* 최소 높이 보장하여 텍스트만 있는 셀과 높이 맞춤 */
 }
 
 .table tr:last-child td {
