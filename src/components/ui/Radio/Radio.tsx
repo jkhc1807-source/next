@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Radio.module.css";
 
-interface RadioProps extends React.InputHTMLAttributes<HTMLInputElement> { 
+interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> { 
   label: string; 
   size?: "sm" | "md" | "lg";
 }

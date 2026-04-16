@@ -28,7 +28,7 @@ export const MultiSelect = ({ label, options, value, onChange, placeholder = "Se
 
   useEffect(() => {
     setIsMounted(true);
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) setIsOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);

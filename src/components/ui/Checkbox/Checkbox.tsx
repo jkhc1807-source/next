@@ -2,7 +2,7 @@
 import React, { type InputHTMLAttributes } from "react";
 import styles from "./Checkbox.module.css";
 
-interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
+interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   label?: string;
   size?: "sm" | "md" | "lg";
 }
