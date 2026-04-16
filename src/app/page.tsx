@@ -72,6 +72,8 @@ export default function Home() {
   // --- States for New Components ---
   const [currentStep, setCurrentStep] = useState(1);
   const [segmentedValue, setSegmentedValue] = useState("daily");
+  const [segmentedValue2, setSegmentedValue2] = useState("on");
+  const [segmentedValue5, setSegmentedValue5] = useState("mon");
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
 
   // --- Constants ---
@@ -621,17 +623,71 @@ export default function Home() {
               {/* Segmented Control */}
               <div className="gm-flex-col-gap-24">
                 <span className="gm-label">Segmented Selection (Premium Switcher)</span>
-                <div className="gm-flex-col-gap-16">
-                  <SegmentedControl 
-                    value={segmentedValue}
-                    onChange={setSegmentedValue}
-                    options={[
-                      { label: "Daily Metrics", value: "daily" },
-                      { label: "Weekly Analysis", value: "weekly" },
-                      { label: "Monthly Reports", value: "monthly" }
-                    ]}
-                  />
-                  <div className="gm-label" style={{ color: 'var(--gm-gray-400)' }}>Active: {segmentedValue.toUpperCase()}</div>
+                
+                <div className="gm-flex-col-gap-40">
+                  {/* Sample 1: Binary (2 Items) */}
+                  <div className="gm-flex-col-gap-12" style={{ width: 'fit-content', maxWidth: '100%' }}>
+                    <span className="gm-label" style={{ fontSize: '10px' }}>Binary Switch (2 Items)</span>
+                    <SegmentedControl 
+                      value={segmentedValue2}
+                      onChange={setSegmentedValue2}
+                      fullWidth
+                      options={[
+                        { label: "ON", value: "on" },
+                        { label: "OFF", value: "off" }
+                      ]}
+                    />
+                    <div className="gm-animate" key={segmentedValue2} style={{ padding: '24px', background: 'var(--gm-gray-50)', borderRadius: '12px', border: '1px solid var(--gm-gray-200)', marginTop: '8px', width: '100%' }}>
+                      <div style={{ fontWeight: 800, fontSize: '14px', textAlign: 'center', color: 'black' }}>
+                        {segmentedValue2 === "on" ? "🟢 SYSTEM ACTIVE" : "🔴 SYSTEM INACTIVE"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sample 2: Standard (3 Items) */}
+                  <div className="gm-flex-col-gap-12" style={{ width: 'fit-content', maxWidth: '100%' }}>
+                    <span className="gm-label" style={{ fontSize: '10px' }}>Standard Switch (3 Items)</span>
+                    <SegmentedControl 
+                      value={segmentedValue}
+                      onChange={setSegmentedValue}
+                      fullWidth
+                      options={[
+                        { label: "Daily Metrics", value: "daily" },
+                        { label: "Weekly Analysis", value: "weekly" },
+                        { label: "Monthly Reports", value: "monthly" }
+                      ]}
+                    />
+                    <div className="gm-animate" key={segmentedValue} style={{ padding: '24px', background: 'var(--gm-gray-50)', borderRadius: '12px', border: '1px solid var(--gm-gray-200)', marginTop: '8px', width: '100%' }}>
+                      <div className="gm-label" style={{ marginBottom: '8px', color: 'black', fontSize: '11px' }}>Current Report: {segmentedValue.toUpperCase()}</div>
+                      <p style={{ fontSize: '14px', color: 'var(--gm-gray-500)', lineHeight: '1.6', fontWeight: 500 }}>
+                        {segmentedValue === "daily" && "오늘의 실시간 트래픽 데이터를 분석합니다."}
+                        {segmentedValue === "weekly" && "지난 7일간의 사용자 패턴 보고서입니다."}
+                        {segmentedValue === "monthly" && "이번 달 전체 목표 달성률 지표입니다."}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Sample 3: Weekly / Scrollable (7 Items) */}
+                  <div className="gm-flex-col-gap-12" style={{ width: 'fit-content', maxWidth: '100%' }}>
+                    <span className="gm-label" style={{ fontSize: '10px' }}>Weekly / Scrollable (7 Items)</span>
+                    <SegmentedControl 
+                      value={segmentedValue5}
+                      onChange={setSegmentedValue5}
+                      options={[
+                        { label: "MON", value: "mon" },
+                        { label: "TUE", value: "tue" },
+                        { label: "WED", value: "wed" },
+                        { label: "THU", value: "thu" },
+                        { label: "FRI", value: "fri" },
+                        { label: "SAT", value: "sat" },
+                        { label: "SUN", value: "sun" }
+                      ]}
+                    />
+                    <div className="gm-animate" key={segmentedValue5} style={{ padding: '32px 24px', background: 'var(--gm-gray-50)', borderRadius: '12px', border: '1px solid var(--gm-gray-200)', marginTop: '8px', textAlign: 'center', width: '100%' }}>
+                      <div style={{ fontSize: '24px', fontWeight: 900, color: 'black' }}>{segmentedValue5.toUpperCase()}</div>
+                      <div style={{ fontSize: '11px', color: 'var(--gm-gray-400)', marginTop: '4px', letterSpacing: '0.1em', fontWeight: 700 }}>SCHEDULED TASKS FOR THIS DAY</div>
+                    </div>
+                  </div>
                 </div>
               </div>
 

@@ -7,6 +7,7 @@
   gap: 0;
   border: 1px solid var(--gm-gray-300);
   transition: var(--gm-transition);
+  width: max-content; /* 버튼 너비에 딱 맞게 조절 [확실] */
   max-width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
@@ -21,7 +22,7 @@
 
 .fullWidth {
   display: flex;
-  width: 100%;
+  width: 100% !important; /* fullWidth일 때만 100% 강제 */
 }
 .fullWidth .segment {
   flex: 1;
@@ -78,14 +79,14 @@
 
 @media (max-width: 768px) {
   .container:not(.fullWidth) {
-    display: flex; /* Force flex to allow children to grow */
-    width: 100%;
+    display: inline-flex; /* 모바일에서도 항목 너비 유지 */
+    width: max-content;
+    max-width: 100%; /* 화면은 넘지 않게 설정 */
   }
   
   .container:not(.fullWidth) .segment {
-    flex: 1; /* Make items take equal space if possible */
-    min-width: fit-content; /* Don't shrink smaller than text */
-    padding-left: 12px;
-    padding-right: 12px;
+    flex: none; /* 모바일에서 억지로 늘리지 않음 */
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
