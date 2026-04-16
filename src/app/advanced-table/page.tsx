@@ -84,7 +84,7 @@ export default function AdvancedTableShowcase() {
     load: "Balanced"
   })), []);
 
-  const sortData = (data: any[], config: { key: string; direction: "asc" | "desc" } | null) => {
+  const sortData = <T extends Record<string, any>>(data: T[], config: { key: string; direction: "asc" | "desc" } | null): T[] => {
     if (!config) return data;
     return [...data].sort((a, b) => {
       const aVal = a[config.key];
@@ -97,7 +97,11 @@ export default function AdvancedTableShowcase() {
   const sortedFrozen3 = useMemo(() => sortData(initialFrozenData, sort3), [initialFrozenData, sort3]);
   const sortedFrozen4 = useMemo(() => sortData(initialFrozenData.slice(0, 3), sort4), [initialFrozenData, sort4]);
 
-  const handleSortChange = (setter: any, current: any, key: string) => {
+  const handleSortChange = (
+    setter: React.Dispatch<React.SetStateAction<{ key: string; direction: "asc" | "desc" } | null>>, 
+    current: { key: string; direction: "asc" | "desc" } | null, 
+    key: string
+  ) => {
     let direction: "asc" | "desc" = "asc";
     if (current && current.key === key && current.direction === "asc") direction = "desc";
     setter({ key, direction });

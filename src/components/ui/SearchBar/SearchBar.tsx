@@ -6,6 +6,8 @@ interface SearchBarProps {
   placeholder?: string;
   onSearch?: (value: string) => void;
   onChange?: (value: string) => void;
+  onClear?: () => void;
+  value?: string;
   defaultValue?: string;
   className?: string;
 }
@@ -14,20 +16,30 @@ export const SearchBar = ({
   placeholder = "Search for anything...", 
   onSearch, 
   onChange,
+  onClear,
+  value: controlledValue,
   defaultValue = "",
   className = "" 
 }: SearchBarProps) => {
-  const [value, setValue] = useState(defaultValue);
+  const [internalValue, setInternalValue] = useState(defaultValue);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+  const isControlled = controlledValue !== undefined;
+  const value = isControlled ? controlledValue : internalValue;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    setValue(val);
+    if (!isControlled) {
+      setInternalValue(val);
+    }
     if (onChange) onChange(val);
   };
 
   const handleClear = () => {
-    setValue("");
+    if (!isControlled) {
+      setInternalValue("");
+    }
+    if (onClear) onClear();
     if (onChange) onChange("");
     inputRef.current?.focus();
   };
