@@ -35,8 +35,8 @@ const Icons = {
   ),
 };
 
-// 개별 토스트 컴포넌트
-const Toast = ({ item, onRemove }: { item: ToastItem; onRemove: (id: string) => void }) => {
+// 개별 토스트 컴포넌트 (내부용)
+const InternalToast = ({ item, onRemove }: { item: ToastItem; onRemove: (id: string) => void }) => {
   const duration = item.duration || 3000;
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isPaused, setIsPaused] = useState(false);
@@ -91,9 +91,74 @@ export const ToastContainer = ({ toasts, onRemove }: { toasts: ToastItem[]; onRe
   return createPortal(
     <div className={styles.toastContainer}>
       {toasts.map((toast) => (
-        <Toast key={toast.id} item={toast} onRemove={onRemove} />
+        <InternalToast key={toast.id} item={toast} onRemove={onRemove} />
       ))}
     </div>,
     document.body
   );
 };
+
+// 단일 토스트 컴포넌트 (Showcase용)
+interface StandaloneToastProps {
+  message: string;
+  variant?: ToastType;
+  onClose: () => void;
+  duration?: number;
+}
+
+export const Toast = ({ message, variant = "info", onClose, duration = 3000 }: StandaloneToastProps) => {
+  const [mounted, setMounted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(duration);
+
+  useEffect(() => { 
+    setMounted(true); 
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const timer = setTimeout(() => {
+      onClose();
+    }, duration);
+    
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => Math.max(0, prev - 10));
+    }, 10);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+  }, [mounted, duration, onClose]);
+
+  if (!mounted) return null;
+
+  const progress = (timeLeft / duration) * 100;
+
+  return createPortal(
+    <div className={styles.toastContainer}>
+      <div 
+        className={`${styles.toast} ${styles[variant]} gm-animate`}
+      >
+        <div className={styles.iconWrapper}>{Icons[variant]}</div>
+        <div className={styles.toastContent}>
+          <div className={styles.toastTitle}>{message}</div>
+        </div>
+        <button className={styles.closeButton} onClick={onClose} aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+        <div 
+          className={styles.progressBar} 
+          style={{ 
+            transform: `scaleX(${progress / 100})`, 
+            transition: 'transform 0.1s linear' 
+          }} 
+        />
+      </div>
+    </div>,
+    document.body
+  );
+};
+
+

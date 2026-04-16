@@ -1,93 +1,93 @@
+/* --- GEMINI UI Standard Table System --- */
+
 .tableContainer {
   display: flex;
   flex-direction: column;
-  gap: var(--gm-spacing-lg);
+  gap: var(--gm-spacing-md);
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
 }
 
-.tableHeader {
+/* 상단 액션 바 (검색, 필터 등) - 모바일 대응 */
+.tableTopActions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 var(--gm-spacing-xs);
+  gap: var(--gm-spacing-md);
+  padding: var(--gm-spacing-sm) 0;
+}
+
+/* 벌크 액션 바 - 모바일 대응 */
+.bulkActionBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--gm-spacing-md) var(--gm-spacing-lg);
+  background: black;
+  color: white;
+  border-radius: 8px;
+  margin-bottom: var(--gm-spacing-sm);
+  z-index: 50;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .tableWrapper {
   width: 100%;
   background: white;
   border-top: 5px solid black;
-  overflow: hidden;
-  transition: var(--gm-transition);
-  border: 1px solid var(--gm-gray-100);
-}
-
-.tableWrapper:hover {
-  border-color: var(--gm-gray-200);
+  border-left: 1px solid var(--gm-gray-100);
+  border-right: 1px solid var(--gm-gray-100);
+  border-bottom: 1px solid var(--gm-gray-100);
+  position: relative;
+  overflow: hidden; /* 가림막 등을 위해 wrapper는 hidden */
 }
 
 .tableScroll {
   overflow-x: auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  width: 100%;
   position: relative;
 }
 
-.stickyHeader thead th {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: inset 0 -2px 0 var(--gm-gray-100);
-}
-
-.stickyColumn tbody td:first-child,
-.stickyColumn thead th:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 5;
-  box-shadow: inset -2px 0 0 var(--gm-gray-100);
-}
-
-.stickyColumn thead th:first-child {
-  z-index: 15;
-}
-
-.stickyHeader.stickyColumn thead th:first-child {
-  z-index: 20;
-  top: 0;
-  left: 0;
-}
-
+/* 테이블 레이아웃: 가로 확장을 위해 max-content 유지 */
 .table {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   text-align: left;
-  min-width: 900px; /* Ensure space for columns on mobile */
 }
 
+/* 헤더 공통 스타일 */
 .table th {
-  padding: var(--gm-spacing-lg) var(--gm-spacing-lg);
+  padding: var(--gm-spacing-lg);
   font-size: 11px;
   font-weight: 900;
   text-transform: uppercase;
   color: black;
-  letter-spacing: 0.25em;
-  border-bottom: 2px solid var(--gm-gray-100);
+  letter-spacing: 0.2em;
   background: var(--gm-gray-50);
+  border-bottom: 2px solid var(--gm-gray-100);
   white-space: nowrap;
+  transition: background 0.2s;
 }
 
+/* 본문 셀 공통 스타일 */
 .table td {
-  padding: var(--gm-spacing-lg) var(--gm-spacing-lg);
+  padding: var(--gm-spacing-lg);
   font-size: 15px;
   border-bottom: 1px solid var(--gm-gray-50);
   font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   color: var(--gm-gray-500);
   vertical-align: middle;
   background: white;
+  white-space: nowrap;
 }
 
 .table tr:last-child td {
@@ -99,32 +99,61 @@
   color: black;
 }
 
+/* --- STICKY LOGIC --- */
+.stickyHeader thead th {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  box-shadow: inset 0 -2px 0 var(--gm-gray-100);
+}
+
+.stickyColumn .table th:first-child,
+.stickyColumn .table td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: white;
+  box-shadow: inset -2px 0 0 var(--gm-gray-100);
+}
+
+.stickyColumn .table th:first-child {
+  background: var(--gm-gray-50);
+  z-index: 31;
+}
+
+.hasStickyHeader.stickyColumn .table thead th:first-child {
+  z-index: 40;
+  top: 0;
+  left: 0;
+  box-shadow: inset -2px -2px 0 var(--gm-gray-100);
+}
+
 .table tr:hover td:first-child {
-  box-shadow: inset 4px 0 0 black;
+  background: #fafafa;
 }
 
-/* Row Content Helpers (Page-specific overrides) */
-:global(.gm-user-name) {
-  font-weight: 800;
-  color: black;
-  font-size: 17px;
-  letter-spacing: -0.02em;
+/* --- DENSITY --- */
+.compact .table td, .compact .table th { padding: var(--gm-spacing-sm) var(--gm-spacing-lg); font-size: 13px; }
+.standard .table td, .standard .table th { padding: var(--gm-spacing-lg); font-size: 15px; }
+.comfortable .table td, .comfortable .table th { padding: var(--gm-spacing-xl) var(--gm-spacing-lg); font-size: 16px; }
+
+/* --- SORTING UI --- */
+.sortableHeader { cursor: pointer; }
+.sortableHeader:hover { background: var(--gm-gray-100); }
+
+.sortIconWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  opacity: 0.25;
+  margin-left: 8px;
 }
 
-:global(.gm-font-mono) {
-  font-family: 'Geist Mono', monospace;
-  font-size: 13px;
-  letter-spacing: -0.03em;
-  color: var(--gm-gray-400);
-}
+.sortIconWrapper.active { opacity: 1; }
+.sortArrow { color: var(--gm-gray-400); }
+.sortArrow.highlight { color: black; stroke-width: 4; }
 
-:global(.gm-font-bold-lg) {
-  font-weight: 900;
-  color: black;
-  font-size: 18px;
-  letter-spacing: -0.03em;
-}
-
+/* --- ETC --- */
 .label {
   font-size: 11px;
   font-weight: 900;
@@ -135,25 +164,84 @@
   border-left: 3px solid black;
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--gm-spacing-sm) var(--gm-spacing-md);
-  border-radius: 8px;
+.selectedBadge {
   font-size: 10px;
   font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  background: black;
-  color: white;
+  background: white;
+  color: black;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
+/* 스크롤바 커스텀 */
+.tableScroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.tableScroll::-webkit-scrollbar-button { display: none !important; width: 0 !important; height: 0 !important; }
+.tableScroll::-webkit-scrollbar-track { background: transparent; }
+.tableScroll::-webkit-scrollbar-thumb { background: var(--gm-gray-200); border-radius: 10px; border: 2px solid white; }
+
+/* --- MOBILE RESPONSIVE REVOLUTION --- */
 @media (max-width: 768px) {
-  .tableHeader { flex-direction: column; align-items: flex-start; gap: var(--gm-spacing-md); padding: 0 12px; }
-  .table th { padding: var(--gm-spacing-lg) var(--gm-spacing-md); font-size: 10px; letter-spacing: 0.15em; }
-  .table td { padding: var(--gm-spacing-lg) var(--gm-spacing-md); font-size: 14px; }
-  
-  :global(.gm-user-name) { font-size: 15px; }
-  :global(.gm-font-mono) { font-size: 12px; }
-  :global(.gm-font-bold-lg) { font-size: 16px; }
+  .tableTopActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 0;
+  }
+
+  /* 서치바와 버튼들이 부모 너비를 넘지 않도록 조정 */
+  .tableTopActions > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  /* 검색바 전용 스타일 보정 */
+  .tableTopActions :global(.gm-search-wrapper) {
+    width: 100% !important;
+  }
+
+  .bulkActionBar {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    padding: 20px;
+    border-radius: 0; /* 모바일에서는 끝까지 채움 */
+  }
+
+  .selectedBadge {
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .bulkButtons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bulkButtons button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table th, .table td {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  /* 모바일에서도 고정 기능이 잘 보이도록 첫 컬럼 너비 제한 및 텍스트 생략 */
+  .stickyColumn .table td:first-child,
+  .stickyColumn .table th:first-child {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* 테이블 최소 너비 보장하여 데이터 뭉개짐 방지 */
+  .table {
+    min-width: 600px; 
+  }
 }

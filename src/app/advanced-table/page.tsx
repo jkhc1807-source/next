@@ -1,234 +1,300 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { Navbar, Table, Badge, Button, Checkbox, Pagination, Avatar } from "@/components/ui";
+import React, { useState, useMemo } from "react";
+import { 
+  Navbar, 
+  Table, 
+  Badge, 
+  Button, 
+  Checkbox, 
+  Avatar, 
+  SearchBar, 
+  SegmentedControl,
+  Dropdown,
+  Toast
+} from "@/components/ui";
+import { TableDensity } from "@/components/ui/Table/Table";
+import styles from "./AdvancedTable.module.css";
 
-const Section = ({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) => (
-  <section className="gm-section">
-    <div className="gm-container">
-      <div className="gm-section-header">
-        <h2 className="gm-title-md">{title}</h2>
-        <p className="gm-section-desc">{desc}</p>
-      </div>
-      {children}
-    </div>
+const Section = ({ index, title, desc, children }: { index: string; title: string; desc: string; children: React.ReactNode }) => (
+  <section className="gm-animate">
+    <header className="gm-section-header">
+      <span className="gm-label">{index}. {title}</span>
+      <h2 className="gm-title-md">{desc}</h2>
+    </header>
+    {children}
   </section>
 );
 
 export default function AdvancedTableShowcase() {
+  // --- States ---
   const [vSelectedIds, setVSelectedIds] = useState<number[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [density, setDensity] = useState<TableDensity>("standard");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
-  const vData = Array.from({ length: 12 }, (_, i) => ({
+  const [sort1, setSort1] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+  const [sort2, setSort2] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+  const [sort3, setSort3] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+  const [sort4, setSort4] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+
+  // --- Data ---
+  const initialData = useMemo(() => Array.from({ length: 12 }, (_, i) => ({
     id: i + 1,
-    name: i % 2 === 0 ? "Byungheon Jung" : "Sarah Connor",
+    name: i % 2 === 0 ? "Byungheon Jung" : i % 3 === 0 ? "Sarah Connor" : "John Doe",
     email: `member${i+1}@gemini-ui.com`,
-    status: i % 2 === 0 ? "Active" : "Disabled"
-  }));
+    role: i % 4 === 0 ? "Admin" : "Member",
+    status: i % 3 === 0 ? "Active" : i % 3 === 1 ? "Disabled" : "Pending"
+  })), []);
 
-  // Data for Frozen Table
-  const frozenData = Array.from({ length: 20 }, (_, i) => ({
-    id: `NODE-${i + 1}`,
+  const filteredData = useMemo(() => {
+    let data = [...initialData];
+    if (searchQuery) {
+      data = data.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()) || item.email.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+    if (sort1) {
+      data.sort((a, b) => {
+        const aVal = a[sort1.key as keyof typeof a];
+        const bVal = b[sort1.key as keyof typeof b];
+        return sort1.direction === "asc" ? (aVal < bVal ? -1 : 1) : (aVal > bVal ? -1 : 1);
+      });
+    }
+    return data;
+  }, [initialData, searchQuery, sort1]);
+
+  const initialFrozenData = useMemo(() => Array.from({ length: 20 }, (_, i) => ({
+    id: `NODE-00${String(i + 1).padStart(2, '0')}`,
     name: `Cluster Node ${i + 1}`,
-    region: i % 3 === 0 ? "Asia-East" : i % 3 === 1 ? "US-West" : "EU-Central",
     status: i % 4 === 0 ? "Active" : "Idle",
     cpu: `${Math.floor(Math.random() * 100)}%`,
     memory: `${Math.floor(Math.random() * 100)}%`,
-    disk: `${Math.floor(Math.random() * 100)}%`,
+    disk: "SSD 1TB",
+    region: i % 3 === 0 ? "Asia-East" : i % 3 === 1 ? "US-West" : "EU-Central",
     uptime: `${Math.floor(Math.random() * 1000)}h`,
-    traffic: `${(Math.random() * 10).toFixed(2)} GB/s`,
+    traffic: `${(Math.random() * 10).toFixed(1)} GB/s`,
     latency: `${Math.floor(Math.random() * 50)}ms`,
-    backup: i % 5 === 0 ? "Completed" : "Pending",
-  }));
+    security: "v2.1.0",
+    owner: i % 2 === 0 ? "DevOps" : "Infra",
+    cluster: "Alpha-X",
+    zone: "Zone-A",
+    deployment: "2026.04.16",
+    compliance: "Certified",
+    load: "Balanced"
+  })), []);
+
+  const sortData = (data: any[], config: { key: string; direction: "asc" | "desc" } | null) => {
+    if (!config) return data;
+    return [...data].sort((a, b) => {
+      const aVal = a[config.key];
+      const bVal = b[config.key];
+      return config.direction === "asc" ? (aVal < bVal ? -1 : 1) : (aVal > bVal ? -1 : 1);
+    });
+  };
+
+  const sortedFrozen2 = useMemo(() => sortData(initialFrozenData.slice(0, 8), sort2), [initialFrozenData, sort2]);
+  const sortedFrozen3 = useMemo(() => sortData(initialFrozenData, sort3), [initialFrozenData, sort3]);
+  const sortedFrozen4 = useMemo(() => sortData(initialFrozenData.slice(0, 3), sort4), [initialFrozenData, sort4]);
+
+  const handleSortChange = (setter: any, current: any, key: string) => {
+    let direction: "asc" | "desc" = "asc";
+    if (current && current.key === key && current.direction === "asc") direction = "desc";
+    setter({ key, direction });
+  };
+
+  const simulateLoading = () => {
+    setIsLoading(true);
+    setShowToast(true);
+    setTimeout(() => setIsLoading(false), 1000);
+  };
+
+  const toggleSelection = (id: number) => {
+    setVSelectedIds(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+  };
 
   return (
     <div className="gm-root">
       <Navbar />
 
-      <div className="gm-hero">
-        <div className="gm-container">
-          <Badge variant="info">Table Pro</Badge>
-          <h1 className="gm-hero-title">ADVANCED <br/> <span style={{ opacity: 0.1 }}>TABLES.</span></h1>
-          <p className="gm-hero-desc">
-            복잡한 데이터 구조를 위한 Rowspan/Colspan 지원 및 <br/>
-            상하좌우 고정(Frozen) 그리드 시스템입니다.
-          </p>
-        </div>
-      </div>
+      <main className="gm-container gm-mt-24 gm-mb-100">
+        
+        {/* --- Hero Section --- */}
+        <section className="gm-hero gm-animate gm-mb-100" style={{ textAlign: 'center' }}>
+          <div className="gm-flex-col-gap-24" style={{ alignItems: 'center' }}>
+            <Badge variant="primary" size="lg">Ultimate Data Grid</Badge>
+            <h1 className="gm-hero-title">Master <br />Specification</h1>
+            <p className="gm-hero-desc">정렬, 검색, 고정 레이아웃이 통합된 엔터프라이즈급 데이터 시스템입니다.</p>
+          </div>
+        </section>
 
-      <Section title="Rowspan & Colspan" desc="시맨틱한 셀 병합을 통해 복잡한 계층 구조의 데이터를 표현합니다.">
-        <Table 
-          simpleHeaders={["Category", "Feature", "Details", "Status"]}
-        >
-          <tr>
-            <td rowSpan={3} className="gm-font-bold-lg" style={{ verticalAlign: 'top', background: 'var(--gm-gray-50)' }}>Infrastructure</td>
-            <td>Compute Engine</td>
-            <td>High-performance virtual machines</td>
-            <td><Badge variant="success">Operational</Badge></td>
-          </tr>
-          <tr>
-            <td>Cloud Storage</td>
-            <td>Scalable object storage system</td>
-            <td><Badge variant="success">Operational</Badge></td>
-          </tr>
-          <tr>
-            <td>Edge Network</td>
-            <td>Global content delivery network</td>
-            <td><Badge variant="warning">Maintenance</Badge></td>
-          </tr>
-          <tr>
-            <td rowSpan={2} className="gm-font-bold-lg" style={{ verticalAlign: 'top', background: 'var(--gm-gray-50)' }}>Security</td>
-            <td>Identity Management</td>
-            <td>OAuth 2.0 & SAML integration</td>
-            <td><Badge variant="success">Operational</Badge></td>
-          </tr>
-          <tr>
-            <td>Threat Detection</td>
-            <td>AI-powered security monitoring</td>
-            <td><Badge variant="info">Scanning</Badge></td>
-          </tr>
-          <tr>
-            <td colSpan={3} style={{ textAlign: 'right', fontWeight: 800 }}>System Health Score</td>
-            <td className="gm-font-bold-lg">98/100</td>
-          </tr>
-        </Table>
-      </Section>
+        <div className="gm-flex-col-gap-140">
+          {/* 01. Cell Merging */}
+          <Section index="01" title="Merging" desc="Hierarchical Data Structure">
+            <Table simpleHeaders={["Group", "Module", "Details", "Status", "Last Scan"]} density={density}>
+              <tr>
+                <td rowSpan={2} className={`${styles.cellLabel} ${styles.idCell}`} style={{ background: 'var(--gm-gray-50)' }}>Core</td>
+                <td>Database Node</td>
+                <td>PostgreSQL Cluster HA</td>
+                <td><Badge variant="success">OK</Badge></td>
+                <td className="gm-font-mono">2026.04.16</td>
+              </tr>
+              <tr>
+                <td>Auth Service</td>
+                <td>OAuth 2.0 Integration</td>
+                <td><Badge variant="success">OK</Badge></td>
+                <td className="gm-font-mono">2026.04.16</td>
+              </tr>
+            </Table>
+          </Section>
 
-      <Section title="Frozen Header (Vertical)" desc="데이터가 많아도 헤더를 상단에 고정하여 맥락을 잃지 않습니다.">
-        <Table 
-          simpleHeaders={["Node ID", "Status", "CPU", "Memory", "Traffic", "Latency"]}
-          maxHeight="400px"
-          stickyHeader
-        >
-          {frozenData.map(d => (
-            <tr key={d.id}>
-              <td className="gm-font-mono">{d.id}</td>
-              <td><Badge variant={d.status === "Active" ? "info" : "neutral"}>{d.status}</Badge></td>
-              <td className="gm-font-bold-lg">{d.cpu}</td>
-              <td>{d.memory}</td>
-              <td>{d.traffic}</td>
-              <td className="gm-font-mono">{d.latency}</td>
-            </tr>
-          ))}
-        </Table>
-      </Section>
+          {/* 02. Enterprise Grid */}
+          <Section index="02" title="Interaction" desc="Real-time Data Control">
+            <Table
+              simpleHeaders={[
+                { key: "name", label: "Name", sortable: true },
+                { key: "email", label: "Email", sortable: true },
+                { key: "role", label: "Role", sortable: false },
+                { key: "status", label: "Status", sortable: true },
+                { key: "actions", label: "", sortable: false }
+              ]}
+              totalCount={filteredData.length}
+              selectedCount={vSelectedIds.length}
+              isAllSelected={vSelectedIds.length > 0 && vSelectedIds.length === filteredData.length}
+              onSelectAll={(checked) => setVSelectedIds(checked ? filteredData.map(d => d.id) : [])}
+              density={density}
+              isLoading={isLoading}
+              sortConfig={sort1}
+              onSort={(key) => handleSortChange(setSort1, sort1, key)}
+              topActions={
+                <div className={styles.topActions}>
+                  <div className={styles.searchArea}><SearchBar placeholder="Search members..." value={searchQuery} onChange={setSearchQuery} onClear={() => setSearchQuery("")} /></div>
+                  <div className={styles.controlArea}>
+                    <Button variant="outline" size="sm" onClick={simulateLoading}>Refresh</Button>
+                    <SegmentedControl 
+                      options={[{ label: "C", value: "compact" }, { label: "S", value: "standard" }, { label: "B", value: "comfortable" }]}
+                      value={density} onChange={(val) => setDensity(val as TableDensity)}
+                    />
+                  </div>
+                </div>
+              }
+              bulkActions={<Button variant="primary" size="sm" onClick={() => setShowToast(true)}>Activate Items</Button>}
+            >
+              {filteredData.map(u => (
+                <tr key={u.id}>
+                  <td style={{ width: '60px', textAlign: 'center' }}><Checkbox checked={vSelectedIds.includes(u.id)} onChange={() => toggleSelection(u.id)} /></td>
+                  <td><div className="gm-avatar-row"><Avatar initials={u.name.charAt(0)} size="sm" /><span className="gm-user-name">{u.name}</span></div></td>
+                  <td className="gm-font-mono">{u.email}</td>
+                  <td><Badge variant="neutral">{u.role}</Badge></td>
+                  <td><Badge variant={u.status === "Active" ? "info" : "warning"}>{u.status}</Badge></td>
+                  <td className={styles.actionCell}>
+                    <Dropdown trigger={<Button variant="ghost" size="sm">•••</Button>} items={[{ label: "Edit", onClick: () => setShowToast(true) }, { label: "Details", onClick: () => setShowToast(true) }]} />
+                  </td>
+                </tr>
+              ))}
+            </Table>
+          </Section>
 
-      <Section title="Frozen Column (Horizontal)" desc="가로로 긴 테이블에서 주요 식별자(ID)를 왼쪽에 고정합니다.">
-        <Table 
-          simpleHeaders={["Node Identifier", "Node Name", "Region", "Status", "Uptime", "Backup Status", "Disk Usage", "Network Load", "Security Patch"]}
-          stickyColumn
-        >
-          {frozenData.slice(0, 5).map(d => (
-            <tr key={d.id}>
-              <td className="gm-font-bold-lg" style={{ background: 'white' }}>{d.id}</td>
-              <td>{d.name}</td>
-              <td>{d.region}</td>
-              <td><Badge variant="info">{d.status}</Badge></td>
-              <td className="gm-font-mono">{d.uptime}</td>
-              <td><Badge variant="outline-success">{d.backup}</Badge></td>
-              <td>{d.disk}</td>
-              <td>{d.traffic}</td>
-              <td>v1.4.2</td>
-            </tr>
-          ))}
-        </Table>
-      </Section>
+          {/* 03. Frozen Grid Layouts */}
+          <Section index="03" title="Layouts" desc="High-Volume Data Management">
+            <div className={styles.container}>
+              <div>
+                <span className="gm-label" style={{ marginBottom: '16px', display: 'block' }}>Frozen Header (Vertical Only)</span>
+                <Table 
+                  simpleHeaders={[
+                    {key:"id", label:"Identifier", sortable:true}, 
+                    {key:"status", label:"Status", sortable:true}, 
+                    {key:"cpu", label:"CPU Load", sortable:true}, 
+                    {key:"memory", label:"RAM Usage", sortable:true},
+                    {key:"owner", label:"Owner", sortable:true}
+                  ]} 
+                  maxHeight="300px" stickyHeader density={density}
+                  sortConfig={sort3} onSort={(key) => handleSortChange(setSort3, sort3, key)}
+                >
+                  {sortedFrozen3.map(d => (
+                    <tr key={d.id}>
+                      <td className="gm-font-mono">{d.id}</td>
+                      <td><Badge variant={d.status === "Active" ? "success" : "neutral"}>{d.status}</Badge></td>
+                      <td className={styles.cellLabel}>{d.cpu}</td>
+                      <td>{d.memory}</td>
+                      <td>{d.owner}</td>
+                    </tr>
+                  ))}
+                </Table>
+              </div>
 
-      <Section title="Both Frozen (Bidirectional)" desc="상하좌우 모든 방향으로 스크롤하면서도 헤더와 첫 열을 고정합니다.">
-        <Table 
-          simpleHeaders={["Node Identifier", "Node Name", "Region", "Status", "CPU", "Memory", "Disk", "Uptime", "Traffic", "Latency", "Backup"]}
-          maxHeight="450px"
-          stickyHeader
-          stickyColumn
-        >
-          {frozenData.map(d => (
-            <tr key={d.id}>
-              <td className="gm-font-bold-lg" style={{ background: 'white' }}>{d.id}</td>
-              <td style={{ minWidth: '200px' }}>{d.name}</td>
-              <td style={{ minWidth: '150px' }}>{d.region}</td>
-              <td><Badge variant={d.status === "Active" ? "info" : "neutral"}>{d.status}</Badge></td>
-              <td className="gm-font-bold-lg">{d.cpu}</td>
-              <td>{d.memory}</td>
-              <td>{d.disk}</td>
-              <td>{d.uptime}</td>
-              <td>{d.traffic}</td>
-              <td>{d.latency}</td>
-              <td><Badge variant="outline-info">{d.backup}</Badge></td>
-            </tr>
-          ))}
-        </Table>
-      </Section>
+              <div>
+                <span className="gm-label" style={{ marginBottom: '16px', display: 'block' }}>Bidirectional Frozen (16 Columns)</span>
+                <Table 
+                  simpleHeaders={[
+                    {key:"id", label:"Node ID", sortable:true}, "Status", "Name", "CPU", "RAM", "Region", "Uptime", "Owner", "Cluster", "Zone", "Version", "Stable", "Backup", "Network", "Latency", "Traffic"
+                  ]} 
+                  maxHeight="350px" stickyHeader stickyColumn density={density}
+                  sortConfig={sort2} onSort={(key) => handleSortChange(setSort2, sort2, key)}
+                >
+                  {sortedFrozen2.map(d => (
+                    <tr key={d.id}>
+                      <td className={`${styles.cellLabel} ${styles.idCell}`}>{d.id}</td>
+                      <td><Badge variant="info">{d.status}</Badge></td>
+                      <td>{d.name}</td>
+                      <td className={styles.cellLabel}>{d.cpu}</td>
+                      <td>{d.memory}</td>
+                      <td>{d.region}</td>
+                      <td>{d.uptime}</td>
+                      <td>{d.owner}</td>
+                      <td>{d.cluster}</td>
+                      <td>{d.zone}</td>
+                      <td className="gm-font-mono">{d.security}</td>
+                      <td>Yes</td>
+                      <td><Badge variant="outline-success" size="sm">Done</Badge></td>
+                      <td>Gigabit</td>
+                      <td>{d.latency}</td>
+                      <td>{d.traffic}</td>
+                    </tr>
+                  ))}
+                </Table>
+              </div>
 
-      <Section title="Data Grids" desc="상하 및 좌우 스크롤링을 모두 지원하는 강력한 그리드 시스템입니다.">
-        <div className="gm-flex-col-gap-80">
-          <div className="gm-flex-col-gap-32">
-            <div className="gm-table-header">
-              <h3 className="gm-title-md" style={{ fontSize: '28px' }}>1. Vertical Scrolling View</h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <span className="gm-label-simple">{vData.length} TOTAL ITEMS</span>
+              <div>
+                <span className="gm-label" style={{ marginBottom: '16px', display: 'block' }}>Frozen Column Analytics (10 Columns)</span>
+                <Table 
+                  simpleHeaders={[
+                    {key:"id", label:"Fixed ID", sortable:true}, "Region", "Traffic", "Latency", "Uptime", "Cluster", "Node Type", "Current Load", "Team", "Env"
+                  ]} 
+                  stickyColumn density={density}
+                  sortConfig={sort4} onSort={(key) => handleSortChange(setSort4, sort4, key)}
+                >
+                  {sortedFrozen4.map(d => (
+                    <tr key={d.id}>
+                      <td className={`${styles.cellLabel} ${styles.idCell}`}>{d.id}</td>
+                      <td>{d.region}</td>
+                      <td className={styles.cellLabel}>{d.traffic}</td>
+                      <td>{d.latency}</td>
+                      <td>{d.uptime}</td>
+                      <td>{d.cluster}</td>
+                      <td>Worker</td>
+                      <td>Balanced</td>
+                      <td>{d.owner}</td>
+                      <td>Prod</td>
+                    </tr>
+                  ))}
+                </Table>
               </div>
             </div>
-            <Table
-              simpleHeaders={["Member Name", "Identifier", "Status"]}
-              totalCount={vData.length}
-              selectedCount={vSelectedIds.length}
-              isAllSelected={vSelectedIds.length === vData.length}
-              onSelectAll={(checked: boolean) => setVSelectedIds(checked ? vData.map(d => d.id) : [])}
-              maxHeight="400px"
-            >
-              {vData.map(u => (
-                <tr key={u.id}>
-                  <td>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Checkbox checked={vSelectedIds.includes(u.id)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVSelectedIds(e.target.checked ? [...vSelectedIds, u.id] : vSelectedIds.filter(id => id !== u.id))} />
-                    </div>
-                  </td>
-                  <td style={{ minWidth: '200px', whiteSpace: 'nowrap' }}>
-                    <div className="gm-avatar-row">
-                      <Avatar initials={u.name ? u.name.charAt(0) : "U"} size="sm" />
-                      <span className="gm-user-name">{u.name}</span>
-                    </div>
-                  </td>
-                  <td className="gm-font-mono">{u.email}</td>
-                  <td><Badge variant={u.status === "Active" ? "info" : "success"}>{u.status}</Badge></td>
-                </tr>
-              ))}
-            </Table>
-          </div>
-
-          <div className="gm-flex-col-gap-32">
-            <h3 className="gm-label">2. Horizontal Analytics View</h3>
-            <Table simpleHeaders={["ID", "Project Name", "Cluster", "Owner", "Traffic", "Uptime", "Latency", "Status", "Deployment"]} totalCount={5}>
-              {[1, 2, 3, 4, 5].map(i => (
-                <tr key={i}>
-                  <td className="gm-font-mono" style={{ color: 'var(--gm-gray-400)' }}>#00{i}</td>
-                  <td className="gm-font-bold-lg">Enterprise Node {i}</td>
-                  <td>Cluster-Alpha</td>
-                  <td>Byungheon Jung</td>
-                  <td className="gm-font-bold-lg" style={{ fontSize: '15px' }}>2.4 TB</td>
-                  <td>99.99%</td>
-                  <td className="gm-font-mono">12ms</td>
-                  <td><Badge variant="info">Online</Badge></td>
-                  <td className="gm-font-mono">2026.04.14</td>
-                </tr>
-              ))}
-            </Table>
-            <div className="gm-pagination-container">
-              <Pagination currentPage={currentPage} totalPages={10} onPageChange={(p: number) => setCurrentPage(p)} />
-            </div>
-          </div>
+          </Section>
         </div>
-      </Section>
+      </main>
 
-      <footer className="gm-footer">
+      <footer className="gm-footer gm-mt-100">
         <div className="gm-container gm-footer-inner">
-          <div>
-            <span className="gm-footer-logo-text">GEMINI UI ADVANCED</span>
-            <p className="gm-section-desc gm-mt-16">Pure CSS Grid & Table Systems</p>
+          <span className="gm-label">GEMINI MASTER UI SYSTEM © 2026</span>
+          <div className="gm-flex-wrap" style={{ gap: '32px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--gm-gray-400)', cursor: 'pointer' }}>DOCUMENTATION</span>
+            <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--gm-gray-400)', cursor: 'pointer' }}>GITHUB</span>
           </div>
         </div>
       </footer>
+
+      {showToast && <Toast message={isLoading ? "Updating Data..." : "Action Successful"} variant={isLoading ? "info" : "success"} onClose={() => setShowToast(false)} />}
     </div>
   );
 }

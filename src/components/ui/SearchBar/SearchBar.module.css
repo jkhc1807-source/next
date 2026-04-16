@@ -16,6 +16,7 @@
   border-color: black;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
+  z-index: 10; /* 추가: 부모 요소 내에서 최상단으로 올림 */
 }
 
 .searchIcon {

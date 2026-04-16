@@ -1,0 +1,64 @@
+/* --- Advanced Table Page Specific Styles --- */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 80px; /* 섹션 내의 아이템 간격 */
+}
+
+.topActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.searchArea {
+  flex: 1 1 400px;
+  min-width: 0;
+}
+
+.controlArea {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.cellLabel {
+  font-weight: 900;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  color: black;
+}
+
+.idCell {
+  min-width: 180px;
+}
+
+.nameCell {
+  min-width: 250px;
+}
+
+.actionCell {
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .topActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .searchArea {
+    width: 100%;
+    flex: none;
+  }
+  
+  .controlArea {
+    justify-content: space-between;
+    width: 100%;
+  }
+}
