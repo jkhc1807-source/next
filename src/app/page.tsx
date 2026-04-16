@@ -242,17 +242,38 @@ export default function Home() {
                 <span className="gm-label">Composite Email (Dynamic Domain)</span>
 
                 <div className="gm-flex-col-gap-16">
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                    <div style={{ flex: 1 }}>
-                      <Input placeholder="이메일 아이디" value={emailId} onChange={(e) => setEmailId(e.target.value)} onClear={() => setEmailId("")} />
+                  {/* 바닐라 CSS로 제어할 이메일 폼 그룹 */}
+                  <div className="gm-email-form-group">
+                    
+                    {/* 이메일 아이디 입력부 */}
+                    <div className="gm-email-id-part">
+                      <Input 
+                        placeholder="이메일 아이디" 
+                        value={emailId} 
+                        onChange={(e) => setEmailId(e.target.value)} 
+                        onClear={() => setEmailId("")} 
+                      />
                     </div>
-                    <div style={{ paddingTop: '20px', fontWeight: 900, fontSize: '20px', color: 'var(--gm-gray-300)' }}>@</div>
-                    <div style={{ flex: 1 }}>
-                      {isDirectInput ? (
-                        <Input placeholder="도메인 직접 입력" value={directDomain} onChange={(e) => setDirectDomain(e.target.value)} onClear={() => { setIsDirectInput(false); setDirectDomain(""); }} />
-                      ) : (
-                        <Select options={domainOptions} value={emailDomain} onChange={handleDomainChange} />
-                      )}
+                    
+                    {/* @ + 도메인 선택부 (항상 한 줄 유지) */}
+                    <div className="gm-email-domain-group">
+                      <div className="gm-email-at-symbol">@</div>
+                      <div className="gm-email-domain-input">
+                        {isDirectInput ? (
+                          <Input 
+                            placeholder="도메인 직접 입력" 
+                            value={directDomain} 
+                            onChange={(e) => setDirectDomain(e.target.value)} 
+                            onClear={() => { setIsDirectInput(false); setDirectDomain(""); }} 
+                          />
+                        ) : (
+                          <Select 
+                            options={domainOptions} 
+                            value={emailDomain} 
+                            onChange={handleDomainChange} 
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

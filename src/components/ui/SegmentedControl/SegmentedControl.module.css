@@ -1,0 +1,91 @@
+.container {
+  display: inline-flex;
+  background: var(--gm-gray-200);
+  border-radius: 99px;
+  padding: 6px;
+  position: relative;
+  gap: 0;
+  border: 1px solid var(--gm-gray-300);
+  transition: var(--gm-transition);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+.fullWidth .segment {
+  flex: 1;
+}
+
+.activeIndicator {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  background: white;
+  border-radius: 99px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+
+.segment {
+  position: relative;
+  z-index: 1;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 99px;
+  font-weight: 800;
+  color: var(--gm-gray-500);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+  background: transparent;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.segment.active {
+  color: black;
+}
+
+.segment:hover:not(.active) {
+  color: black;
+}
+
+/* Sizes */
+.sm { height: 44px; }
+.sm .segment { font-size: 13px; padding: 0 20px; }
+
+.md { height: 56px; }
+.md .segment { font-size: 14px; padding: 0 32px; }
+
+.lg { height: 68px; }
+.lg .segment { font-size: 16px; padding: 0 40px; }
+
+@media (max-width: 768px) {
+  .container:not(.fullWidth) {
+    display: flex; /* Force flex to allow children to grow */
+    width: 100%;
+  }
+  
+  .container:not(.fullWidth) .segment {
+    flex: 1; /* Make items take equal space if possible */
+    min-width: fit-content; /* Don't shrink smaller than text */
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}

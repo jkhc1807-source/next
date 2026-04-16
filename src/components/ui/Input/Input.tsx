@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Input.module.css";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -13,16 +13,24 @@ export const Input = ({ label, error, onClear, rightIcon, className = "", size =
   const [showPassword, setShowPassword] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || "");
   
+  // 외부 value와 내부 상태 동기화 (네트워크 지연 및 제어 컴포넌트 대응) [확실]
+  useEffect(() => {
+    if (value !== undefined) {
+      setInternalValue(value as string);
+    }
+  }, [value]);
+
   const isControlled = value !== undefined;
   const currentValue = isControlled ? value : internalValue;
   
   const sizeClass = size === "sm" ? styles.sm : size === "lg" ? styles.lg : styles.md;
   const isDisabled = props.disabled;
   const isPassword = type === "password";
+  
+  // 값이 있는지 정밀하게 체크
   const hasValue = currentValue !== undefined && currentValue !== null && String(currentValue).length > 0;
   
-  // onClear가 있거나 onChange가 있거나, 비제어 상태일 때도 지우기 버튼 노출 가능 [확실]
-  // DatePicker처럼 readOnly이면서 onClear를 사용하는 경우를 위해 조건 수정
+  // 지우기 버튼 노출 조건 (readOnly여도 onClear가 명시되면 허용)
   const canClear = (!props.readOnly || onClear) && !isDisabled;
   const showClear = hasValue && canClear;
   
@@ -30,16 +38,20 @@ export const Input = ({ label, error, onClear, rightIcon, className = "", size =
   const hasRightIcon = !!rightIcon && !isPassword;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
     if (!isControlled) {
-      setInternalValue(e.target.value);
+      setInternalValue(newValue);
     }
     if (onChange) {
       onChange(e);
     }
   };
 
-  const handleClear = (e: React.MouseEvent) => {
-    e.preventDefault();
+  // onMouseDown을 사용하여 blur 이벤트보다 먼저 실행되도록 보장 [확실]
+  const handleClear = (e: React.MouseEvent | React.PointerEvent) => {
+    e.preventDefault(); // 인풋 포커스 유지를 위해 필요
+    e.stopPropagation();
+    
     if (!isControlled) {
       setInternalValue("");
     }
@@ -49,6 +61,7 @@ export const Input = ({ label, error, onClear, rightIcon, className = "", size =
     }
     
     if (onChange) {
+      // 가상 이벤트를 통해 부모 컴포넌트에 빈 값 전달
       const event = { 
         target: { ...props, value: "" },
         currentTarget: { ...props, value: "" }
@@ -67,13 +80,19 @@ export const Input = ({ label, error, onClear, rightIcon, className = "", size =
           <input
             {...props}
             type={inputType}
-            value={isControlled ? value : internalValue}
+            value={currentValue}
             onChange={handleInputChange}
             className={`${styles.input} ${error ? styles.error : ""}`}
           />
           <div className={styles.inputActions}>
             {showClear && (
-              <button type="button" onClick={handleClear} className={styles.inputActionBtn} aria-label="Clear input">
+              <button 
+                type="button" 
+                onMouseDown={handleClear} 
+                onPointerDown={handleClear}
+                className={styles.inputActionBtn} 
+                aria-label="Clear input"
+              >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>

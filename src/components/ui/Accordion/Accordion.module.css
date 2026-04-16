@@ -94,17 +94,23 @@
 .accordionBody {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   opacity: 0;
+  visibility: hidden;
 }
 
 .accordionBody.open {
   grid-template-rows: 1fr;
   opacity: 1;
+  visibility: visible;
+}
+
+.accordionInner {
+  overflow: hidden;
+  min-height: 0;
 }
 
 .accordionContent {
-  overflow: hidden;
   padding: var(--gm-spacing-lg) 40px 40px;
   font-size: 16px;
   color: var(--gm-gray-500);

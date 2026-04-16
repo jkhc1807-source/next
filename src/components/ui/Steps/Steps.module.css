@@ -1,0 +1,145 @@
+.stepsContainer {
+  display: flex;
+  width: 100%;
+  gap: var(--gm-spacing-md);
+}
+
+.stepItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gm-spacing-sm);
+  position: relative;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.stepIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--gm-gray-200);
+  background: white;
+  color: var(--gm-gray-400);
+  font-weight: 800;
+  transition: var(--gm-transition);
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.stepLine {
+  flex: 1;
+  height: 2px;
+  background: var(--gm-gray-100);
+  margin-left: var(--gm-spacing-sm);
+  transition: var(--gm-transition);
+}
+
+.stepContent {
+  padding-right: var(--gm-spacing-md);
+}
+
+.stepTitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gm-gray-400);
+  transition: var(--gm-transition);
+}
+
+.stepDescription {
+  font-size: 12px;
+  color: var(--gm-gray-300);
+  margin-top: 4px;
+}
+
+/* Active State */
+.active .stepIndicator {
+  border-color: black;
+  color: black;
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
+}
+.active .stepTitle {
+  color: black;
+}
+
+/* Completed State */
+.completed .stepIndicator {
+  background: black;
+  border-color: black;
+  color: white;
+}
+.completed .stepLine {
+  background: black;
+}
+.completed .stepTitle {
+  color: black;
+}
+
+/* Sizes */
+.sm .stepIndicator {
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+}
+.sm .stepTitle { font-size: 13px; }
+
+.md .stepIndicator {
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+}
+
+.lg .stepIndicator {
+  width: 48px;
+  height: 48px;
+  font-size: 16px;
+}
+.lg .stepTitle { font-size: 16px; }
+
+/* Responsive: Vertical Layout on Mobile */
+@media (max-width: 768px) {
+  .stepsContainer {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .stepItem {
+    flex-direction: row;
+    gap: var(--gm-spacing-md);
+    min-height: 80px;
+  }
+
+  .stepHeader {
+    width: 48px; /* Match LG size or maintain fixed width for alignment */
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+  }
+
+  /* Specific size overrides for vertical alignment */
+  .sm .stepHeader { width: 32px; }
+  .md .stepHeader { width: 40px; }
+  .lg .stepHeader { width: 48px; }
+
+  .stepLine {
+    width: 2px;
+    height: 100%;
+    margin-left: 0;
+    margin-top: var(--gm-spacing-sm);
+    margin-bottom: var(--gm-spacing-sm);
+    flex: 1;
+  }
+
+  .stepContent {
+    padding-top: 4px;
+    padding-right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}

@@ -144,9 +144,59 @@ button { cursor: pointer; border: none; background: none; outline: none; font-fa
   scrollbar-color: var(--gm-gray-200) transparent;
 }
 
+/* 이메일 폼 바닐라 CSS 레이아웃 */
+.gm-email-form-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.gm-email-id-part {
+  flex: 1;
+}
+
+.gm-email-domain-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.gm-email-at-symbol {
+  font-weight: 900;
+  font-size: 20px;
+  color: var(--gm-gray-300);
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.gm-email-domain-input {
+  flex: 1;
+  min-width: 0;
+}
+
 @media (max-width: 768px) {
   .gm-container { padding: 0 20px; }
   .gm-hero-title { font-size: 42px; }
   .gm-title-md { font-size: 28px; }
   .gm-footer-inner { flex-direction: column; gap: 32px; text-align: center; }
+
+  /* 이메일 폼 모바일 대응 (바닐라 CSS) */
+  .gm-email-form-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .gm-email-id-part {
+    width: 100%;
+  }
+
+  .gm-email-domain-group {
+    width: 100%;
+    margin-top: 4px;
+  }
 }
