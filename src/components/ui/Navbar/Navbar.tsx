@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "../Button";
 import styles from "./Navbar.module.css";
 
 export const Navbar = () => {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -43,6 +45,11 @@ export const Navbar = () => {
     { name: "GitHub", href: "#" },
   ];
 
+  const isLinkActive = (href: string) => {
+    if (href === "#") return false;
+    return pathname === href;
+  };
+
   return (
     <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
       <div className={`gm-container ${styles.navbarInner}`}>
@@ -53,7 +60,13 @@ export const Navbar = () => {
 
         <nav className={styles.navbarNav}>
           {navLinks.map((link) => (
-            <Link key={link.name} href={link.href} className={styles.navbarLink}>{link.name}</Link>
+            <Link 
+              key={link.name} 
+              href={link.href} 
+              className={`${styles.navbarLink} ${isLinkActive(link.href) ? styles.active : ""}`}
+            >
+              {link.name}
+            </Link>
           ))}
           <Button variant="primary" size="sm">Get Started</Button>
         </nav>
@@ -73,7 +86,17 @@ export const Navbar = () => {
           </div>
           <nav className={styles.navbarMobileNav}>
             {navLinks.map((link) => (
-              <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)}>{link.name}</Link>
+              <Link 
+                key={link.name} 
+                href={link.href} 
+                onClick={() => setIsOpen(false)}
+                style={{ 
+                  color: isLinkActive(link.href) ? 'black' : 'var(--gm-gray-400)',
+                  fontWeight: isLinkActive(link.href) ? 900 : 700
+                }}
+              >
+                {link.name}
+              </Link>
             ))}
           </nav>
           <div style={{ marginTop: 'auto', padding: '40px 0' }}>

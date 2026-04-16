@@ -18,15 +18,12 @@
   width: 100%;
   background: white;
   border-top: 5px solid black;
-  border-radius: 4px 4px 28px 28px;
-  box-shadow: var(--gm-shadow-md);
   overflow: hidden;
   transition: var(--gm-transition);
   border: 1px solid var(--gm-gray-100);
 }
 
 .tableWrapper:hover {
-  box-shadow: var(--gm-shadow-lg);
   border-color: var(--gm-gray-200);
 }
 

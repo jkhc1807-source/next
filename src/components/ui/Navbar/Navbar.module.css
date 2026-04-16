@@ -75,10 +75,22 @@
   letter-spacing: 0.05em;
   text-decoration: none !important;
   transition: var(--gm-transition);
+  position: relative;
+  padding: 4px 0;
 }
 
-.navbarLink:hover {
+.navbarLink:hover, .navbarLink.active {
   color: black;
+}
+
+.navbarLink.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: black;
 }
 
 .navbarMobileToggle {
