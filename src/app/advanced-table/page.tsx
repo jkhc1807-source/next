@@ -63,17 +63,18 @@ export default function AdvancedTableShowcase() {
     return data;
   }, [initialData, searchQuery, sort1]);
 
+  // --- Rich Data for Frozen Tables (Huge Columns) ---
   const initialFrozenData = useMemo(() => Array.from({ length: 20 }, (_, i) => ({
     id: `NODE-00${String(i + 1).padStart(2, '0')}`,
     name: `Cluster Node ${i + 1}`,
     status: i % 4 === 0 ? "Active" : "Idle",
-    cpu: `${Math.floor(Math.random() * 100)}%`,
-    memory: `${Math.floor(Math.random() * 100)}%`,
+    cpu: `${(i * 7 + 10) % 100}%`, // 결정론적 계산으로 변경
+    memory: `${(i * 3 + 40) % 100}%`, // 결정론적 계산으로 변경
     disk: "SSD 1TB",
     region: i % 3 === 0 ? "Asia-East" : i % 3 === 1 ? "US-West" : "EU-Central",
-    uptime: `${Math.floor(Math.random() * 1000)}h`,
-    traffic: `${(Math.random() * 10).toFixed(1)} GB/s`,
-    latency: `${Math.floor(Math.random() * 50)}ms`,
+    uptime: `${(i * 12 + 100) % 1000}h`,
+    traffic: `${((i * 0.5 + 1.2) % 10).toFixed(1)} GB/s`,
+    latency: `${(i * 2 + 5) % 50}ms`,
     security: "v2.1.0",
     owner: i % 2 === 0 ? "DevOps" : "Infra",
     cluster: "Alpha-X",
