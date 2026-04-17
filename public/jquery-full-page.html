@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universal Specification | Gemini UI Master</title>
+  <meta name="description" content="Gemini UI 디자인 시스템의 모든 컴포넌트를 HTML + jQuery로 구현한 쇼케이스 페이지입니다.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <style>
+    /* =============================================
+       GEMINI UI MASTER — Design Tokens
+    ============================================= */
+    :root {
+      --gm-black: #000000;
+      --gm-white: #FFFFFF;
+      --gm-gray-50:  #F9F9F9;
+      --gm-gray-100: #F3F3F3;
+      --gm-gray-200: #EAEAEA;
+      --gm-gray-300: #D5D5D5;
+      --gm-gray-400: #999999;
+      --gm-gray-500: #666666;
+      --gm-error: #EE0000;
+      --gm-border-radius-sm: 4px;
+      --gm-border-radius: 12px;
+      --gm-border-radius-lg: 24px;
+      --gm-border-radius-xl: 48px;
+      --gm-font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --gm-transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      --gm-max-width: 1240px;
+      --gm-header-height: 80px;
+      --gm-z-dropdown: 1000;
+      --gm-z-sticky: 1100;
+      --gm-z-modal-backdrop: 1300;
+      --gm-z-modal: 1400;
+      --gm-z-toast: 1700;
+      --gm-shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+      --gm-shadow-md: 0 10px 30px rgba(0,0,0,0.06);
+      --gm-shadow-lg: 0 30px 60px rgba(0,0,0,0.12);
+    }
+
+    /* =============================================
+       Reset & Base
+    ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+    html, body { height: 100%; font-family: var(--gm-font-family); color: var(--gm-black); background: var(--gm-white); line-height: 1.5; overflow-x: hidden; }
+    a { text-decoration: none !important; color: inherit; transition: var(--gm-transition); }
+    button { cursor: pointer; border: none; background: none; outline: none; font-family: inherit; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--gm-gray-200); border-radius: 10px; border: 2px solid white; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gm-gray-400); }
+
+    /* =============================================
+       Layout
+    ============================================= */
+    .gm-root { min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+    .gm-container { max-width: var(--gm-max-width); margin: 0 auto; padding: 0 40px; width: 100%; }
+    .gm-flex-wrap { display: flex; flex-wrap: wrap; gap: 24px; }
+    .gm-flex-col-gap-12 { display: flex; flex-direction: column; gap: 12px; }
+    .gm-flex-col-gap-16 { display: flex; flex-direction: column; gap: 32px; }
+    .gm-flex-col-gap-24 { display: flex; flex-direction: column; gap: 24px; }
+    .gm-flex-col-gap-32 { display: flex; flex-direction: column; gap: 56px; }
+    .gm-flex-col-gap-40 { display: flex; flex-direction: column; gap: 40px; }
+    .gm-flex-col-gap-48 { display: flex; flex-direction: column; gap: 80px; }
+    .gm-flex-col-gap-60 { display: flex; flex-direction: column; gap: 60px; }
+    .gm-flex-col-gap-140 { display: flex; flex-direction: column; gap: 140px; }
+    .gm-mt-16 { margin-top: 16px; }
+    .gm-mt-100 { margin-top: 100px; }
+    .gm-mt-12 { margin-top: 12px; }
+    .gm-mb-100 { margin-bottom: 100px; }
+    .gm-mt-24 { margin-top: 24px; }
+
+    /* =============================================
+       Typography
+    ============================================= */
+    .gm-label {
+      font-size: 11px; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.2em; color: var(--gm-gray-400); display: block; line-height: 1;
+    }
+    .gm-section-header { margin-top: 40px; margin-bottom: 80px; }
+    .gm-section-header .gm-label { color: black; padding-left: 12px; border-left: 4px solid black; margin-bottom: 16px; }
+    .gm-title-md { font-size: 42px; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 12px; text-transform: uppercase; line-height: 1.1; }
+    .gm-title-sm { font-size: 24px; font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase; }
+    .gm-hero-title { font-size: clamp(40px, 8vw, 100px); font-weight: 900; line-height: 0.9; letter-spacing: -0.04em; margin: 24px 0; text-transform: uppercase; }
+    .gm-hero-desc { font-size: 20px; color: var(--gm-gray-500); max-width: 640px; font-weight: 500; line-height: 1.5; }
+    .gm-user-name { font-weight: 800; color: black; font-size: 16px; }
+
+    /* =============================================
+       Animations
+    ============================================= */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .gm-animate { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes shimmer { 100% { transform: translateX(200%); } }
+    @keyframes skeletonPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes slideInUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    @keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+    @keyframes toastProgress { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+    /* =============================================
+       NAVBAR
+    ============================================= */
+    .gm-navbar {
+      position: fixed; top: 0; left: 0; width: 100%;
+      height: var(--gm-header-height);
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      z-index: var(--gm-z-sticky);
+      border-bottom: 1px solid transparent;
+      display: flex; align-items: center;
+      transition: var(--gm-transition);
+    }
+    .gm-navbar.scrolled { height: 70px; border-bottom-color: var(--gm-gray-100); box-shadow: var(--gm-shadow-sm); background: rgba(255,255,255,0.9); }
+    .gm-navbar-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    .gm-navbar-logo { display: flex; align-items: center; gap: 16px; font-size: 22px; font-weight: 900; letter-spacing: -0.03em; color: black; text-decoration: none !important; }
+    .gm-logo-icon { width: 32px; height: 32px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .gm-navbar-logo:hover .gm-logo-icon { transform: rotate(90deg); }
+    .gm-logo-dot { width: 6px; height: 6px; background: white; border-radius: 50%; }
+    .gm-navbar-nav { display: flex; align-items: center; gap: 48px; }
+    .gm-navbar-link { font-size: 14px; font-weight: 700; color: var(--gm-gray-400); text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none !important; transition: var(--gm-transition); position: relative; padding: 4px 0; }
+    .gm-navbar-link:hover, .gm-navbar-link.active { color: black; }
+    .gm-navbar-link.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: black; }
+    .gm-mobile-toggle { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; background: none; border: none; color: black; cursor: pointer; }
+    /* Mobile summary for multiselect */
+    .gm-multiselect-mobile-summary {
+      display: none; align-items: center; gap: 8px;
+      font-size: 15px; font-weight: 600; color: black; overflow: hidden;
+    }
+    .gm-multiselect-mobile-summary .gm-ms-plus {
+      flex-shrink: 0; background: black; color: white;
+      font-size: 11px; font-weight: 900; padding: 3px 9px; border-radius: 8px; white-space: nowrap;
+    }
+    .gm-multiselect-mobile-first {
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .gm-multiselect-mobile-placeholder { color: var(--gm-gray-400); font-weight: 600; }
+    /* Range picker desktop/mobile split */
+    .gm-dp-range-desktop { display: block; }
+    .gm-dp-range-mobile { display: none; align-items: center; gap: 8px; width: 100%; }
+    .gm-dp-range-mobile .gm-dp-container { display: block; flex: 1; }
+    .gm-dp-range-mobile .gm-dp-trigger { width: 100%; min-width: unset; font-size: 14px; padding: 0 14px 0 16px; gap: 8px; }
+    .gm-dp-range-mobile .gm-dp-panel { min-width: 290px; }
+    .gm-mobile-overlay { position: fixed; inset: 0; background: white; z-index: 2500; padding: 48px; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .gm-mobile-overlay.open { transform: translateX(0); }
+    .gm-mobile-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; }
+    .gm-mobile-close { background: none; border: none; color: black; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+    .gm-mobile-nav { display: flex; flex-direction: column; gap: 32px; }
+    .gm-mobile-nav a { font-size: 32px; font-weight: 900; color: black; text-decoration: none !important; text-transform: uppercase; letter-spacing: -0.02em; transition: var(--gm-transition); }
+
+    /* =============================================
+       HERO
+    ============================================= */
+    .gm-hero { padding: 120px 0 80px; text-align: center; }
+    .gm-hero .gm-flex-col-gap-24 { align-items: center; }
+
+    /* =============================================
+       BUTTON
+    ============================================= */
+    .gm-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 16px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.05em; transition: var(--gm-transition);
+      border-radius: var(--gm-border-radius); cursor: pointer;
+      border: none; white-space: nowrap; position: relative;
+      overflow: hidden; text-decoration: none !important; font-family: inherit;
+    }
+    .gm-btn:active { transform: scale(0.96); }
+    .gm-btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+    /* Variants */
+    .gm-btn-primary { background: black; color: white; }
+    .gm-btn-primary:hover { box-shadow: var(--gm-shadow-lg); transform: translateY(-2px); }
+    .gm-btn-secondary { background: var(--gm-gray-100); color: black; }
+    .gm-btn-secondary:hover { background: var(--gm-gray-200); }
+    .gm-btn-outline { background: transparent; border: 3px solid black; color: black; }
+    .gm-btn-outline:hover { background: black; color: white; }
+    .gm-btn-danger { background: var(--gm-error); color: white; }
+    .gm-btn-danger:hover { background: #cc0000; box-shadow: 0 12px 30px rgba(238,0,0,0.2); transform: translateY(-2px); }
+    .gm-btn-success { background: var(--gm-gray-100); color: black; border: 1px solid var(--gm-gray-200); }
+    .gm-btn-success:hover { background: var(--gm-gray-200); }
+    .gm-btn-warning { background: #FFD600; color: black; }
+    .gm-btn-warning:hover { background: #e6c200; box-shadow: 0 12px 30px rgba(255,214,0,0.2); transform: translateY(-2px); }
+    /* Sizes */
+    .gm-btn-sm { height: 48px; padding: 0 24px; font-size: 12px; }
+    .gm-btn-md { height: 60px; padding: 0 32px; font-size: 14px; }
+    .gm-btn-lg { height: 72px; padding: 0 48px; font-size: 16px; border-radius: 16px; }
+    .gm-btn-full { width: 100%; display: flex; }
+    /* Loading spinner */
+    .gm-btn-spinner { animation: spin 1s linear infinite; width: 20px; height: 20px; }
+    .gm-btn.loading { cursor: wait; opacity: 0.8; }
+
+    /* =============================================
+       BADGE
+    ============================================= */
+    .gm-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 999px; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.15em; white-space: nowrap;
+    }
+    .gm-badge-sm { padding: 4px 10px; font-size: 9px; }
+    .gm-badge-md { padding: 8px 16px; font-size: 11px; }
+    .gm-badge-lg { padding: 16px 24px; font-size: 13px; }
+    .gm-badge-primary { background: black; color: white; }
+    .gm-badge-success { background: var(--gm-gray-100); color: black; border: 1px solid var(--gm-gray-200); }
+    .gm-badge-warning { background: #FFD600; color: black; }
+    .gm-badge-error { background: var(--gm-error); color: white; }
+    .gm-badge-outline { background: transparent; border: 1.5px solid black; color: black; }
+
+    /* =============================================
+       AVATAR
+    ============================================= */
+    .gm-avatar-wrapper { position: relative; display: inline-flex; flex-shrink: 0; }
+    .gm-avatar {
+      display: flex; align-items: center; justify-content: center;
+      background-color: black; color: white; font-weight: 800;
+      text-transform: uppercase; flex-shrink: 0; overflow: hidden;
+      user-select: none; border: 1px solid var(--gm-gray-200);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .gm-avatar.circle { border-radius: 50%; }
+    .gm-avatar.square { border-radius: 12px; }
+    .gm-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .gm-avatar-sm { width: 32px; height: 32px; font-size: 10px; }
+    .gm-avatar-md { width: 48px; height: 48px; font-size: 14px; }
+    .gm-avatar-lg { width: 64px; height: 64px; font-size: 18px; }
+    .gm-avatar-xl { width: 96px; height: 96px; font-size: 28px; }
+    .gm-avatar-status {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 25%; height: 25%; min-width: 10px; min-height: 10px;
+      border-radius: 50%; border: 2px solid white; z-index: 1;
+    }
+    .gm-status-online { background-color: #00C853; }
+    .gm-status-away { background-color: #FFAB00; }
+    .gm-status-busy { background-color: var(--gm-error); }
+    .gm-status-offline { background-color: var(--gm-gray-400); }
+    .gm-avatar-wrapper:hover { z-index: 2; }
+    .gm-avatar-stack + .gm-avatar-stack { margin-left: -12px; }
+
+    /* =============================================
+       INPUT / TEXTAREA / SEARCHBAR
+    ============================================= */
+    .gm-input-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .gm-input-label { font-size: 12px; font-weight: 800; color: black; display: block; margin-bottom: 8px; }
+    .gm-input-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
+    .gm-input {
+      width: 100%; border: 2px solid var(--gm-gray-200); font-weight: 600;
+      transition: var(--gm-transition); outline: none; background: var(--gm-gray-50);
+      color: black; -webkit-appearance: none; appearance: none; font-family: inherit;
+    }
+    .gm-input:focus { border-color: black; background: white; box-shadow: 0 0 0 6px rgba(0,0,0,0.03); }
+    .gm-input.error { border-color: var(--gm-error); background: rgba(238,0,0,0.02); }
+    .gm-input-sm { height: 48px; padding: 0 44px 0 16px; font-size: 14px; border-radius: 12px; }
+    .gm-input-md { height: 60px; padding: 0 52px 0 24px; font-size: 16px; border-radius: 16px; }
+    .gm-input-lg { height: 72px; padding: 0 60px 0 32px; font-size: 18px; border-radius: 20px; }
+    .gm-input-actions { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 8px; z-index: 2; }
+    .gm-input-action-btn {
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 10px; color: var(--gm-gray-400); width: 44px; height: 44px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); background: none; border: none; cursor: pointer;
+    }
+    .gm-input-action-btn:hover { background: var(--gm-gray-200); color: black; }
+    /* Size variants for action button */
+    .gm-input-action-btn-sm { width: 32px !important; height: 32px !important; border-radius: 8px; }
+    .gm-input-action-btn-md { width: 44px !important; height: 44px !important; }
+    .gm-input-action-btn-lg { width: 52px !important; height: 52px !important; border-radius: 14px; }
+    .gm-input-clear { display: none; }
+    .gm-input-error { color: var(--gm-error); font-size: 13px; font-weight: 700; margin-top: 8px; }
+    /* Textarea */
+    .gm-textarea {
+      width: 100%; border: 2px solid var(--gm-gray-200); font-weight: 600; background: var(--gm-gray-50);
+      color: black; outline: none; transition: var(--gm-transition); resize: vertical;
+      padding: 16px 52px 16px 24px; font-size: 16px; border-radius: 16px; font-family: inherit;
+      min-height: 120px;
+    }
+    .gm-textarea:focus { border-color: black; background: white; box-shadow: 0 0 0 6px rgba(0,0,0,0.03); }
+    .gm-textarea-count { font-size: 11px; font-weight: 700; color: var(--gm-gray-400); margin-top: 6px; text-align: right; }
+    /* SearchBar */
+    .gm-searchbar-wrapper { position: relative; width: 100%; }
+    .gm-searchbar-input {
+      width: 100%; height: 60px; padding: 0 52px 0 56px; font-size: 16px; font-weight: 600;
+      border: 2px solid var(--gm-gray-200); border-radius: 16px; background: var(--gm-gray-50);
+      outline: none; transition: var(--gm-transition); color: black; font-family: inherit;
+    }
+    .gm-searchbar-input:focus { border-color: black; background: white; box-shadow: 0 0 0 6px rgba(0,0,0,0.03); }
+    .gm-searchbar-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--gm-gray-400); pointer-events: none; }
+    .gm-searchbar-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: none; }
+
+    /* =============================================
+       SELECT
+    ============================================= */
+    .gm-select-container { position: relative; width: 100%; }
+    .gm-select-label { font-size: 12px; font-weight: 800; color: black; display: block; margin-bottom: 8px; }
+    .gm-select-trigger {
+      display: flex; align-items: center; justify-content: space-between;
+      border: 2px solid var(--gm-gray-200); background: var(--gm-gray-50);
+      cursor: pointer; font-weight: 700; transition: var(--gm-transition);
+      width: 100%; font-family: inherit; color: black;
+    }
+    .gm-select-trigger.active { border-color: black; background: white; box-shadow: 0 0 0 6px rgba(0,0,0,0.03); }
+    .gm-select-sm .gm-select-trigger { min-height: 48px; padding: 0 16px; font-size: 14px; border-radius: 12px; }
+    .gm-select-md .gm-select-trigger { min-height: 60px; padding: 0 24px; font-size: 16px; border-radius: 16px; }
+    .gm-select-lg .gm-select-trigger { min-height: 72px; padding: 0 32px; font-size: 18px; border-radius: 20px; }
+    .gm-select-placeholder { color: var(--gm-gray-400); }
+    .gm-select-icon { transition: transform 0.3s; color: var(--gm-gray-400); }
+    .gm-select-container.open .gm-select-icon { transform: rotate(180deg); }
+    .gm-select-dropdown {
+      position: absolute; width: 100%; max-height: 300px;
+      background: white; border: 2px solid black; border-radius: 16px;
+      box-shadow: var(--gm-shadow-lg); z-index: var(--gm-z-dropdown);
+      padding: 8px; list-style: none; overflow-y: auto;
+      top: calc(100% + 8px); left: 0; display: none;
+    }
+    .gm-select-container.open .gm-select-dropdown { display: block; }
+    .gm-select-dropdown.drop-up { top: auto; bottom: calc(100% + 8px); }
+    .gm-select-option {
+      min-height: 44px; padding: 8px 16px; border-radius: 12px; cursor: pointer;
+      transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1); font-size: 15px; font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--gm-gray-400); text-decoration: none !important;
+    }
+    .gm-select-option:hover, .gm-select-option.selected { background: var(--gm-gray-50); color: black; font-weight: 800; }
+
+    /* =============================================
+       MULTISELECT
+    ============================================= */
+    .gm-multiselect-container { position: relative; width: 100%; }
+    .gm-multiselect-label { font-size: 12px; font-weight: 800; color: black; display: block; margin-bottom: 8px; }
+    .gm-multiselect-trigger {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+      min-height: 60px; padding: 10px 52px 10px 24px; border: 2px solid var(--gm-gray-200);
+      background: var(--gm-gray-50); border-radius: 16px; cursor: pointer;
+      transition: var(--gm-transition); font-family: inherit; position: relative;
+    }
+    .gm-multiselect-trigger.active { border-color: black; background: white; box-shadow: 0 0 0 6px rgba(0,0,0,0.03); }
+    /* 화살표 아이콘 */
+    .gm-multiselect-chevron {
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      color: var(--gm-gray-400); pointer-events: none; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; align-items: center;
+    }
+    .gm-multiselect-container.open .gm-multiselect-chevron { transform: translateY(-50%) rotate(180deg); }
+    /* 스마트 포지셔닝 */
+    .gm-multiselect-dropdown.drop-up {
+      top: auto;
+      bottom: calc(100% + 8px);
+    }
+    .gm-multiselect-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 12px; background: black; color: white;
+      border-radius: 10px; font-size: 13px; font-weight: 700; white-space: nowrap;
+    }
+    .gm-multiselect-tag-remove { cursor: pointer; opacity: 0.6; line-height: 1; }
+    .gm-multiselect-tag-remove:hover { opacity: 1; }
+    .gm-multiselect-clear-all {
+      margin-left: auto; font-size: 11px; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--gm-gray-400); cursor: pointer; transition: color 0.2s;
+      background: none; border: none; font-family: inherit;
+    }
+    .gm-multiselect-clear-all:hover { color: black; }
+    .gm-multiselect-dropdown {
+      position: absolute; width: 100%; max-height: 300px; background: white;
+      border: 2px solid black; border-radius: 16px; box-shadow: var(--gm-shadow-lg);
+      z-index: var(--gm-z-dropdown); padding: 8px; overflow-y: auto;
+      top: calc(100% + 8px); left: 0; display: none;
+    }
+    .gm-multiselect-container.open .gm-multiselect-dropdown { display: block; }
+    .gm-multiselect-dropdown.drop-up { top: auto; bottom: calc(100% + 8px); }
+    .gm-multiselect-option {
+      min-height: 44px; padding: 8px 16px; border-radius: 12px; cursor: pointer;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 15px; font-weight: 600; color: var(--gm-gray-400); transition: 0.2s;
+    }
+    .gm-multiselect-option:hover { background: var(--gm-gray-50); color: black; }
+    .gm-multiselect-option.selected { color: black; }
+    .gm-multiselect-checkbox {
+      width: 20px; height: 20px; border: 2px solid var(--gm-gray-300);
+      border-radius: 6px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: 0.2s;
+    }
+    .gm-multiselect-option.selected .gm-multiselect-checkbox { background: black; border-color: black; color: white; }
+
+    /* =============================================
+       DATE PICKER
+    ============================================= */
+    /* =============================================
+       CUSTOM DATEPICKER
+    ============================================= */
+    .gm-dp-container { position: relative; display: inline-block; }
+    .gm-dp-trigger {
+      display: flex; align-items: center; justify-content: space-between;
+      width: auto; min-width: 200px; height: 60px; padding: 0 20px 0 24px;
+      border: 2px solid var(--gm-gray-200); border-radius: 16px;
+      background: var(--gm-gray-50); cursor: pointer;
+      font-size: 16px; font-weight: 600; color: black;
+      transition: var(--gm-transition); font-family: inherit; gap: 16px;
+    }
+    .gm-dp-trigger.active { border-color: black; background: white; box-shadow: 0 0 0 6px rgba(0,0,0,0.03); }
+    .gm-dp-trigger-placeholder { color: var(--gm-gray-400); }
+    .gm-dp-trigger-icons { display: flex; align-items: center; gap: 8px; }
+    .gm-dp-clear-btn {
+      display: none; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 8px; color: var(--gm-gray-400);
+      background: none; border: none; cursor: pointer; transition: all 0.2s;
+      font-size: 14px;
+    }
+    .gm-dp-clear-btn:hover { background: var(--gm-gray-200); color: black; }
+    .gm-dp-clear-btn.show { display: flex; }
+    .gm-dp-cal-icon { color: var(--gm-gray-400); display: flex; }
+    /* Calendar panel */
+    .gm-dp-panel {
+      position: absolute; top: calc(100% + 8px); left: 0;
+      background: white; border: 2px solid black; border-radius: 24px;
+      box-shadow: var(--gm-shadow-lg); z-index: 1200;
+      padding: 24px; min-width: 320px; display: none;
+      animation: fadeInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .gm-dp-panel.drop-up { top: auto; bottom: calc(100% + 8px); }
+    .gm-dp-container.open .gm-dp-panel { display: block; }
+    /* Header */
+    .gm-dp-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .gm-dp-nav-btn {
+      width: 36px; height: 36px; border-radius: 10px; border: none;
+      background: var(--gm-gray-100); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; transition: background 0.2s; color: black;
+    }
+    .gm-dp-nav-btn:hover { background: var(--gm-gray-200); }
+    .gm-dp-month-year {
+      font-size: 16px; font-weight: 900; letter-spacing: -0.02em; cursor: pointer;
+      padding: 6px 12px; border-radius: 10px; transition: background 0.2s;
+    }
+    .gm-dp-month-year:hover { background: var(--gm-gray-100); }
+    /* Weekdays */
+    .gm-dp-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      margin-bottom: 8px;
+    }
+    .gm-dp-wd {
+      text-align: center; font-size: 11px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--gm-gray-400); padding: 4px 0;
+    }
+    /* Days grid */
+    .gm-dp-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .gm-dp-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      border-radius: 10px; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s; color: black; border: none;
+      background: none; font-family: inherit;
+    }
+    .gm-dp-day:hover:not(.empty):not(.disabled) { background: var(--gm-gray-100); }
+    .gm-dp-day.today { color: black; font-weight: 900; }
+    .gm-dp-day.today::after {
+      content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+      width: 4px; height: 4px; border-radius: 50%; background: black;
+    }
+    .gm-dp-day { position: relative; }
+    .gm-dp-day.selected { background: black; color: white; }
+    .gm-dp-day.selected:hover { background: #333; }
+    .gm-dp-day.in-range { background: var(--gm-gray-100); border-radius: 0; }
+    .gm-dp-day.range-start { background: black; color: white; border-radius: 10px 0 0 10px; }
+    .gm-dp-day.range-end { background: black; color: white; border-radius: 0 10px 10px 0; }
+    .gm-dp-day.range-start.range-end { border-radius: 10px; }
+    .gm-dp-day.disabled { color: var(--gm-gray-300); cursor: not-allowed; }
+    .gm-dp-day.empty { cursor: default; }
+    .gm-dp-day.other-month { color: var(--gm-gray-300); }
+    /* Footer */
+    .gm-dp-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--gm-gray-100); }
+    .gm-dp-today-btn {
+      font-size: 12px; font-weight: 800; color: black; cursor: pointer;
+      background: none; border: none; font-family: inherit; text-transform: uppercase;
+      letter-spacing: 0.05em; padding: 6px 12px; border-radius: 8px; transition: background 0.2s;
+    }
+    .gm-dp-today-btn:hover { background: var(--gm-gray-100); }
+    .gm-dp-confirm-btn {
+      height: 36px; padding: 0 20px; background: black; color: white;
+      border: none; border-radius: 10px; font-size: 12px; font-weight: 800;
+      cursor: pointer; font-family: inherit; text-transform: uppercase;
+      letter-spacing: 0.05em; transition: opacity 0.2s;
+    }
+    .gm-dp-confirm-btn:hover { opacity: 0.8; }
+    /* DateRange wrapper */
+    .gm-daterange-wrapper { display: flex; gap: 12px; align-items: center; }
+    .gm-daterange-sep { font-size: 14px; font-weight: 800; color: var(--gm-gray-300); white-space: nowrap; flex-shrink: 0; }
+    /* Range panel: 2 calendars side by side */
+    .gm-dp-range-panel {
+      position: absolute; top: calc(100% + 8px); left: 0;
+      background: white; border: 2px solid black; border-radius: 24px;
+      box-shadow: var(--gm-shadow-lg); z-index: 1200;
+      padding: 24px; display: none;
+      animation: fadeInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .gm-dp-range-panel.drop-up { top: auto; bottom: calc(100% + 8px); }
+    .gm-dp-range-panel.open { display: flex; gap: 32px; }
+    .gm-dp-range-divider { width: 1px; background: var(--gm-gray-100); margin: 0 4px; }
+    /* Year-Month picker view */
+    .gm-dp-ym-view { display: none; }
+    .gm-dp-ym-view.show { display: block; }
+    .gm-dp-ym-year-hdr {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+    }
+    .gm-dp-ym-year-label { font-size: 22px; font-weight: 900; letter-spacing: -0.03em; }
+    .gm-dp-ym-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+    }
+    .gm-dp-ym-btn {
+      padding: 12px 0; border-radius: 12px; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 800; font-family: inherit;
+      background: var(--gm-gray-100); color: black;
+      transition: all 0.15s; text-align: center;
+    }
+    .gm-dp-ym-btn:hover { background: var(--gm-gray-200); }
+    .gm-dp-ym-btn.active { background: black; color: white; }
+
+    /* =============================================
+       CHECKBOX & RADIO & SWITCH
+    ============================================= */
+    .gm-control { display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; font-weight: 600; font-size: 15px; min-height: 44px; }
+    .gm-control.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+    /* Checkbox */
+    .gm-cb { appearance: none; -webkit-appearance: none; border: 2px solid var(--gm-gray-200); border-radius: 6px; position: relative; flex-shrink: 0; transition: var(--gm-transition); cursor: pointer; background: var(--gm-gray-50); }
+    .gm-cb-sm { width: 20px; height: 20px; }
+    .gm-cb-md { width: 24px; height: 24px; }
+    .gm-cb-lg { width: 28px; height: 28px; }
+    .gm-cb:checked { background: black; border-color: black; }
+    .gm-cb:checked::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -56%) rotate(45deg); width: 30%; height: 55%; border-right: 2.5px solid white; border-bottom: 2.5px solid white; }
+    /* Radio */
+    .gm-radio { appearance: none; -webkit-appearance: none; border: 2px solid var(--gm-gray-200); border-radius: 50%; position: relative; flex-shrink: 0; transition: var(--gm-transition); cursor: pointer; background: var(--gm-gray-50); }
+    .gm-radio-sm { width: 20px; height: 20px; }
+    .gm-radio-md { width: 24px; height: 24px; }
+    .gm-radio-lg { width: 28px; height: 28px; }
+    .gm-radio:checked { border-color: black; }
+    .gm-radio:checked::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 40%; height: 40%; background: black; border-radius: 50%; }
+    /* Switch */
+    .gm-switch-label { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .gm-switch-label.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+    .gm-switch { appearance: none; -webkit-appearance: none; width: 50px; height: 28px; background: var(--gm-gray-300); border-radius: 20px; position: relative; transition: 0.4s; cursor: pointer; }
+    .gm-switch:checked { background: black; }
+    .gm-switch::before { content: ""; position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 4px; left: 4px; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .gm-switch:checked::before { transform: translateX(22px); }
+    .gm-switch-text { font-size: 15px; font-weight: 600; }
+
+    /* =============================================
+       PROGRESS BAR
+    ============================================= */
+    .gm-progress-label { font-size: 12px; font-weight: 800; color: black; display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .gm-progress-track { background: var(--gm-gray-200); border-radius: 99px; overflow: hidden; position: relative; width: 100%; }
+    .gm-progress-sm .gm-progress-track { height: 8px; }
+    .gm-progress-md .gm-progress-track { height: 12px; }
+    .gm-progress-lg .gm-progress-track { height: 16px; }
+    .gm-progress-bar { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
+    .gm-progress-success .gm-progress-bar { background: black; }
+    .gm-progress-info .gm-progress-bar { background: black; }
+    .gm-progress-error .gm-progress-bar { background: var(--gm-error); }
+    .gm-progress-animated .gm-progress-bar::after {
+      content: ""; position: absolute; inset: 0; width: 60%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+
+    /* =============================================
+       SKELETON
+    ============================================= */
+    .gm-skeleton { background: var(--gm-gray-200); border-radius: 8px; position: relative; overflow: hidden; animation: skeletonPulse 1.8s ease-in-out infinite; }
+    .gm-skeleton::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%); transform: translateX(-100%); animation: shimmer 1.8s infinite; }
+    .gm-skeleton-text { border-radius: 6px; margin-bottom: 8px; height: 16px; }
+    .gm-skeleton-circle { border-radius: 50%; }
+    .gm-skeleton-card { border-radius: 16px; }
+
+    /* =============================================
+       CARD
+    ============================================= */
+    .gm-card { background: white; border: 1px solid var(--gm-gray-200); border-radius: 24px; padding: 32px; transition: var(--gm-transition); }
+    .gm-card-title { font-size: 20px; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 24px; }
+
+    /* =============================================
+       EMPTY STATE
+    ============================================= */
+    .gm-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 80px 40px; text-align: center; border: 2px dashed var(--gm-gray-200);
+      border-radius: 24px; background: var(--gm-gray-50);
+    }
+    .gm-empty-icon { font-size: 48px; margin-bottom: 24px; }
+    .gm-empty-title { font-size: 24px; font-weight: 900; color: black; margin-bottom: 12px; }
+    .gm-empty-desc { font-size: 16px; color: var(--gm-gray-400); font-weight: 500; }
+
+    /* =============================================
+       TABLE
+    ============================================= */
+    .gm-table-wrapper { width: 100%; border: 1px solid var(--gm-gray-200); border-radius: 20px; overflow: hidden; }
+    .gm-table-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--gm-gray-100); }
+    .gm-table-count { font-size: 12px; font-weight: 800; color: var(--gm-gray-400); text-transform: uppercase; letter-spacing: 0.1em; }
+    .gm-table { width: 100%; border-collapse: collapse; }
+    .gm-table thead th { padding: 16px 24px; text-align: left; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gm-gray-400); border-bottom: 1px solid var(--gm-gray-100); background: var(--gm-gray-50); }
+    .gm-table tbody tr { border-bottom: 1px solid var(--gm-gray-100); transition: background 0.2s; }
+    .gm-table tbody tr:last-child { border-bottom: none; }
+    .gm-table tbody tr:hover { background: var(--gm-gray-50); }
+    .gm-table tbody td { padding: 20px 24px; font-size: 15px; font-weight: 600; }
+
+    /* =============================================
+       TABS
+    ============================================= */
+    .gm-tabs { width: 100%; }
+    .gm-tabs-nav {
+      display: flex; gap: 40px; border-bottom: 2px solid var(--gm-gray-100);
+      margin-bottom: 40px; overflow-x: auto; scrollbar-width: none;
+      flex-wrap: nowrap; padding-bottom: 2px; position: relative;
+    }
+    .gm-tabs-nav::-webkit-scrollbar { display: none; }
+    .gm-tab-btn {
+      padding-bottom: 24px; font-size: 14px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--gm-gray-400); position: relative;
+      transition: var(--gm-transition); cursor: pointer; background: none; border: none;
+      white-space: nowrap; min-height: 44px; font-family: inherit;
+    }
+    .gm-tab-btn:hover { color: black; }
+    .gm-tab-btn.active { color: black; }
+    .gm-tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: black; border-radius: 2px; }
+    .gm-tabs-content { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .gm-tab-panel { display: none; }
+    .gm-tab-panel.active { display: block; }
+
+    /* =============================================
+       CAROUSEL (Swiper)
+    ============================================= */
+    .gm-carousel { width: 100%; border-radius: 20px; overflow: hidden; }
+    .gm-carousel .swiper-slide { border-radius: 20px; height: 280px; display: flex; align-items: center; justify-content: center; }
+    .gm-carousel .swiper-slide h3 { font-size: 24px; font-weight: 900; }
+
+    /* =============================================
+       ACCORDION
+    ============================================= */
+    .gm-accordion { width: 100%; display: flex; flex-direction: column; }
+    .gm-accordion.separated { gap: 24px; }
+    .gm-accordion.grouped { border: 2px solid var(--gm-gray-200); border-radius: 24px; background: white; overflow: hidden; }
+    .gm-acc-item { transition: var(--gm-transition); overflow: hidden; }
+    .gm-accordion.separated .gm-acc-item { background: white; border: 2px solid var(--gm-gray-200); border-radius: 24px; }
+    .gm-accordion.separated .gm-acc-item:hover { border-color: black; box-shadow: var(--gm-shadow-md); transform: translateY(-2px); }
+    .gm-accordion.separated .gm-acc-item.active { border-color: black; box-shadow: var(--gm-shadow-lg); }
+    .gm-accordion.grouped .gm-acc-item { border-bottom: 2px solid var(--gm-gray-100); }
+    .gm-accordion.grouped .gm-acc-item:last-child { border-bottom: none; }
+    .gm-acc-header {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 32px 40px; background: white; border: none; cursor: pointer; text-align: left;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); font-size: 19px; font-weight: 800;
+      letter-spacing: -0.03em; color: black; font-family: inherit;
+    }
+    .gm-accordion.grouped .gm-acc-header { padding: 28px 40px; }
+    .gm-accordion.separated .gm-acc-header.active, .gm-accordion.separated .gm-acc-item.active .gm-acc-header.active { background: black; color: white; }
+    .gm-accordion.grouped .gm-acc-header.active { background: var(--gm-gray-50); color: black; }
+    .gm-acc-icon { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); color: var(--gm-gray-400); }
+    .gm-acc-header.active .gm-acc-icon { transform: rotate(180deg); }
+    .gm-accordion.separated .gm-acc-header.active .gm-acc-icon { color: white; }
+    .gm-acc-body { display: none; }
+    .gm-acc-body.open { display: block; }
+    .gm-acc-content { padding: 24px 40px 40px; font-size: 16px; color: var(--gm-gray-500); line-height: 1.8; font-weight: 500; background: white; }
+
+    /* =============================================
+       BREADCRUMB
+    ============================================= */
+    .gm-breadcrumb { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .gm-breadcrumb-item { font-size: 14px; font-weight: 700; color: var(--gm-gray-400); text-decoration: none !important; transition: color 0.2s; }
+    .gm-breadcrumb-item:hover { color: black; }
+    .gm-breadcrumb-item.active { color: black; }
+    .gm-breadcrumb-sep { color: var(--gm-gray-300); font-size: 14px; }
+
+    /* =============================================
+       PAGINATION
+    ============================================= */
+    .gm-pagination { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .gm-page-btn {
+      min-width: 44px; height: 44px; padding: 0 12px; border-radius: 12px;
+      font-size: 14px; font-weight: 700; transition: var(--gm-transition);
+      border: 1.5px solid var(--gm-gray-200); background: white; color: var(--gm-gray-500);
+      cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit;
+    }
+    .gm-page-btn:hover { border-color: black; color: black; }
+    .gm-page-btn.active { background: black; color: white; border-color: black; }
+    .gm-page-btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+    /* =============================================
+       DROPDOWN
+    ============================================= */
+    .gm-dropdown { position: relative; display: inline-block; }
+    .gm-dropdown-menu {
+      position: absolute; top: calc(100% + 8px); left: 0; min-width: 220px;
+      background: white; border: 1.5px solid var(--gm-gray-200); border-radius: 16px;
+      box-shadow: var(--gm-shadow-lg); z-index: var(--gm-z-dropdown);
+      padding: 8px; display: none;
+    }
+    .gm-dropdown.open .gm-dropdown-menu { display: block; }
+    .gm-dropdown-header { padding: 10px 16px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gm-gray-400); }
+    .gm-dropdown-item { padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+    .gm-dropdown-item:hover { background: var(--gm-gray-50); }
+    .gm-dropdown-item.danger { color: var(--gm-error); }
+    .gm-dropdown-shortcut { font-size: 12px; color: var(--gm-gray-400); }
+    .gm-dropdown-divider { height: 1px; background: var(--gm-gray-100); margin: 6px 0; }
+
+    /* =============================================
+       TOOLTIP
+    ============================================= */
+    .gm-tooltip-wrap { position: relative; display: inline-flex; }
+    .gm-tooltip {
+      position: absolute; background: black; color: white;
+      font-size: 13px; font-weight: 700; padding: 8px 16px;
+      border-radius: 10px; white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity 0.2s, transform 0.2s;
+      z-index: 1600;
+    }
+    .gm-tooltip-wrap:hover .gm-tooltip { opacity: 1; }
+    .gm-tooltip.top { bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); }
+    .gm-tooltip.bottom { top: calc(100% + 10px); left: 50%; transform: translateX(-50%); }
+    .gm-tooltip.left { right: calc(100% + 10px); top: 50%; transform: translateY(-50%); }
+    .gm-tooltip.right { left: calc(100% + 10px); top: 50%; transform: translateY(-50%); }
+
+    /* =============================================
+       TOAST
+    ============================================= */
+    .gm-toast-container {
+      position: fixed; bottom: 32px; right: 32px;
+      display: flex; flex-direction: column-reverse; gap: 16px;
+      z-index: var(--gm-z-toast); pointer-events: none;
+    }
+    .gm-toast {
+      pointer-events: auto; min-width: 440px; max-width: 600px; min-height: 80px;
+      background: rgba(0,0,0,0.95); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+      padding: 24px 32px; display: flex; align-items: center; gap: 24px;
+      color: white; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+      position: relative; overflow: hidden; box-sizing: border-box;
+      animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .gm-toast-icon-wrap { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; }
+    .gm-toast-content { flex: 1; font-size: 16px; font-weight: 800; }
+    .gm-toast-close { background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 8px; border-radius: 50%; transition: all 0.2s; display: flex; font-size: 18px; }
+    .gm-toast-close:hover { background: rgba(255,255,255,0.1); color: white; }
+    .gm-toast-progress { position: absolute; bottom: 0; left: 0; height: 4px; transform-origin: left; width: 100%; border-radius: 0 0 20px 20px; }
+    .gm-toast.success .gm-toast-icon-wrap { color: #00E676; background: rgba(0,230,118,0.1); }
+    .gm-toast.error   .gm-toast-icon-wrap { color: #FF5252; background: rgba(255,82,82,0.1); }
+    .gm-toast.warning .gm-toast-icon-wrap { color: #FFD740; background: rgba(255,215,64,0.1); }
+    .gm-toast.info    .gm-toast-icon-wrap { color: #40C4FF; background: rgba(64,196,255,0.1); }
+    .gm-toast.success .gm-toast-progress { background: #00E676; }
+    .gm-toast.error   .gm-toast-progress { background: #FF5252; }
+    .gm-toast.warning .gm-toast-progress { background: #FFD740; }
+    .gm-toast.info    .gm-toast-progress { background: #40C4FF; }
+
+    /* =============================================
+       MODAL
+    ============================================= */
+    .gm-modal-root {
+      position: fixed; inset: 0; display: flex; align-items: center;
+      justify-content: center; z-index: var(--gm-z-modal-backdrop);
+      padding: 16px; display: none;
+    }
+    .gm-modal-root.open { display: flex; }
+    .gm-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(12px); }
+    .gm-modal-container {
+      position: relative; width: 100%; max-width: 580px; background: white;
+      border-radius: 40px; box-shadow: var(--gm-shadow-lg);
+      border: 1px solid var(--gm-gray-100); z-index: var(--gm-z-modal);
+      padding: 60px; animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .gm-modal-close {
+      position: absolute; top: 24px; right: 24px; width: 48px; height: 48px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: var(--gm-gray-50); color: black; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none; cursor: pointer; font-size: 20px;
+    }
+    .gm-modal-close:hover { background: black; color: white; transform: rotate(90deg) scale(1.1); }
+    .gm-modal-title { font-size: 32px; font-weight: 900; letter-spacing: -0.03em; text-transform: uppercase; color: black; margin-bottom: 4px; line-height: 1.1; }
+    .gm-modal-desc { font-size: 17px; color: var(--gm-gray-400); font-weight: 500; line-height: 1.4; margin-bottom: 32px; }
+    .gm-modal-body { font-size: 16px; color: var(--gm-gray-500); line-height: 1.6; }
+    .gm-modal-footer { display: flex; gap: 16px; justify-content: flex-end; margin-top: 48px; }
+
+    /* =============================================
+       DRAWER
+    ============================================= */
+    .gm-drawer-root { position: fixed; inset: 0; z-index: var(--gm-z-modal-backdrop); display: none; }
+    .gm-drawer-root.open { display: block; }
+    .gm-drawer-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); }
+    .gm-drawer {
+      position: absolute; top: 0; bottom: 0; background: white;
+      display: flex; flex-direction: column; box-shadow: var(--gm-shadow-lg);
+      z-index: var(--gm-z-modal);
+    }
+    .gm-drawer.right { right: 0; border-left: 1px solid var(--gm-gray-100); animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .gm-drawer.left { left: 0; border-right: 1px solid var(--gm-gray-100); animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .gm-drawer-md { width: 480px; }
+    .gm-drawer-lg { width: 720px; }
+    .gm-drawer-header { padding: 32px 48px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gm-gray-100); }
+    .gm-drawer-title { font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; }
+    .gm-drawer-close { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gm-gray-400); transition: all 0.2s; cursor: pointer; background: none; border: none; font-size: 20px; }
+    .gm-drawer-close:hover { background: var(--gm-gray-100); color: black; transform: rotate(90deg); }
+    .gm-drawer-body { flex: 1; overflow-y: auto; padding: 48px; }
+    .gm-drawer-footer { padding: 32px 48px; border-top: 1px solid var(--gm-gray-100); }
+
+    /* =============================================
+       STEPS
+    ============================================= */
+    .gm-steps { display: flex; width: 100%; gap: 16px; }
+    .gm-step-item { flex: 1; display: flex; flex-direction: column; gap: 8px; position: relative; }
+    .gm-step-header { display: flex; align-items: center; width: 100%; }
+    .gm-step-indicator {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 2px solid var(--gm-gray-200); background: white;
+      color: var(--gm-gray-400); font-weight: 800; font-size: 14px;
+      transition: var(--gm-transition); z-index: 1; flex-shrink: 0;
+    }
+    .gm-step-line { flex: 1; height: 2px; background: var(--gm-gray-100); margin-left: 8px; transition: var(--gm-transition); }
+    .gm-step-title { font-size: 14px; font-weight: 800; color: var(--gm-gray-400); transition: var(--gm-transition); }
+    .gm-step-desc { font-size: 12px; color: var(--gm-gray-300); margin-top: 4px; }
+    .gm-step-item.active .gm-step-indicator { border-color: black; color: black; box-shadow: 0 0 0 4px rgba(0,0,0,0.05); }
+    .gm-step-item.active .gm-step-title { color: black; }
+    .gm-step-item.completed .gm-step-indicator { background: black; border-color: black; color: white; }
+    .gm-step-item.completed .gm-step-line { background: black; }
+    .gm-step-item.completed .gm-step-title { color: black; }
+
+    /* =============================================
+       SEGMENTED CONTROL
+    ============================================= */
+    .gm-segmented {
+      display: inline-flex; background: var(--gm-gray-200); border-radius: 99px;
+      padding: 6px; position: relative; border: 1px solid var(--gm-gray-300);
+      width: max-content; max-width: 100%; overflow-x: auto; scrollbar-width: none;
+    }
+    .gm-segmented::-webkit-scrollbar { display: none; }
+    .gm-segmented.full-width { display: flex; width: 100% !important; }
+    .gm-segmented.full-width .gm-seg-item { flex: 1; }
+    .gm-seg-indicator {
+      position: absolute; top: 6px; bottom: 6px;
+      background: white; border-radius: 99px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 0; pointer-events: none;
+    }
+    .gm-seg-item {
+      position: relative; z-index: 1; height: 56px; padding: 0 32px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 99px; font-weight: 800; font-size: 14px;
+      color: var(--gm-gray-500); cursor: pointer; white-space: nowrap;
+      transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none; background: transparent; font-family: inherit; outline: none; flex-shrink: 0;
+    }
+    .gm-seg-item.active { color: black; }
+    .gm-seg-item:hover:not(.active) { color: black; }
+
+    /* =============================================
+       COMMAND PALETTE
+    ============================================= */
+    .gm-palette-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(12px); z-index: var(--gm-z-modal);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding-top: 15vh; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .gm-palette-overlay.open { opacity: 1; pointer-events: auto; }
+    .gm-palette {
+      width: 100%; max-width: 680px; background: white; border-radius: 28px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.25); overflow: hidden;
+      border: 1px solid var(--gm-gray-100); display: flex; flex-direction: column;
+      transform: translateY(20px) scale(0.98);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .gm-palette-overlay.open .gm-palette { transform: translateY(0) scale(1); }
+    .gm-palette-search-wrap { padding: 16px 24px; border-bottom: 1px solid var(--gm-gray-100); }
+    .gm-palette-input {
+      width: 100%; border: none; background: transparent; outline: none;
+      font-size: 22px; font-weight: 700; color: black; font-family: inherit;
+      padding: 8px 0;
+    }
+    .gm-palette-input::placeholder { color: var(--gm-gray-300); }
+    .gm-palette-list { max-height: 50vh; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+    .gm-palette-item {
+      display: flex; align-items: center; gap: 20px; padding: 18px 24px;
+      border-radius: 20px; cursor: pointer; transition: background 0.2s;
+    }
+    .gm-palette-item:hover, .gm-palette-item.selected { background: var(--gm-gray-100); }
+    .gm-palette-item-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: var(--gm-gray-50); border-radius: 16px; color: black; font-weight: 800; flex-shrink: 0; font-size: 20px; }
+    .gm-palette-item-content { flex: 1; }
+    .gm-palette-item-label { font-weight: 800; font-size: 17px; color: black; }
+    .gm-palette-item-desc { font-size: 14px; color: var(--gm-gray-400); margin-top: 4px; }
+    .gm-palette-item-cat { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 12px; background: white; border: 1.5px solid var(--gm-gray-200); border-radius: 10px; color: var(--gm-gray-500); }
+    .gm-palette-empty { padding: 80px 40px; text-align: center; color: var(--gm-gray-400); font-weight: 700; font-size: 16px; }
+    .gm-palette-footer { padding: 20px 32px; background: var(--gm-gray-50); border-top: 1px solid var(--gm-gray-100); display: flex; gap: 40px; }
+    .gm-palette-shortcut { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 800; color: var(--gm-gray-400); }
+    .gm-palette-shortcut kbd { background: white; border: 1.5px solid var(--gm-gray-300); border-radius: 8px; padding: 4px 10px; color: black; font-family: inherit; box-shadow: 0 2px 0 var(--gm-gray-200); }
+
+    /* =============================================
+       EMAIL FORM GROUP
+    ============================================= */
+    .gm-email-form-group { display: flex; flex-direction: row; align-items: center; gap: 12px; width: 100%; }
+    .gm-email-id-part { flex: 1; }
+    .gm-email-domain-group { display: flex; flex-direction: row; align-items: center; gap: 8px; flex: 1; }
+    .gm-email-at-symbol { font-weight: 900; font-size: 20px; color: var(--gm-gray-300); padding: 0 4px; }
+    .gm-email-domain-input { flex: 1; min-width: 0; }
+
+    /* =============================================
+       FOOTER
+    ============================================= */
+    .gm-footer { padding: 80px 0 60px; border-top: 4px solid black; background: var(--gm-gray-50); width: 100%; margin-top: 100px; }
+    .gm-footer-inner { display: flex; justify-content: space-between; align-items: center; }
+
+    /* =============================================
+       MAIN WRAPPER
+    ============================================= */
+    .gm-main { margin-top: calc(var(--gm-header-height) + 24px); padding-bottom: 100px; }
+
+    /* =============================================
+       RESPONSIVE
+    ============================================= */
+    @media (max-width: 768px) {
+      .gm-container { padding: 0 20px; }
+      .gm-hero-title { font-size: 42px; }
+      .gm-title-md { font-size: 28px; }
+      .gm-footer-inner { flex-direction: column; gap: 32px; text-align: center; }
+      .gm-navbar-nav { display: none; }
+      .gm-mobile-toggle { display: flex; }
+      .gm-email-form-group { flex-direction: column; align-items: stretch; }
+      .gm-toast { min-width: 0; width: 100%; }
+      .gm-toast-container { left: 16px; right: 16px; }
+      .gm-modal-container { padding: 40px 24px; border-radius: 32px; max-width: 100%; }
+      .gm-modal-title { font-size: 24px; }
+      .gm-drawer { width: 85% !important; }
+      .gm-steps { flex-direction: column; }
+      .gm-palette { max-width: 100%; border-radius: 0; }
+      .gm-palette-overlay { padding-top: 0; align-items: flex-start; }
+      /* MultiSelect: 모바일 태그 숨기고 요약 표시 */
+      .gm-multiselect-tag { display: none !important; }
+      .gm-multiselect-clear-all { display: none !important; }
+      .gm-multiselect-mobile-summary { display: flex; }
+      .gm-multiselect-trigger { flex-wrap: nowrap; }
+      /* DateRange: 모바일에서 2개 분리 */
+      .gm-dp-range-desktop { display: none !important; }
+      .gm-dp-range-mobile { display: flex; }
+      /* DatePicker 패널: 모바일에서 화면 중앙 고정 (layout shift 방지) */
+      .gm-dp-panel, .gm-dp-range-panel {
+        position: fixed !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        bottom: auto !important;
+        animation: none !important;
+        max-height: 80vh;
+        overflow-y: auto;
+        z-index: 2000;
+        min-width: 300px;
+        max-width: calc(100vw - 32px);
+      }
+      .gm-dp-panel.drop-up, .gm-dp-range-panel.drop-up {
+        top: 50% !important;
+        bottom: auto !important;
+        transform: translate(-50%, -50%) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="gm-root">
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="gm-navbar" id="navbar">
+    <div class="gm-container">
+      <div class="gm-navbar-inner">
+        <a href="#" class="gm-navbar-logo">
+          <div class="gm-logo-icon"><div class="gm-logo-dot"></div></div>
+          GEMINI UI
+        </a>
+        <nav class="gm-navbar-nav">
+          <a href="#" class="gm-navbar-link active">Components</a>
+          <a href="#" class="gm-navbar-link">Documentation</a>
+          <a href="#" class="gm-navbar-link">GitHub</a>
+        </nav>
+        <button class="gm-mobile-toggle" id="mobileToggle" aria-label="메뉴 열기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Overlay -->
+  <div class="gm-mobile-overlay" id="mobileOverlay">
+    <div class="gm-mobile-header">
+      <a href="#" class="gm-navbar-logo">
+        <div class="gm-logo-icon"><div class="gm-logo-dot"></div></div>
+        GEMINI UI
+      </a>
+      <button class="gm-mobile-close" id="mobileClose" aria-label="메뉴 닫기">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <nav class="gm-mobile-nav">
+      <a href="#">Components</a>
+      <a href="#">Documentation</a>
+      <a href="#">GitHub</a>
+    </nav>
+  </div>
+
+  <!-- ===== MAIN ===== -->
+  <main class="gm-main gm-container">
+
+    <!-- Hero Section -->
+    <section class="gm-hero gm-animate gm-mb-100">
+      <div class="gm-flex-col-gap-24" style="align-items:center;">
+        <span class="gm-badge gm-badge-primary gm-badge-lg">Ultimate Master Edition v3.0</span>
+        <h1 class="gm-hero-title">Universal <br>Specification</h1>
+        <p class="gm-hero-desc">정밀한 간격 설계와 일렬 배치를 통한 최상의 가독성 환경입니다.</p>
+      </div>
+    </section>
+
+    <div class="gm-flex-col-gap-140">
+
+      <!-- ========================
+           01. BUTTON SYSTEM
+      ========================= -->
+      <section class="gm-animate">
+        <header class="gm-section-header">
+          <span class="gm-label">01. Buttons</span>
+          <h2 class="gm-title-md">Action Components</h2>
+        </header>
+        <div class="gm-flex-col-gap-48">
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Variants &amp; Icons</span>
+            <div class="gm-flex-wrap" style="align-items:center;gap:16px;">
+              <button class="gm-btn gm-btn-primary gm-btn-md">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Primary Left Icon
+              </button>
+              <button class="gm-btn gm-btn-secondary gm-btn-md">
+                Secondary Right Icon
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </button>
+              <button class="gm-btn gm-btn-outline gm-btn-md">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Dual Icon Button
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+              <button class="gm-btn gm-btn-danger gm-btn-md">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Danger with Icon
+              </button>
+            </div>
+          </div>
+
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Size Variations</span>
+            <div class="gm-flex-wrap" style="align-items:center;gap:16px;">
+              <button class="gm-btn gm-btn-primary gm-btn-lg">Large 72px</button>
+              <button class="gm-btn gm-btn-primary gm-btn-md">Medium 60px</button>
+              <button class="gm-btn gm-btn-primary gm-btn-sm">Small 48px</button>
+            </div>
+          </div>
+
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Interaction States</span>
+            <div class="gm-flex-wrap" style="align-items:center;gap:16px;">
+              <button class="gm-btn gm-btn-primary gm-btn-md loading" disabled>
+                <svg class="gm-btn-spinner" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:0.25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4" stroke-linecap="round" style="opacity:0.75"/></svg>
+                Loading State
+              </button>
+              <button class="gm-btn gm-btn-primary gm-btn-md" disabled>Disabled State</button>
+              <button class="gm-btn gm-btn-outline gm-btn-md gm-btn-full">Full Width Primary Button</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================
+           02. BADGE & IDENTITY
+      ========================= -->
+      <section class="gm-animate">
+        <header class="gm-section-header">
+          <span class="gm-label">02. Identity</span>
+          <h2 class="gm-title-md">Badges &amp; Avatars</h2>
+        </header>
+        <div class="gm-flex-col-gap-48">
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Badge Sizes &amp; Colors</span>
+            <div class="gm-flex-wrap" style="align-items:center;">
+              <span class="gm-badge gm-badge-primary gm-badge-lg">Large Badge</span>
+              <span class="gm-badge gm-badge-success gm-badge-md">Success</span>
+              <span class="gm-badge gm-badge-warning gm-badge-sm">Warning</span>
+              <span class="gm-badge gm-badge-error gm-badge-md">Error</span>
+              <span class="gm-badge gm-badge-outline gm-badge-md">Outline</span>
+            </div>
+          </div>
+
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Avatar Complex States</span>
+            <div class="gm-flex-wrap" style="align-items:center;gap:32px;">
+              <!-- XL Online -->
+              <div class="gm-avatar-wrapper">
+                <div class="gm-avatar gm-avatar-xl circle">JB</div>
+                <span class="gm-avatar-status gm-status-online"></span>
+              </div>
+              <!-- LG Busy with image -->
+              <div class="gm-avatar-wrapper">
+                <div class="gm-avatar gm-avatar-lg circle"><img src="https://i.pravatar.cc/150?u=1" alt="Sarah"></div>
+                <span class="gm-avatar-status gm-status-busy"></span>
+              </div>
+              <!-- MD Away -->
+              <div class="gm-avatar-wrapper">
+                <div class="gm-avatar gm-avatar-md circle">AX</div>
+                <span class="gm-avatar-status gm-status-away"></span>
+              </div>
+              <!-- LG Square Online -->
+              <div class="gm-avatar-wrapper">
+                <div class="gm-avatar gm-avatar-lg square">SQ</div>
+                <span class="gm-avatar-status gm-status-online"></span>
+              </div>
+              <!-- Stack -->
+              <div style="display:flex;">
+                <div class="gm-avatar-wrapper gm-avatar-stack"><div class="gm-avatar gm-avatar-sm circle">A</div></div>
+                <div class="gm-avatar-wrapper gm-avatar-stack"><div class="gm-avatar gm-avatar-sm circle">B</div></div>
+                <div class="gm-avatar-wrapper gm-avatar-stack"><div class="gm-avatar gm-avatar-sm circle">C</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================
+           03. FORM ELEMENTS
+      ========================= -->
+      <section class="gm-animate">
+        <header class="gm-section-header">
+          <span class="gm-label">03. Forms</span>
+          <h2 class="gm-title-md">Data Entry System</h2>
+        </header>
+        <div class="gm-flex-col-gap-60" style="max-width:800px;">
+
+          <!-- SearchBar -->
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Premium Search Bar</span>
+            <div class="gm-searchbar-wrapper">
+              <span class="gm-searchbar-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </span>
+              <input type="text" id="searchbarInput" class="gm-searchbar-input" placeholder="Search projects, members, or settings...">
+              <button class="gm-input-action-btn gm-searchbar-clear" id="searchbarClear">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Composite Email -->
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Composite Email (Dynamic Domain)</span>
+            <div class="gm-email-form-group">
+              <div class="gm-email-id-part">
+                <div class="gm-input-wrapper">
+                  <input type="text" id="emailId" class="gm-input gm-input-md" placeholder="이메일 아이디">
+                  <div class="gm-input-actions">
+                    <button class="gm-input-action-btn gm-input-clear" data-target="emailId">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="gm-email-domain-group">
+                <div class="gm-email-at-symbol">@</div>
+                <div class="gm-email-domain-input" id="domainInputArea">
+                  <!-- Select or Input rendered by JS -->
+                  <div class="gm-select-container gm-select-md" id="domainSelect">
+                    <div class="gm-select-trigger" id="domainSelectTrigger">
+                      <span class="gm-select-val">gmail.com</span>
+                      <svg class="gm-select-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <ul class="gm-select-dropdown">
+                      <li class="gm-select-option selected" data-val="gmail.com">gmail.com</li>
+                      <li class="gm-select-option" data-val="naver.com">naver.com</li>
+                      <li class="gm-select-option" data-val="daum.net">daum.net</li>
+                      <li class="gm-select-option" data-val="direct">직접 입력</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Standard Fields & Errors -->
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Standard Fields &amp; Errors</span>
+            <div class="gm-flex-col-gap-32">
+              <!-- Display Name -->
+              <div class="gm-input-group">
+                <label class="gm-input-label">Display Name</label>
+                <div class="gm-input-wrapper">
+                  <input type="text" id="displayName" class="gm-input gm-input-md" placeholder="Your full name">
+                  <div class="gm-input-actions">
+                    <button class="gm-input-action-btn gm-input-clear" data-target="displayName">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Password -->
+              <div class="gm-input-group">
+                <label class="gm-input-label">Account Password</label>
+                <div class="gm-input-wrapper">
+                  <input type="password" id="passwordInput" class="gm-input gm-input-md" placeholder="Enter secure password" value="gemini_master_123">
+                  <div class="gm-input-actions">
+                    <button class="gm-input-action-btn" id="togglePassword" title="비밀번호 표시">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                    <button class="gm-input-action-btn gm-input-clear" data-target="passwordInput">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Error -->
+              <div class="gm-input-group">
+                <label class="gm-input-label">Security Check</label>
+                <div class="gm-input-wrapper">
+                  <input type="text" class="gm-input gm-input-md error" value="user@invalid" readonly>
+                </div>
+                <span class="gm-input-error">입력하신 이메일 형식이 시스템 보안 규정에 맞지 않습니다.</span>
+              </div>
+              <!-- Textarea -->
+              <div class="gm-input-group">
+                <label class="gm-input-label">Project Vision</label>
+                <div class="gm-input-wrapper" style="align-items:flex-start;flex-direction:column;">
+                  <div style="position:relative;width:100%;">
+                    <textarea id="projectVision" class="gm-textarea" maxlength="200" placeholder="Describe your long-term goals..."></textarea>
+                    <div class="gm-input-actions" style="top:16px;transform:none;position:absolute;right:12px;">
+                      <button class="gm-input-action-btn gm-input-clear" data-target="projectVision">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="gm-textarea-count" id="projectVisionCount">0 / 200</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Size Variations -->
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Field Size Variations</span>
+            <div class="gm-flex-col-gap-16">
+              <div class="gm-input-wrapper">
+                <input type="text" id="sizeVarSm" class="gm-input gm-input-sm" placeholder="Small Input 48px">
+                <div class="gm-input-actions">
+                  <button class="gm-input-action-btn gm-input-action-btn-sm gm-input-clear" data-target="sizeVarSm">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="gm-input-wrapper">
+                <input type="text" id="sizeVarMd" class="gm-input gm-input-md" placeholder="Medium Input 60px (Default)">
+                <div class="gm-input-actions">
+                  <button class="gm-input-action-btn gm-input-action-btn-md gm-input-clear" data-target="sizeVarMd">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="gm-input-wrapper">
+                <input type="text" id="sizeVarLg" class="gm-input gm-input-lg" placeholder="Large Input 72px">
+                <div class="gm-input-actions">
+                  <button class="gm-input-action-btn gm-input-action-btn-lg gm-input-clear" data-target="sizeVarLg">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Select -->
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Advanced Selections</span>
+            <div class="gm-flex-col-gap-32">
+              <div class="gm-input-group">
+                <label class="gm-select-label">Single Choice</label>
+                <div class="gm-select-container gm-select-md" id="singleSelect">
+                  <div class="gm-select-trigger"><span class="gm-select-placeholder gm-select-val">옵션 선택...</span><svg class="gm-select-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+                  <ul class="gm-select-dropdown">
+                    <li class="gm-select-option" data-val="next">Next.js</li>
+                    <li class="gm-select-option" data-val="react">React</li>
+                    <li class="gm-select-option" data-val="ts">TypeScript</li>
+                    <li class="gm-select-option" data-val="tailwind">Tailwind CSS</li>
+                    <li class="gm-select-option" data-val="node">Node.js</li>
+                    <li class="gm-select-option" data-val="py">Python</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="gm-flex-col-gap-16">
+                <span class="gm-label" style="font-size:10px;">Select Sizes</span>
+                <div class="gm-select-container gm-select-sm" id="selectSm">
+                  <div class="gm-select-trigger"><span class="gm-select-placeholder gm-select-val">Small Select</span><svg class="gm-select-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+                  <ul class="gm-select-dropdown">
+                    <li class="gm-select-option" data-val="next">Next.js</li><li class="gm-select-option" data-val="react">React</li>
+                  </ul>
+                </div>
+                <div class="gm-select-container gm-select-lg" id="selectLg">
+                  <div class="gm-select-trigger"><span class="gm-select-placeholder gm-select-val">Large Select</span><svg class="gm-select-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+                  <ul class="gm-select-dropdown">
+                    <li class="gm-select-option" data-val="next">Next.js</li><li class="gm-select-option" data-val="react">React</li>
+                  </ul>
+                </div>
+              </div>
+              <!-- MultiSelect -->
+              <div class="gm-input-group">
+                <label class="gm-multiselect-label">Capabilities (Responsive + Clear All)</label>
+                <div class="gm-multiselect-container" id="multiSelect">
+                  <div class="gm-multiselect-trigger" id="multiTrigger">
+                    <!-- Tags rendered by JS -->
+                    <span class="gm-multiselect-chevron">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </span>
+                  </div>
+                  <ul class="gm-multiselect-dropdown">
+                    <li class="gm-multiselect-option" data-val="next"><span class="gm-multiselect-checkbox">✓</span>Next.js</li>
+                    <li class="gm-multiselect-option" data-val="react"><span class="gm-multiselect-checkbox">✓</span>React</li>
+                    <li class="gm-multiselect-option" data-val="ts"><span class="gm-multiselect-checkbox">✓</span>TypeScript</li>
+                    <li class="gm-multiselect-option" data-val="tailwind"><span class="gm-multiselect-checkbox">✓</span>Tailwind CSS</li>
+                    <li class="gm-multiselect-option" data-val="node"><span class="gm-multiselect-checkbox">✓</span>Node.js</li>
+                    <li class="gm-multiselect-option" data-val="py"><span class="gm-multiselect-checkbox">✓</span>Python</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Date -->
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Temporal Selection</span>
+            <div class="gm-flex-col-gap-32">
+              <!-- DateRangePicker -->
+              <div class="gm-input-group">
+                <label class="gm-datepicker-label">Project Schedule</label>
+                <!-- Desktop: 1개 wide trigger + 2calendars -->
+                <div class="gm-dp-range-desktop gm-daterange-wrapper" style="position:relative;">
+                  <div class="gm-dp-container" id="rangePicker" style="flex:1;">
+                    <div class="gm-dp-trigger" id="rangeTrigger">
+                      <span class="gm-dp-trigger-placeholder" id="rangeDisplay">2026-04-15 → 2026-04-20</span>
+                      <div class="gm-dp-trigger-icons">
+                        <button class="gm-dp-clear-btn show" id="rangeClear" title="초기화">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                        <span class="gm-dp-cal-icon">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </span>
+                      </div>
+                    </div>
+                    <!-- Range calendar panel (rendered by JS) -->
+                    <div class="gm-dp-range-panel" id="rangePanelEl"></div>
+                  </div>
+                </div>
+                <!-- Mobile: 시작/종료 2개 분리 -->
+                <div class="gm-dp-range-mobile">
+                  <div class="gm-dp-container" id="mRangeStartPicker">
+                    <div class="gm-dp-trigger" id="mRangeStartTrigger">
+                      <span id="mRangeStartDisplay">2026-04-15</span>
+                      <div class="gm-dp-trigger-icons">
+                        <button class="gm-dp-clear-btn show" id="mRangeStartClear">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                        <span class="gm-dp-cal-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+                      </div>
+                    </div>
+                    <div class="gm-dp-panel" id="mRangeStartPanel"></div>
+                  </div>
+                  <span class="gm-daterange-sep">→</span>
+                  <div class="gm-dp-container" id="mRangeEndPicker">
+                    <div class="gm-dp-trigger" id="mRangeEndTrigger">
+                      <span id="mRangeEndDisplay">2026-04-20</span>
+                      <div class="gm-dp-trigger-icons">
+                        <button class="gm-dp-clear-btn show" id="mRangeEndClear">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                        <span class="gm-dp-cal-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+                      </div>
+                    </div>
+                    <div class="gm-dp-panel" id="mRangeEndPanel"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Single DatePicker -->
+              <div class="gm-input-group">
+                <label class="gm-datepicker-label">Final Milestone</label>
+                <div class="gm-dp-container" id="singlePicker">
+                  <div class="gm-dp-trigger" id="singleTrigger">
+                    <span id="singleDisplay">2026-04-15</span>
+                    <div class="gm-dp-trigger-icons">
+                      <button class="gm-dp-clear-btn show" id="singleClear" title="초기화">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      </button>
+                      <span class="gm-dp-cal-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="gm-dp-panel" id="singlePanelEl"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Choices & States -->
+          <div class="gm-flex-col-gap-12">
+            <span class="gm-label">Choices &amp; States</span>
+            <div class="gm-flex-col-gap-40">
+              <div class="gm-flex-col-gap-16">
+                <span class="gm-label">Switches</span>
+                <div class="gm-flex-wrap" style="gap:24px;">
+                  <label class="gm-switch-label"><input type="checkbox" class="gm-switch" checked><span class="gm-switch-text">Active Sync</span></label>
+                  <label class="gm-switch-label disabled"><input type="checkbox" class="gm-switch" disabled><span class="gm-switch-text">Disabled Off</span></label>
+                  <label class="gm-switch-label disabled"><input type="checkbox" class="gm-switch" checked disabled><span class="gm-switch-text">Disabled On</span></label>
+                </div>
+              </div>
+
+              <div class="gm-flex-col-gap-16">
+                <span class="gm-label">Checkboxes (Size Variations &amp; States)</span>
+                <div class="gm-flex-wrap" style="gap:32px;">
+                  <label class="gm-control"><input type="checkbox" class="gm-cb gm-cb-sm" checked><span>Small 48px</span></label>
+                  <label class="gm-control"><input type="checkbox" class="gm-cb gm-cb-md" checked><span>Medium 60px</span></label>
+                  <label class="gm-control"><input type="checkbox" class="gm-cb gm-cb-lg" checked><span>Large 72px</span></label>
+                  <label class="gm-control disabled"><input type="checkbox" class="gm-cb gm-cb-md" disabled><span>Disabled</span></label>
+                  <label class="gm-control disabled"><input type="checkbox" class="gm-cb gm-cb-md" checked disabled><span>Disabled Active</span></label>
+                </div>
+              </div>
+
+              <div class="gm-flex-col-gap-16">
+                <span class="gm-label">Radio Buttons (Size Variations &amp; States)</span>
+                <div class="gm-flex-wrap" style="gap:32px;">
+                  <label class="gm-control"><input type="radio" name="sz1" class="gm-radio gm-radio-sm" checked><span>Small 48px</span></label>
+                  <label class="gm-control"><input type="radio" name="sz2" class="gm-radio gm-radio-md" checked><span>Medium 60px</span></label>
+                  <label class="gm-control"><input type="radio" name="sz3" class="gm-radio gm-radio-lg" checked><span>Large 72px</span></label>
+                  <label class="gm-control disabled"><input type="radio" name="ds1" class="gm-radio gm-radio-md" disabled><span>Disabled</span></label>
+                  <label class="gm-control disabled"><input type="radio" name="ds2" class="gm-radio gm-radio-md" checked disabled><span>Disabled Active</span></label>
+                </div>
+              </div>
+
+              <div style="border-top:1px solid var(--gm-gray-100);padding-top:32px;">
+                <div class="gm-flex-col-gap-16">
+                  <span class="gm-label">Complex Selection Groups</span>
+                  <div class="gm-flex-wrap" style="gap:60px;align-items:flex-start;">
+                    <div>
+                      <div class="gm-label" style="margin-bottom:12px;">Access Control Group (Small)</div>
+                      <label class="gm-control"><input type="checkbox" class="gm-cb gm-cb-sm" checked><span>Read Access</span></label>
+                      <label class="gm-control"><input type="checkbox" class="gm-cb gm-cb-sm" checked><span>Write Access</span></label>
+                      <label class="gm-control disabled"><input type="checkbox" class="gm-cb gm-cb-sm" disabled><span>Delete Access</span></label>
+                      <label class="gm-control"><input type="checkbox" class="gm-cb gm-cb-sm"><span>Admin Sync</span></label>
+                    </div>
+                    <div>
+                      <div class="gm-label" style="margin-bottom:12px;">Size Selection Group (Large)</div>
+                      <label class="gm-control"><input type="radio" name="sizeGroup" class="gm-radio gm-radio-lg"><span>Small 48px</span></label>
+                      <label class="gm-control"><input type="radio" name="sizeGroup" class="gm-radio gm-radio-lg" checked><span>Medium 60px</span></label>
+                      <label class="gm-control"><input type="radio" name="sizeGroup" class="gm-radio gm-radio-lg"><span>Large 72px</span></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================
+           04. DATA DISPLAY
+      ========================= -->
+      <section class="gm-animate">
+        <header class="gm-section-header">
+          <span class="gm-label">04. Display</span>
+          <h2 class="gm-title-md">Information Visualization</h2>
+        </header>
+        <div class="gm-flex-col-gap-60">
+
+          <!-- Table -->
+          <div class="gm-flex-col-gap-16">
+            <span class="gm-label">Detailed Data Table</span>
+            <div class="gm-table-wrapper">
+              <div class="gm-table-header">
+                <span class="gm-table-count">Total 256 records</span>
+              </div>
+              <table class="gm-table">
+                <thead>
+                  <tr>
+                    <th>Member Profile</th><th>Status</th><th>Activity</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="gm-flex-wrap" style="align-items:center;gap:12px;flex-wrap:nowrap;">
+                        <div class="gm-avatar-wrapper"><div class="gm-avatar gm-avatar-sm circle">JB</div><span class="gm-avatar-status gm-status-online"></span></div>
+                        <span class="gm-user-name">Jung Byungheon</span>
+                      </div>
+                    </td>
+                    <td><span class="gm-badge gm-badge-success gm-badge-md">Synchronized</span></td>
+                    <td style="width:240px;">
+                      <div class="gm-progress-sm gm-progress-success">
+                        <div class="gm-progress-track"><div class="gm-progress-bar gm-progress-animated" style="width:92%"></div></div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="gm-dropdown" id="tableDropdown">
+                        <button class="gm-btn gm-btn-outline gm-btn-sm" onclick="toggleDropdown('tableDropdown')">Manage</button>
+                        <div class="gm-dropdown-menu">
+                          <div class="gm-dropdown-header">User Ops</div>
+                          <div class="gm-dropdown-item">Edit Details <span class="gm-dropdown-shortcut">⌘E</span></div>
+                          <div class="gm-dropdown-divider"></div>
+                          <div class="gm-dropdown-item danger">Terminate</div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="gm-flex-col-gap-16">
+            <span class="gm-label">Progress Bar Variations</span>
+            <div class="gm-flex-col-gap-24" style="max-width:700px;">
+              <div class="gm-progress-lg gm-progress-success">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="gm-label" style="margin:0;">System Integrity</span><span class="gm-label" style="margin:0;">100%</span></div>
+                <div class="gm-progress-track"><div class="gm-progress-bar" style="width:100%;"></div></div>
+              </div>
+              <div class="gm-progress-md gm-progress-info">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="gm-label" style="margin:0;">Processing Load</span><span class="gm-label" style="margin:0;">65%</span></div>
+                <div class="gm-progress-track"><div class="gm-progress-bar gm-progress-animated" style="width:65%;"></div></div>
+              </div>
+              <div class="gm-progress-sm gm-progress-error">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="gm-label" style="margin:0;">Storage Quota</span><span class="gm-label" style="margin:0;">15%</span></div>
+                <div class="gm-progress-track"><div class="gm-progress-bar" style="width:15%;background:var(--gm-error);"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="gm-flex-col-gap-16">
+            <span class="gm-label">Extended Navigation Tabs (10 Items)</span>
+            <div class="gm-tabs" id="mainTabs">
+              <div class="gm-tabs-nav">
+                <button class="gm-tab-btn active" data-tab="t1">Overview</button>
+                <button class="gm-tab-btn" data-tab="t2">Security</button>
+                <button class="gm-tab-btn" data-tab="t3">Cluster</button>
+                <button class="gm-tab-btn" data-tab="t4">Database</button>
+                <button class="gm-tab-btn" data-tab="t5">Storage</button>
+                <button class="gm-tab-btn" data-tab="t6">Network</button>
+                <button class="gm-tab-btn" data-tab="t7">API Keys</button>
+                <button class="gm-tab-btn" data-tab="t8">Webhooks</button>
+                <button class="gm-tab-btn" data-tab="t9">Compliance</button>
+                <button class="gm-tab-btn" data-tab="t10">Settings</button>
+              </div>
+              <div class="gm-tabs-content">
+                <div class="gm-tab-panel active" id="t1">Main system summary and insights.</div>
+                <div class="gm-tab-panel" id="t2">Firewall and network logs.</div>
+                <div class="gm-tab-panel" id="t3">Active nodes and worker status.</div>
+                <div class="gm-tab-panel" id="t4">Query performance and index health.</div>
+                <div class="gm-tab-panel" id="t5">Block storage and bucket metrics.</div>
+                <div class="gm-tab-panel" id="t6">CDN edge and DNS configurations.</div>
+                <div class="gm-tab-panel" id="t7">Access tokens and credentials.</div>
+                <div class="gm-tab-panel" id="t8">External integration triggers.</div>
+                <div class="gm-tab-panel" id="t9">Audit logs and regulatory data.</div>
+                <div class="gm-tab-panel" id="t10">Global workspace configuration.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Carousel & Accordion -->
+          <div class="gm-flex-col-gap-32">
+            <span class="gm-label">Interactive Carousel &amp; Accordion</span>
+            <div class="swiper gm-carousel">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide" style="background:#000;color:#fff;"><h3>Premium Presentation 1</h3></div>
+                <div class="swiper-slide" style="background:#f3f3f3;color:#000;"><h3>Premium Presentation 2</h3></div>
+                <div class="swiper-slide" style="background:#000;color:#fff;"><h3>Premium Presentation 3</h3></div>
+                <div class="swiper-slide" style="background:#f3f3f3;color:#000;"><h3>Premium Presentation 4</h3></div>
+                <div class="swiper-slide" style="background:#000;color:#fff;"><h3>Premium Presentation 5</h3></div>
+                <div class="swiper-slide" style="background:#f3f3f3;color:#000;"><h3>Premium Presentation 6</h3></div>
+                <div class="swiper-slide" style="background:#000;color:#fff;"><h3>Premium Presentation 7</h3></div>
+                <div class="swiper-slide" style="background:#f3f3f3;color:#000;"><h3>Premium Presentation 8</h3></div>
+                <div class="swiper-slide" style="background:#000;color:#fff;"><h3>Premium Presentation 9</h3></div>
+                <div class="swiper-slide" style="background:#f3f3f3;color:#000;"><h3>Premium Presentation 10</h3></div>
+              </div>
+            </div>
+
+            <!-- Accordion Separated -->
+            <div class="gm-flex-col-gap-16">
+              <span class="gm-label">Stacked Card Accordions (Separated)</span>
+              <div class="gm-accordion separated">
+                <div class="gm-acc-item">
+                  <button class="gm-acc-header" onclick="toggleAcc(this)">
+                    <span>Security Module</span>
+                    <svg class="gm-acc-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                  <div class="gm-acc-body"><div class="gm-acc-content">Advanced military-grade encryption for all data points.</div></div>
+                </div>
+              </div>
+              <div class="gm-accordion separated">
+                <div class="gm-acc-item">
+                  <button class="gm-acc-header" onclick="toggleAcc(this)">
+                    <span>Performance Module</span>
+                    <svg class="gm-acc-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                  <div class="gm-acc-body"><div class="gm-acc-content">Edge computing infrastructure for sub-second latency.</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accordion Grouped -->
+            <div class="gm-flex-col-gap-16">
+              <span class="gm-label">Grouped FAQ System (Integrated)</span>
+              <div class="gm-accordion grouped">
+                <div class="gm-acc-item">
+                  <button class="gm-acc-header" onclick="toggleAcc(this)">
+                    <span>How does it handle edge cases?</span>
+                    <svg class="gm-acc-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                  <div class="gm-acc-body"><div class="gm-acc-content">Meticulously covered with defensive programming.</div></div>
+                </div>
+                <div class="gm-acc-item">
+                  <button class="gm-acc-header" onclick="toggleAcc(this)">
+                    <span>Is it fully responsive?</span>
+                    <svg class="gm-acc-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                  <div class="gm-acc-body"><div class="gm-acc-content">Every component is fluid across all screen sizes.</div></div>
+                </div>
+                <div class="gm-acc-item">
+                  <button class="gm-acc-header" onclick="toggleAcc(this)">
+                    <span>Smart Positioning logic?</span>
+                    <svg class="gm-acc-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                  <div class="gm-acc-body"><div class="gm-acc-content">Built-in boundary detection for all overlays.</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skeleton & EmptyState -->
+          <div class="gm-flex-col-gap-48">
+            <span class="gm-label">Loading &amp; Placeholder States (Animated)</span>
+            <div class="gm-flex-col-gap-48">
+              <div class="gm-card">
+                <div class="gm-card-title">Dynamic Skeletons</div>
+                <div class="gm-flex-col-gap-32">
+                  <div class="gm-flex-wrap" style="align-items:center;gap:16px;flex-wrap:nowrap;">
+                    <div class="gm-skeleton gm-skeleton-circle" style="width:60px;height:60px;flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                      <div class="gm-skeleton gm-skeleton-text" style="width:40%;height:20px;"></div>
+                      <div class="gm-skeleton gm-skeleton-text" style="width:20%;height:14px;"></div>
+                    </div>
+                  </div>
+                  <div class="gm-flex-col-gap-12">
+                    <span class="gm-label">Article Preview</span>
+                    <div class="gm-skeleton gm-skeleton-text" style="width:100%;height:16px;"></div>
+                    <div class="gm-skeleton gm-skeleton-text" style="width:95%;height:16px;"></div>
+                    <div class="gm-skeleton gm-skeleton-text" style="width:88%;height:16px;"></div>
+                    <div class="gm-skeleton gm-skeleton-text" style="width:70%;height:16px;"></div>
+                  </div>
+                  <div class="gm-flex-wrap" style="gap:20px;">
+                    <div style="flex:1;min-width:200px;">
+                      <div class="gm-skeleton gm-skeleton-card" style="height:160px;width:100%;"></div>
+                      <div class="gm-mt-12"><div class="gm-skeleton gm-skeleton-text" style="width:80%;"></div><div class="gm-skeleton gm-skeleton-text" style="width:40%;"></div></div>
+                    </div>
+                    <div style="flex:1;min-width:200px;">
+                      <div class="gm-skeleton gm-skeleton-card" style="height:160px;width:100%;"></div>
+                      <div class="gm-mt-12"><div class="gm-skeleton gm-skeleton-text" style="width:80%;"></div><div class="gm-skeleton gm-skeleton-text" style="width:40%;"></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="gm-empty">
+                <div class="gm-empty-icon">📭</div>
+                <div class="gm-empty-title">No Search Results</div>
+                <div class="gm-empty-desc">Adjust your parameters and try again.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================
+           05. OVERLAYS & FEEDBACK
+      ========================= -->
+      <section class="gm-animate">
+        <header class="gm-section-header">
+          <span class="gm-label">05. Interaction</span>
+          <h2 class="gm-title-md">Overlays &amp; Multi-Feedback</h2>
+        </header>
+        <div class="gm-flex-col-gap-60">
+
+          <!-- Toast -->
+          <div class="gm-flex-col-gap-16">
+            <span class="gm-label">Toast Notifications (4 Types)</span>
+            <div class="gm-flex-wrap" style="gap:16px;">
+              <button class="gm-btn gm-btn-success gm-btn-md" onclick="showToast('Operation successful!','success')">Success Toast</button>
+              <button class="gm-btn gm-btn-danger gm-btn-md" onclick="showToast('System error occurred.','error')">Error Toast</button>
+              <button class="gm-btn gm-btn-warning gm-btn-md" onclick="showToast('Low storage warning.','warning')">Warning Toast</button>
+              <button class="gm-btn gm-btn-outline gm-btn-md" onclick="showToast('Information updated.','info')">Info Toast</button>
+            </div>
+          </div>
+
+          <!-- Modal -->
+          <div class="gm-flex-col-gap-16">
+            <span class="gm-label">Modal Purpose Patterns</span>
+            <div class="gm-flex-wrap" style="gap:16px;">
+              <button class="gm-btn gm-btn-primary gm-btn-md" onclick="openModal('standard')">Standard Info</button>
+              <button class="gm-btn gm-btn-secondary gm-btn-md" onclick="openModal('action')">Action Form</button>
+              <button class="gm-btn gm-btn-danger gm-btn-md" onclick="openModal('destructive')">Destructive Action</button>
+            </div>
+          </div>
+
+          <!-- Drawer -->
+          <div class="gm-flex-col-gap-16">
+            <span class="gm-label">Side Drawers (Position &amp; Size)</span>
+            <div class="gm-flex-wrap" style="gap:16px;">
+              <button class="gm-btn gm-btn-outline gm-btn-md" onclick="openDrawer('right','md')">Standard Right</button>
+              <button class="gm-btn gm-btn-outline gm-btn-md" onclick="openDrawer('left','md')">Standard Left</button>
+              <button class="gm-btn gm-btn-outline gm-btn-md" onclick="openDrawer('right','lg')">Wide Detail View</button>
+            </div>
+          </div>
+
+          <!-- Tooltip -->
+          <div class="gm-flex-col-gap-16">
+            <span class="gm-label">Tooltip Directions (Smart Positioning)</span>
+            <div class="gm-flex-wrap" style="gap:40px;padding:40px 0;">
+              <div class="gm-tooltip-wrap"><button class="gm-btn gm-btn-outline gm-btn-sm">Top</button><span class="gm-tooltip top">Tooltip on Top</span></div>
+              <div class="gm-tooltip-wrap"><button class="gm-btn gm-btn-outline gm-btn-sm">Bottom</button><span class="gm-tooltip bottom">Tooltip on Bottom</span></div>
+              <div class="gm-tooltip-wrap"><button class="gm-btn gm-btn-outline gm-btn-sm">Left</button><span class="gm-tooltip left">Tooltip on Left</span></div>
+              <div class="gm-tooltip-wrap"><button class="gm-btn gm-btn-outline gm-btn-sm">Right</button><span class="gm-tooltip right">Tooltip on Right</span></div>
+            </div>
+          </div>
+
+          <!-- Navigation -->
+          <div class="gm-flex-col-gap-32">
+            <span class="gm-label">Core Navigation</span>
+            <nav class="gm-breadcrumb">
+              <a href="#" class="gm-breadcrumb-item">Admin</a>
+              <span class="gm-breadcrumb-sep">/</span>
+              <a href="#" class="gm-breadcrumb-item">Library</a>
+              <span class="gm-breadcrumb-sep">/</span>
+              <span class="gm-breadcrumb-item active">Interactive Specs</span>
+            </nav>
+            <div class="gm-pagination" id="pagination">
+              <button class="gm-page-btn" id="prevPage" onclick="changePage(-1)">‹</button>
+              <!-- Pages rendered by JS -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================
+           06. ADVANCED FLOWS
+      ========================= -->
+      <section class="gm-animate">
+        <header class="gm-section-header">
+          <span class="gm-label">06. Advanced Navigation</span>
+          <h2 class="gm-title-md">Workflow &amp; Command Systems</h2>
+        </header>
+        <div class="gm-flex-col-gap-60">
+
+          <!-- Steps -->
+          <div class="gm-flex-col-gap-24">
+            <span class="gm-label">Multi-Step Process (Interactive)</span>
+            <div class="gm-steps" id="stepsContainer">
+              <!-- Rendered by JS -->
+            </div>
+            <div class="gm-flex-wrap" style="gap:12px;">
+              <button class="gm-btn gm-btn-outline gm-btn-sm" onclick="changeStep(-1)">Prev Step</button>
+              <button class="gm-btn gm-btn-primary gm-btn-sm" onclick="changeStep(1)">Next Step</button>
+            </div>
+          </div>
+
+          <!-- Segmented Control -->
+          <div class="gm-flex-col-gap-24">
+            <span class="gm-label">Segmented Selection (Premium Switcher)</span>
+            <div class="gm-flex-col-gap-40">
+              <!-- Binary (2) -->
+              <div class="gm-flex-col-gap-12" style="width:fit-content;max-width:100%;">
+                <span class="gm-label" style="font-size:10px;">Binary Switch (2 Items)</span>
+                <div class="gm-segmented full-width" id="seg2" data-value="on">
+                  <div class="gm-seg-indicator" id="seg2-ind"></div>
+                  <button class="gm-seg-item active" data-val="on" onclick="clickSeg('seg2',this)">ON</button>
+                  <button class="gm-seg-item" data-val="off" onclick="clickSeg('seg2',this)">OFF</button>
+                </div>
+                <div style="padding:24px;background:var(--gm-gray-50);border-radius:12px;border:1px solid var(--gm-gray-200);margin-top:8px;text-align:center;">
+                  <div id="seg2-result" style="font-weight:800;font-size:14px;color:black;">🟢 SYSTEM ACTIVE</div>
+                </div>
+              </div>
+
+              <!-- Standard (3) -->
+              <div class="gm-flex-col-gap-12" style="width:fit-content;max-width:100%;">
+                <span class="gm-label" style="font-size:10px;">Standard Switch (3 Items)</span>
+                <div class="gm-segmented full-width" id="seg3" data-value="daily">
+                  <div class="gm-seg-indicator" id="seg3-ind"></div>
+                  <button class="gm-seg-item active" data-val="daily" onclick="clickSeg('seg3',this)">Daily Metrics</button>
+                  <button class="gm-seg-item" data-val="weekly" onclick="clickSeg('seg3',this)">Weekly Analysis</button>
+                  <button class="gm-seg-item" data-val="monthly" onclick="clickSeg('seg3',this)">Monthly Reports</button>
+                </div>
+                <div style="padding:24px;background:var(--gm-gray-50);border-radius:12px;border:1px solid var(--gm-gray-200);margin-top:8px;">
+                  <div class="gm-label" id="seg3-label" style="margin-bottom:8px;color:black;font-size:11px;">Current Report: DAILY</div>
+                  <p id="seg3-result" style="font-size:14px;color:var(--gm-gray-500);line-height:1.6;font-weight:500;">오늘의 실시간 트래픽 데이터를 분석합니다.</p>
+                </div>
+              </div>
+
+              <!-- Weekly (7) -->
+              <div class="gm-flex-col-gap-12" style="width:fit-content;max-width:100%;">
+                <span class="gm-label" style="font-size:10px;">Weekly / Scrollable (7 Items)</span>
+                <div class="gm-segmented" id="seg7" data-value="mon">
+                  <div class="gm-seg-indicator" id="seg7-ind"></div>
+                  <button class="gm-seg-item active" data-val="mon" onclick="clickSeg('seg7',this)">MON</button>
+                  <button class="gm-seg-item" data-val="tue" onclick="clickSeg('seg7',this)">TUE</button>
+                  <button class="gm-seg-item" data-val="wed" onclick="clickSeg('seg7',this)">WED</button>
+                  <button class="gm-seg-item" data-val="thu" onclick="clickSeg('seg7',this)">THU</button>
+                  <button class="gm-seg-item" data-val="fri" onclick="clickSeg('seg7',this)">FRI</button>
+                  <button class="gm-seg-item" data-val="sat" onclick="clickSeg('seg7',this)">SAT</button>
+                  <button class="gm-seg-item" data-val="sun" onclick="clickSeg('seg7',this)">SUN</button>
+                </div>
+                <div style="padding:32px 24px;background:var(--gm-gray-50);border-radius:12px;border:1px solid var(--gm-gray-200);margin-top:8px;text-align:center;">
+                  <div id="seg7-result" style="font-size:24px;font-weight:900;color:black;">MON</div>
+                  <div style="font-size:11px;color:var(--gm-gray-400);margin-top:4px;letter-spacing:0.1em;font-weight:700;">SCHEDULED TASKS FOR THIS DAY</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Command Palette Trigger -->
+          <div class="gm-flex-col-gap-24">
+            <span class="gm-label">Command System</span>
+            <div class="gm-card">
+              <div class="gm-flex-col-gap-16" style="align-items:center;text-align:center;padding:20px;">
+                <h3 class="gm-title-sm">Press <kbd style="background:var(--gm-gray-100);padding:4px 8px;border-radius:6px;font-size:16px;">⌘ K</kbd> to search</h3>
+                <p class="gm-hero-desc" style="font-size:16px;">Or use the manual trigger below to explore the command palette.</p>
+                <button class="gm-btn gm-btn-primary gm-btn-md" onclick="openPalette()">Open Command Palette</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div><!-- /gm-flex-col-gap-140 -->
+  </main>
+
+  <!-- ========================
+       OVERLAYS
+  ========================= -->
+
+  <!-- Modal -->
+  <div class="gm-modal-root" id="modal">
+    <div class="gm-modal-backdrop" onclick="closeModal()"></div>
+    <div class="gm-modal-container">
+      <button class="gm-modal-close" onclick="closeModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <h2 class="gm-modal-title" id="modalTitle">System Overview</h2>
+      <p class="gm-modal-desc" id="modalDesc">현재 시스템의 통합 상태를 확인합니다.</p>
+      <div class="gm-modal-body" id="modalBody">
+        <p>Experience the smooth blur backdrop and professional easing of our design system.</p>
+      </div>
+      <div class="gm-modal-footer">
+        <button class="gm-btn gm-btn-outline gm-btn-md" onclick="closeModal()">Cancel</button>
+        <button class="gm-btn gm-btn-primary gm-btn-md" id="modalConfirmBtn" onclick="closeModal()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer -->
+  <div class="gm-drawer-root" id="drawer">
+    <div class="gm-drawer-backdrop" onclick="closeDrawer()"></div>
+    <div class="gm-drawer right gm-drawer-md" id="drawerPanel">
+      <div class="gm-drawer-header">
+        <span class="gm-drawer-title" id="drawerTitle">Quick Settings</span>
+        <button class="gm-drawer-close" onclick="closeDrawer()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="gm-drawer-body" id="drawerBody">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="gm-drawer-footer">
+        <button class="gm-btn gm-btn-primary gm-btn-md gm-btn-full" onclick="closeDrawer()">Apply Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="gm-toast-container" id="toastContainer"></div>
+
+  <!-- Command Palette -->
+  <div class="gm-palette-overlay" id="palette" onclick="closePalette(event)">
+    <div class="gm-palette" onclick="event.stopPropagation()">
+      <div class="gm-palette-search-wrap">
+        <input type="text" id="paletteInput" class="gm-palette-input" placeholder="Type a command or search...">
+      </div>
+      <div class="gm-palette-list" id="paletteList"></div>
+      <div class="gm-palette-footer">
+        <div class="gm-palette-shortcut"><kbd>↑↓</kbd><span>Navigate</span></div>
+        <div class="gm-palette-shortcut"><kbd>Enter</kbd><span>Select</span></div>
+        <div class="gm-palette-shortcut"><kbd>ESC</kbd><span>Close</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="gm-footer">
+    <div class="gm-container gm-footer-inner">
+      <span class="gm-label" style="margin:0;">GEMINI MASTER UI SYSTEM © 2026</span>
+      <div class="gm-flex-wrap" style="gap:32px;">
+        <span style="font-size:12px;font-weight:800;color:var(--gm-gray-400);cursor:pointer;">DOCUMENTATION</span>
+        <span style="font-size:12px;font-weight:800;color:var(--gm-gray-400);cursor:pointer;">GITHUB</span>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /gm-root -->
+
+<script>
+$(function() {
+
+  // =============================================
+  // NAVBAR SCROLL
+  // =============================================
+  $(window).on('scroll', function() {
+    if ($(this).scrollTop() > 10) $('#navbar').addClass('scrolled');
+    else $('#navbar').removeClass('scrolled');
+  });
+
+  // Mobile menu
+  $('#mobileToggle').on('click', function() { $('#mobileOverlay').addClass('open'); $('body').css('overflow','hidden'); });
+  $('#mobileClose').on('click', function() { $('#mobileOverlay').removeClass('open'); $('body').css('overflow',''); });
+
+  // =============================================
+  // INPUT CLEAR BUTTONS
+  // =============================================
+  // Generic clear button for inputs
+  $(document).on('input', 'input[type="text"], input[type="password"], textarea', function() {
+    // 해당 input이 속한 .gm-input-wrapper 안에서만 X 버튼 찾기
+    const $wrapper = $(this).closest('.gm-input-wrapper');
+    if ($wrapper.length) {
+      const $clear = $wrapper.find('.gm-input-clear');
+      if ($(this).val().length > 0) $clear.show(); else $clear.hide();
+    }
+    // Textarea count
+    if (this.id === 'projectVision') $('#projectVisionCount').text($(this).val().length + ' / 200');
+  });
+
+  $(document).on('click', '.gm-input-clear', function() {
+    const target = $(this).data('target');
+    if (target) {
+      const $inp = $('#' + target);
+      $inp.val('').trigger('input').focus();
+    } else {
+      const $inp = $(this).closest('.gm-input-wrapper, div').find('input, textarea').first();
+      $inp.val('').trigger('input').focus();
+    }
+  });
+
+  // SearchBar clear
+  $('#searchbarInput').on('input', function() {
+    if ($(this).val().length > 0) $('#searchbarClear').show(); else $('#searchbarClear').hide();
+  });
+  $('#searchbarClear').on('click', function() { $('#searchbarInput').val('').trigger('input').focus(); });
+
+  // =============================================
+  // CUSTOM DATEPICKER
+  // =============================================
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DAYS_KR = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+  function fmtDate(d) {
+    if (!d) return '';
+    var y = d.getFullYear();
+    var m = String(d.getMonth()+1).padStart(2,'0');
+    var day = String(d.getDate()).padStart(2,'0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function buildCalendarHTML(year, month, selectedDate, rangeStart, rangeEnd, pickerId) {
+    var today = new Date(); today.setHours(0,0,0,0);
+    var firstDay = new Date(year, month, 1).getDay();
+    var daysInMonth = new Date(year, month+1, 0).getDate();
+
+    var html = '<div class="gm-dp-header">' +
+      '<button class="gm-dp-nav-btn" data-picker="'+pickerId+'" data-dir="-1" data-y="'+year+'" data-m="'+month+'">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>' +
+      '</button>' +
+      '<span class="gm-dp-month-year" data-picker-ym="'+pickerId+'" data-ym-y="'+year+'" data-ym-m="'+month+'" title="클릭해서 월/년 변경">' +
+        MONTHS[month] + ' ' + year +
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:5px;opacity:0.4;"><polyline points="6 9 12 15 18 9"/></svg>' +
+      '</span>' +
+      '<button class="gm-dp-nav-btn" data-picker="'+pickerId+'" data-dir="1" data-y="'+year+'" data-m="'+month+'">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>' +
+      '</button>' +
+    '</div>';
+
+    html += '<div class="gm-dp-weekdays">';
+    DAYS_KR.forEach(function(d){ html += '<div class="gm-dp-wd">'+d+'</div>'; });
+    html += '</div><div class="gm-dp-days">';
+
+    // empty cells before first day
+    for (var i=0; i<firstDay; i++) html += '<button class="gm-dp-day empty"></button>';
+
+    for (var d=1; d<=daysInMonth; d++) {
+      var thisDate = new Date(year, month, d);
+      thisDate.setHours(0,0,0,0);
+      var cls = 'gm-dp-day';
+      if (thisDate.getTime() === today.getTime()) cls += ' today';
+      if (selectedDate && thisDate.getTime() === selectedDate.getTime()) cls += ' selected';
+      // range styling
+      if (rangeStart && rangeEnd) {
+        var ts = thisDate.getTime(), rs = rangeStart.getTime(), re = rangeEnd.getTime();
+        if (ts === rs && ts === re) cls += ' range-start range-end';
+        else if (ts === rs) cls += ' range-start';
+        else if (ts === re) cls += ' range-end';
+        else if (ts > rs && ts < re) cls += ' in-range';
+      } else if (rangeStart && !rangeEnd) {
+        if (thisDate.getTime() === rangeStart.getTime()) cls += ' range-start range-end';
+      }
+      html += '<button class="'+cls+'" data-picker="'+pickerId+'" data-date="'+fmtDate(thisDate)+'">'+d+'</button>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  // YM picker HTML builder
+  var SHORT_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function buildYMPickerHTML(year, currentMonth, pickerId) {
+    var html = '<div class="gm-dp-ym-year-hdr">' +
+      '<button class="gm-dp-nav-btn" data-ym-year-nav="'+pickerId+'" data-ym-year-dir="-1" data-ym-cur-y="'+year+'">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>' +
+      '</button>' +
+      '<span class="gm-dp-ym-year-label">'+year+'</span>' +
+      '<button class="gm-dp-nav-btn" data-ym-year-nav="'+pickerId+'" data-ym-year-dir="1" data-ym-cur-y="'+year+'">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>' +
+      '</button>' +
+    '</div>' +
+    '<div class="gm-dp-ym-grid">';
+    SHORT_MONTHS.forEach(function(mn, i) {
+      var cls = 'gm-dp-ym-btn' + (i === currentMonth ? ' active' : '');
+      html += '<button class="'+cls+'" data-ym-pick-month="'+pickerId+'" data-ym-m="'+i+'">'+mn+'</button>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  // ---- SINGLE PICKER ----
+  var singleDate = new Date(2026, 3, 15); // 2026-04-15
+  var singleYear = singleDate.getFullYear();
+  var singleMonth = singleDate.getMonth();
+
+  // YM view state
+  var singleShowYM = false;
+  var rangeLeftShowYM = false, rangeRightShowYM = false;
+  var ymTempYear = {}; // temp year per pickerId during YM view
+
+  function renderSinglePanel() {
+    var calHTML = buildCalendarHTML(singleYear, singleMonth, singleDate, null, null, 'single');
+    var ymHTML  = buildYMPickerHTML(singleYear, singleMonth, 'single');
+    var html =
+      '<div class="gm-dp-day-view"' + (singleShowYM ? ' style="display:none"' : '') + '>' + calHTML + '</div>' +
+      '<div class="gm-dp-ym-view' + (singleShowYM ? ' show' : '') + '">' + ymHTML + '</div>' +
+      '<div class="gm-dp-footer">' +
+        '<button class="gm-dp-today-btn" data-picker="single">Today</button>' +
+        '<button class="gm-dp-confirm-btn" data-picker="single">Done</button>' +
+      '</div>';
+    $('#singlePanelEl').html(html);
+  }
+
+  function updateSingleTrigger() {
+    if (singleDate) {
+      $('#singleDisplay').text(fmtDate(singleDate)).removeClass('gm-dp-trigger-placeholder');
+      $('#singleClear').addClass('show');
+    } else {
+      $('#singleDisplay').text('날짜 선택').addClass('gm-dp-trigger-placeholder');
+      $('#singleClear').removeClass('show');
+    }
+  }
+
+  function openSinglePicker() {
+    closeAllPickers();
+    renderSinglePanel();
+    // smart positioning
+    var triggerBottom = document.getElementById('singleTrigger').getBoundingClientRect().bottom;
+    var spaceBelow = window.innerHeight - triggerBottom;
+    if (spaceBelow < 420) $('#singlePanelEl').addClass('drop-up'); else $('#singlePanelEl').removeClass('drop-up');
+    $('#singlePicker').addClass('open');
+    $('#singleTrigger').addClass('active');
+  }
+
+  renderSinglePanel();
+  updateSingleTrigger();
+
+  $('#singleTrigger').on('click', function(e) {
+    e.stopPropagation();
+    if ($(e.target).closest('.gm-dp-clear-btn').length) return;
+    if ($('#singlePicker').hasClass('open')) { closeSinglePicker(); } else { openSinglePicker(); }
+  });
+  $('#singleClear').on('click', function(e) {
+    e.stopPropagation();
+    singleDate = null; updateSingleTrigger(); closeSinglePicker();
+  });
+
+  function closeSinglePicker() {
+    $('#singlePicker').removeClass('open');
+    $('#singleTrigger').removeClass('active');
+  }
+
+  // ---- RANGE PICKER ----
+  var rangeStart = new Date(2026, 3, 15);
+  var rangeEnd   = new Date(2026, 3, 20);
+  var rangePickStep = 0; // 0=pick start, 1=pick end
+  var rangeLeftYear = 2026, rangeLeftMonth = 3;  // April
+  var rangeRightYear = 2026, rangeRightMonth = 4; // May
+
+  function renderRangePanel() {
+    var leftCal  = buildCalendarHTML(rangeLeftYear,  rangeLeftMonth,  null, rangeStart, rangeEnd, 'range-left');
+    var rightCal = buildCalendarHTML(rangeRightYear, rangeRightMonth, null, rangeStart, rangeEnd, 'range-right');
+    var leftYM   = buildYMPickerHTML(rangeLeftYear,  rangeLeftMonth,  'range-left');
+    var rightYM  = buildYMPickerHTML(rangeRightYear, rangeRightMonth, 'range-right');
+    var statusTxt = rangePickStep===0 ? '시작일을 선택하세요' : '종료일을 선택하세요';
+    var footerHTML = '<div class="gm-dp-footer" style="width:100%;margin-top:20px;padding-top:16px;border-top:1px solid var(--gm-gray-100);">' +
+      '<span style="font-size:13px;font-weight:700;color:var(--gm-gray-400);">'+statusTxt+'</span>' +
+      '<button class="gm-dp-confirm-btn" data-picker="range">Done</button>' +
+    '</div>';
+    var leftBlock = '<div style="min-width:280px;">' +
+      '<div class="gm-dp-day-view"' + (rangeLeftShowYM ? ' style="display:none"' : '') + '>' + leftCal + '</div>' +
+      '<div class="gm-dp-ym-view' + (rangeLeftShowYM ? ' show' : '') + '">' + leftYM + '</div>' +
+    '</div>';
+    var rightBlock = '<div style="min-width:280px;">' +
+      '<div class="gm-dp-day-view"' + (rangeRightShowYM ? ' style="display:none"' : '') + '>' + rightCal + '</div>' +
+      '<div class="gm-dp-ym-view' + (rangeRightShowYM ? ' show' : '') + '">' + rightYM + '</div>' +
+    '</div>';
+    $('#rangePanelEl').html(
+      '<div style="display:flex;flex-direction:column;">' +
+        '<div style="display:flex;gap:32px;">' +
+          leftBlock +
+          '<div class="gm-dp-range-divider"></div>' +
+          rightBlock +
+        '</div>' +
+        footerHTML +
+      '</div>'
+    );
+  }
+
+  function updateRangeTrigger() {
+    if (rangeStart && rangeEnd) {
+      $('#rangeDisplay').text(fmtDate(rangeStart) + ' → ' + fmtDate(rangeEnd)).removeClass('gm-dp-trigger-placeholder');
+      $('#rangeClear').addClass('show');
+    } else if (rangeStart) {
+      $('#rangeDisplay').text(fmtDate(rangeStart) + ' → ...').removeClass('gm-dp-trigger-placeholder');
+      $('#rangeClear').addClass('show');
+    } else {
+      $('#rangeDisplay').text('날짜 범위 선택').addClass('gm-dp-trigger-placeholder');
+      $('#rangeClear').removeClass('show');
+    }
+  }
+
+  function openRangePicker() {
+    closeAllPickers();
+    renderRangePanel();
+    var triggerBottom = document.getElementById('rangeTrigger').getBoundingClientRect().bottom;
+    var spaceBelow = window.innerHeight - triggerBottom;
+    if (spaceBelow < 420) $('#rangePanelEl').addClass('drop-up'); else $('#rangePanelEl').removeClass('drop-up');
+    $('#rangePanelEl').addClass('open');
+    $('#rangeTrigger').addClass('active');
+  }
+
+  function closeRangePicker() {
+    $('#rangePanelEl').removeClass('open');
+    $('#rangeTrigger').removeClass('active');
+  }
+
+  renderRangePanel();
+  updateRangeTrigger();
+
+  $('#rangeTrigger').on('click', function(e) {
+    e.stopPropagation();
+    if ($(e.target).closest('.gm-dp-clear-btn').length) return;
+    if ($('#rangePanelEl').hasClass('open')) { closeRangePicker(); } else { openRangePicker(); }
+  });
+  $('#rangeClear').on('click', function(e) {
+    e.stopPropagation();
+    rangeStart = null; rangeEnd = null; rangePickStep = 0;
+    updateRangeTrigger(); closeRangePicker();
+  });
+
+  function closeAllPickers() {
+    closeSinglePicker();
+    closeRangePicker();
+    $('#mRangeStartPicker').removeClass('open'); $('#mRangeStartTrigger').removeClass('active');
+    $('#mRangeEndPicker').removeClass('open');   $('#mRangeEndTrigger').removeClass('active');
+  }
+
+  // ---- MOBILE RANGE: Start picker ----
+  var mRangeStartYear = 2026, mRangeStartMonth = 3, mRangeStartShowYM = false;
+  var mRangeEndYear   = 2026, mRangeEndMonth   = 3, mRangeEndShowYM   = false;
+
+  function updateMobileRangeTriggers() {
+    if (rangeStart) { $('#mRangeStartDisplay').text(fmtDate(rangeStart)); $('#mRangeStartClear').addClass('show'); }
+    else            { $('#mRangeStartDisplay').text('시작일').addClass('gm-dp-trigger-placeholder'); $('#mRangeStartClear').removeClass('show'); }
+    if (rangeEnd)   { $('#mRangeEndDisplay').text(fmtDate(rangeEnd)); $('#mRangeEndClear').addClass('show'); }
+    else            { $('#mRangeEndDisplay').text('종료일').addClass('gm-dp-trigger-placeholder'); $('#mRangeEndClear').removeClass('show'); }
+  }
+  updateMobileRangeTriggers();
+
+  function renderMobileStartPanel() {
+    var cal = buildCalendarHTML(mRangeStartYear, mRangeStartMonth, rangeStart, null, null, 'mobile-start');
+    var ym  = buildYMPickerHTML(mRangeStartYear, mRangeStartMonth, 'mobile-start');
+    $('#mRangeStartPanel').html(
+      '<div class="gm-dp-day-view"' + (mRangeStartShowYM ? ' style="display:none"' : '') + '>' + cal + '</div>' +
+      '<div class="gm-dp-ym-view' + (mRangeStartShowYM ? ' show' : '') + '">' + ym + '</div>' +
+      '<div class="gm-dp-footer"><span style="font-size:12px;font-weight:700;color:var(--gm-gray-400);">시작일</span><button class="gm-dp-confirm-btn" data-picker="mobile-start">Done</button></div>'
+    );
+  }
+  function renderMobileEndPanel() {
+    var cal = buildCalendarHTML(mRangeEndYear, mRangeEndMonth, rangeEnd, null, null, 'mobile-end');
+    var ym  = buildYMPickerHTML(mRangeEndYear, mRangeEndMonth, 'mobile-end');
+    $('#mRangeEndPanel').html(
+      '<div class="gm-dp-day-view"' + (mRangeEndShowYM ? ' style="display:none"' : '') + '>' + cal + '</div>' +
+      '<div class="gm-dp-ym-view' + (mRangeEndShowYM ? ' show' : '') + '">' + ym + '</div>' +
+      '<div class="gm-dp-footer"><span style="font-size:12px;font-weight:700;color:var(--gm-gray-400);">종료일</span><button class="gm-dp-confirm-btn" data-picker="mobile-end">Done</button></div>'
+    );
+  }
+  renderMobileStartPanel(); renderMobileEndPanel();
+
+  $('#mRangeStartTrigger').on('click', function(e) {
+    e.stopPropagation();
+    if ($(e.target).closest('.gm-dp-clear-btn').length) return;
+    if ($('#mRangeStartPicker').hasClass('open')) { closeAllPickers(); return; }
+    closeAllPickers(); renderMobileStartPanel();
+    var tb = this.getBoundingClientRect().bottom;
+    if (window.innerHeight - tb < 420) $('#mRangeStartPanel').addClass('drop-up'); else $('#mRangeStartPanel').removeClass('drop-up');
+    $('#mRangeStartPicker').addClass('open'); $(this).addClass('active');
+  });
+  $('#mRangeEndTrigger').on('click', function(e) {
+    e.stopPropagation();
+    if ($(e.target).closest('.gm-dp-clear-btn').length) return;
+    if ($('#mRangeEndPicker').hasClass('open')) { closeAllPickers(); return; }
+    closeAllPickers(); renderMobileEndPanel();
+    var tb = this.getBoundingClientRect().bottom;
+    if (window.innerHeight - tb < 420) $('#mRangeEndPanel').addClass('drop-up'); else $('#mRangeEndPanel').removeClass('drop-up');
+    $('#mRangeEndPicker').addClass('open'); $(this).addClass('active');
+  });
+  $('#mRangeStartClear').on('click', function(e) { e.stopPropagation(); rangeStart = null; updateMobileRangeTriggers(); updateRangeTrigger(); closeAllPickers(); });
+  $('#mRangeEndClear').on('click',   function(e) { e.stopPropagation(); rangeEnd   = null; updateMobileRangeTriggers(); updateRangeTrigger(); closeAllPickers(); });
+
+  // Day click (delegated)
+  $(document).on('click', '.gm-dp-day:not(.empty):not(.disabled)', function(e) {
+    e.stopPropagation();
+    var dateStr = $(this).data('date');
+    var picker = $(this).data('picker');
+    if (!dateStr) return;
+    var parts = dateStr.split('-');
+    var clicked = new Date(+parts[0], +parts[1]-1, +parts[2]);
+
+    if (picker === 'single') {
+      singleDate = clicked;
+      singleYear = clicked.getFullYear(); singleMonth = clicked.getMonth();
+      updateSingleTrigger(); renderSinglePanel();
+    } else if (picker === 'mobile-start') {
+      rangeStart = clicked; mRangeStartYear = clicked.getFullYear(); mRangeStartMonth = clicked.getMonth();
+      // 시작일이 종료일보다 늦으면 종료일 초기화
+      if (rangeEnd && rangeStart > rangeEnd) { rangeEnd = null; }
+      updateMobileRangeTriggers(); updateRangeTrigger(); renderMobileStartPanel();
+      $('#mRangeStartPicker').addClass('open');
+    } else if (picker === 'mobile-end') {
+      rangeEnd = clicked; mRangeEndYear = clicked.getFullYear(); mRangeEndMonth = clicked.getMonth();
+      if (rangeStart && rangeEnd < rangeStart) { rangeStart = rangeEnd; rangeEnd = null; }
+      updateMobileRangeTriggers(); updateRangeTrigger(); renderMobileEndPanel();
+      $('#mRangeEndPicker').addClass('open');
+    } else {
+      // desktop range
+      if (rangePickStep === 0) {
+        rangeStart = clicked; rangeEnd = null; rangePickStep = 1;
+      } else {
+        if (clicked < rangeStart) { rangeEnd = rangeStart; rangeStart = clicked; }
+        else { rangeEnd = clicked; }
+        rangePickStep = 0;
+      }
+      updateRangeTrigger(); updateMobileRangeTriggers();
+      renderRangePanel(); $('#rangePanelEl').addClass('open');
+    }
+  });
+
+  // Month-Year header click → toggle YM view
+  $(document).on('click', '.gm-dp-month-year', function(e) {
+    e.stopPropagation();
+    var pid = $(this).data('picker-ym');
+    if (pid === 'single') {
+      singleShowYM = !singleShowYM;
+      renderSinglePanel();
+      $('#singlePicker').addClass('open');
+    } else if (pid === 'range-left') {
+      rangeLeftShowYM = !rangeLeftShowYM;
+      renderRangePanel(); $('#rangePanelEl').addClass('open');
+    } else if (pid === 'range-right') {
+      rangeRightShowYM = !rangeRightShowYM;
+      renderRangePanel(); $('#rangePanelEl').addClass('open');
+    }
+  });
+
+  // YM view: year navigation (prev/next year)
+  $(document).on('click', '[data-ym-year-nav]', function(e) {
+    e.stopPropagation();
+    var pid = $(this).data('ym-year-nav');
+    var dir = parseInt($(this).data('ym-year-dir'));
+    var curY = parseInt($(this).data('ym-cur-y'));
+    var newY = curY + dir;
+    if (pid === 'single') {
+      singleYear = newY;
+      renderSinglePanel(); $('#singlePicker').addClass('open');
+    } else if (pid === 'range-left') {
+      rangeLeftYear = newY;
+      renderRangePanel(); $('#rangePanelEl').addClass('open');
+    } else if (pid === 'range-right') {
+      rangeRightYear = newY;
+      renderRangePanel(); $('#rangePanelEl').addClass('open');
+    }
+  });
+
+  // YM view: month button click → set month, close YM view
+  $(document).on('click', '[data-ym-pick-month]', function(e) {
+    e.stopPropagation();
+    var pid = $(this).data('ym-pick-month');
+    var m   = parseInt($(this).data('ym-m'));
+    if (pid === 'single') {
+      singleMonth = m; singleShowYM = false;
+      renderSinglePanel(); $('#singlePicker').addClass('open');
+    } else if (pid === 'range-left') {
+      rangeLeftMonth = m; rangeLeftShowYM = false;
+      // Prevent left >= right
+      if (new Date(rangeLeftYear, rangeLeftMonth) >= new Date(rangeRightYear, rangeRightMonth)) {
+        rangeRightMonth = rangeLeftMonth + 1;
+        if (rangeRightMonth > 11) { rangeRightMonth = 0; rangeRightYear = rangeLeftYear + 1; }
+        else rangeRightYear = rangeLeftYear;
+      }
+      renderRangePanel(); $('#rangePanelEl').addClass('open');
+    } else if (pid === 'range-right') {
+      rangeRightMonth = m; rangeRightShowYM = false;
+      // Prevent right <= left
+      if (new Date(rangeRightYear, rangeRightMonth) <= new Date(rangeLeftYear, rangeLeftMonth)) {
+        rangeLeftMonth = rangeRightMonth - 1;
+        if (rangeLeftMonth < 0) { rangeLeftMonth = 11; rangeLeftYear = rangeRightYear - 1; }
+        else rangeLeftYear = rangeRightYear;
+      }
+      renderRangePanel(); $('#rangePanelEl').addClass('open');
+    }
+  });
+
+  // Nav buttons (month prev/next)
+
+  $(document).on('click', '.gm-dp-nav-btn', function(e) {
+    e.stopPropagation();
+    var picker = $(this).data('picker');
+    var dir = parseInt($(this).data('dir'));
+    var y = parseInt($(this).data('y'));
+    var m = parseInt($(this).data('m'));
+    var newM = m + dir;
+    var newY = y;
+    if (newM > 11) { newM = 0; newY++; }
+    if (newM < 0)  { newM = 11; newY--; }
+
+    if (picker === 'single') {
+      singleYear = newY; singleMonth = newM;
+      renderSinglePanel();
+      $('#singlePicker').addClass('open');
+    } else if (picker === 'range-left') {
+      rangeLeftYear = newY; rangeLeftMonth = newM;
+      // if left >= right, push right one month ahead
+      if (new Date(rangeLeftYear, rangeLeftMonth) >= new Date(rangeRightYear, rangeRightMonth)) {
+        var nrM = rangeLeftMonth+1; var nrY = rangeLeftYear;
+        if (nrM>11){nrM=0;nrY++;}
+        rangeRightYear=nrY; rangeRightMonth=nrM;
+      }
+      renderRangePanel(); $('#rangePanelEl').addClass('open');
+    } else if (picker === 'range-right') {
+      rangeRightYear = newY; rangeRightMonth = newM;
+      if (new Date(rangeRightYear, rangeRightMonth) <= new Date(rangeLeftYear, rangeLeftMonth)) {
+        var nlM = rangeRightMonth-1; var nlY = rangeRightYear;
+        if (nlM<0){nlM=11;nlY--;}
+        rangeLeftYear=nlY; rangeLeftMonth=nlM;
+      }
+      renderRangePanel(); $('#rangePanelEl').addClass('open');
+    }
+  });
+
+  // Today / Done buttons
+  $(document).on('click', '.gm-dp-today-btn', function(e) {
+    e.stopPropagation();
+    var picker = $(this).data('picker');
+    if (picker === 'single') {
+      var t = new Date(); t.setHours(0,0,0,0);
+      singleDate = t; singleYear = t.getFullYear(); singleMonth = t.getMonth();
+      updateSingleTrigger(); renderSinglePanel();
+      $('#singlePicker').addClass('open');
+    }
+  });
+  $(document).on('click', '.gm-dp-confirm-btn', function(e) {
+    e.stopPropagation();
+    var picker = $(this).data('picker');
+    if (picker === 'single') closeSinglePicker();
+    else if (picker === 'range') closeRangePicker();
+  });
+
+  // Stop propagation inside panels
+  $(document).on('click', '#singlePanelEl, #rangePanelEl', function(e) { e.stopPropagation(); });
+
+  // Close on outside click
+  $(document).on('click', function() { closeAllPickers(); });
+
+  // Password toggle
+  $('#togglePassword').on('click', function() {
+    const $inp = $('#passwordInput');
+    if ($inp.attr('type') === 'password') { $inp.attr('type','text'); }
+    else { $inp.attr('type','password'); }
+  });
+
+  // =============================================
+  // SELECT DROPDOWNS
+  // =============================================
+  function initSelects() {
+
+    $('.gm-select-container').each(function() {
+      const $container = $(this);
+      const $trigger = $container.find('.gm-select-trigger');
+      const $options = $container.find('.gm-select-option');
+
+      $trigger.on('click', function(e) {
+        e.stopPropagation();
+        const wasOpen = $container.hasClass('open');
+        // 모든 셀렉트 드롭다운 닫기
+        $('.gm-select-container').removeClass('open');
+        $('#multiSelect').removeClass('open');
+        if (!wasOpen) {
+          // 스마트 포지셔닝: 아래 여백 계산
+          const $dropdown = $container.find('.gm-select-dropdown');
+          const triggerBottom = $trigger[0].getBoundingClientRect().bottom;
+          const spaceBelow = window.innerHeight - triggerBottom;
+          if (spaceBelow < 320) {
+            $dropdown.addClass('drop-up');
+          } else {
+            $dropdown.removeClass('drop-up');
+          }
+          $container.addClass('open');
+        }
+      });
+
+      $options.on('click', function(e) {
+        e.stopPropagation();
+        const val = $(this).data('val');
+        const label = $(this).text();
+
+        // Domain special handling
+        if ($container.attr('id') === 'domainSelect' && val === 'direct') {
+          showDomainDirect();
+          $container.removeClass('open');
+          return;
+        }
+
+        $options.removeClass('selected');
+        $(this).addClass('selected');
+        $trigger.find('.gm-select-val').text(label).removeClass('gm-select-placeholder');
+        $container.removeClass('open');
+      });
+    });
+
+    $(document).on('click', function() {
+      $('.gm-select-container').removeClass('open');
+    });
+  }
+  initSelects();
+
+  // Domain input toggle
+  function showDomainDirect() {
+    $('#domainInputArea').html(
+      '<div class="gm-input-wrapper">' +
+        '<input type="text" id="domainDirectInput" class="gm-input gm-input-md" placeholder="도메인 직접 입력">' +
+        '<div class="gm-input-actions">' +
+          '<button class="gm-input-action-btn" id="domainBackBtn" title="선택으로 돌아가기">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"/></svg>' +
+          '</button>' +
+          '<button class="gm-input-action-btn gm-input-clear" data-target="domainDirectInput"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
+        '</div>' +
+      '</div>'
+    );
+    $('#domainBackBtn').on('click', function() { restoreDomainSelect(); });
+  }
+
+  function restoreDomainSelect() {
+    $('#domainInputArea').html(
+      '<div class="gm-select-container gm-select-md" id="domainSelect">' +
+        '<div class="gm-select-trigger" id="domainSelectTrigger"><span class="gm-select-val">gmail.com</span><svg class="gm-select-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>' +
+        '<ul class="gm-select-dropdown">' +
+          '<li class="gm-select-option selected" data-val="gmail.com">gmail.com</li>' +
+          '<li class="gm-select-option" data-val="naver.com">naver.com</li>' +
+          '<li class="gm-select-option" data-val="daum.net">daum.net</li>' +
+          '<li class="gm-select-option" data-val="direct">직접 입력</li>' +
+        '</ul>' +
+      '</div>'
+    );
+    initSelects();
+  }
+
+  // =============================================
+  // MULTISELECT
+  // =============================================
+  var multiValues = ['next','ts','react','tailwind','node','py'];
+  var multiLabels = { next:'Next.js', react:'React', ts:'TypeScript', tailwind:'Tailwind CSS', node:'Node.js', py:'Python' };
+
+  function renderMultiTags() {
+    const $trig = $('#multiTrigger');
+    $trig.find('.gm-multiselect-tag, .gm-multiselect-clear-all, .gm-multiselect-mobile-summary').remove();
+    multiValues.forEach(function(v) {
+      $trig.append('<span class="gm-multiselect-tag">' + multiLabels[v] + '<span class="gm-multiselect-tag-remove" data-val="' + v + '">✕</span></span>');
+    });
+    if (multiValues.length > 0) {
+      $trig.append('<button class="gm-multiselect-clear-all" id="multiClearAll">Clear All</button>');
+    }
+    // 모바일 요약: 첫 번째 태그 + +N건
+    var mobileSummary = '';
+    if (multiValues.length === 0) {
+      mobileSummary = '<span class="gm-multiselect-mobile-summary"><span class="gm-multiselect-mobile-placeholder">옵션 선택...</span></span>';
+    } else if (multiValues.length === 1) {
+      mobileSummary = '<span class="gm-multiselect-mobile-summary"><span class="gm-multiselect-mobile-first">' + multiLabels[multiValues[0]] + '</span></span>';
+    } else {
+      mobileSummary = '<span class="gm-multiselect-mobile-summary"><span class="gm-multiselect-mobile-first">' + multiLabels[multiValues[0]] + '</span><span class="gm-ms-plus">+' + (multiValues.length - 1) + '건</span></span>';
+    }
+    $trig.append(mobileSummary);
+    // Sync checkboxes
+    $('#multiSelect .gm-multiselect-option').each(function() {
+      const v = $(this).data('val');
+      if (multiValues.indexOf(v) > -1) $(this).addClass('selected'); else $(this).removeClass('selected');
+    });
+  }
+  renderMultiTags();
+
+  $('#multiTrigger').on('click', function(e) {
+    e.stopPropagation();
+    // tag-remove, clear-all 클릭 시 드롭다운 토글 안 함
+    if ($(e.target).closest('.gm-multiselect-tag-remove, .gm-multiselect-clear-all').length) return;
+
+    const $container = $('#multiSelect');
+    const wasOpen = $container.hasClass('open');
+
+    // 다른 드롭다운 닫기
+    $('.gm-select-container').removeClass('open');
+
+    if (!wasOpen) {
+      // 스마트 포지셔닝: 아래/위 여백 계산
+      const $dropdown = $container.find('.gm-multiselect-dropdown');
+      const triggerBottom = $('#multiTrigger')[0].getBoundingClientRect().bottom;
+      const spaceBelow = window.innerHeight - triggerBottom;
+      const dropdownH = 300; // max-height
+      if (spaceBelow < dropdownH + 20) {
+        $dropdown.addClass('drop-up');
+      } else {
+        $dropdown.removeClass('drop-up');
+      }
+      $container.addClass('open');
+    } else {
+      $container.removeClass('open');
+    }
+  });
+
+  // 태그 개별 삭제 (동적 요소이므로 #multiTrigger에 위임)
+  $('#multiTrigger').on('click', '.gm-multiselect-tag-remove', function(e) {
+    e.stopPropagation();
+    const v = $(this).data('val');
+    multiValues = multiValues.filter(x => x !== v);
+    renderMultiTags();
+  });
+
+  // Clear All (동적 요소이므로 #multiTrigger에 위임)
+  $('#multiTrigger').on('click', '.gm-multiselect-clear-all', function(e) {
+    e.stopPropagation();
+    multiValues = [];
+    renderMultiTags();
+  });
+
+  $(document).on('click', '#multiSelect .gm-multiselect-option', function(e) {
+    e.stopPropagation();
+    const v = $(this).data('val');
+    const idx = multiValues.indexOf(v);
+    if (idx > -1) multiValues.splice(idx, 1); else multiValues.push(v);
+    renderMultiTags();
+  });
+  $(document).on('click', function() { $('#multiSelect').removeClass('open'); });
+
+  // =============================================
+  // TABS
+  // =============================================
+  $(document).on('click', '.gm-tab-btn', function() {
+    const $tabs = $(this).closest('.gm-tabs');
+    const tabId = $(this).data('tab');
+    $tabs.find('.gm-tab-btn').removeClass('active');
+    $(this).addClass('active');
+    $tabs.find('.gm-tab-panel').removeClass('active');
+    $('#' + tabId).addClass('active');
+  });
+
+  // =============================================
+  // ACCORDION
+  // =============================================
+  window.toggleAcc = function(btn) {
+    const $btn = $(btn);
+    const $item = $btn.closest('.gm-acc-item');
+    const $body = $item.find('.gm-acc-body');
+    const $acc = $item.closest('.gm-accordion');
+    const isGrouped = $acc.hasClass('grouped');
+
+    if (isGrouped) {
+      // In grouped, close others
+      $acc.find('.gm-acc-item').not($item).each(function() {
+        $(this).find('.gm-acc-header').removeClass('active');
+        $(this).find('.gm-acc-body').removeClass('open');
+        $(this).removeClass('active');
+      });
+    }
+
+    const isOpen = $body.hasClass('open');
+    $btn.toggleClass('active', !isOpen);
+    $body.toggleClass('open', !isOpen);
+    $item.toggleClass('active', !isOpen);
+  };
+
+  // =============================================
+  // DROPDOWN
+  // =============================================
+  window.toggleDropdown = function(id) {
+    const $dd = $('#' + id);
+    const wasOpen = $dd.hasClass('open');
+    $('.gm-dropdown').removeClass('open');
+    if (!wasOpen) $dd.addClass('open');
+  };
+  $(document).on('click', function() { $('.gm-dropdown').removeClass('open'); });
+
+  // =============================================
+  // SWIPER CAROUSEL
+  // =============================================
+  new Swiper('.gm-carousel', { slidesPerView: 'auto', spaceBetween: 32 });
+
+  // =============================================
+  // TOAST
+  // =============================================
+  var toastIcons = {
+    success: '✓',
+    error: '✕',
+    warning: '⚠',
+    info: 'ℹ'
+  };
+  window.showToast = function(msg, type, duration) {
+    duration = duration || 3000;
+    const id = 'toast_' + Date.now();
+    const icon = toastIcons[type] || '●';
+    const $toast = $(
+      '<div class="gm-toast ' + type + '" id="' + id + '">' +
+        '<div class="gm-toast-icon-wrap">' + icon + '</div>' +
+        '<div class="gm-toast-content">' + msg + '</div>' +
+        '<button class="gm-toast-close" onclick="removeToast(\'' + id + '\')">✕</button>' +
+        '<div class="gm-toast-progress" style="animation:toastProgress ' + (duration/1000) + 's linear forwards;"></div>' +
+      '</div>'
+    );
+    $('#toastContainer').append($toast);
+    setTimeout(function() { removeToast(id); }, duration);
+  };
+  window.removeToast = function(id) {
+    $('#' + id).fadeOut(300, function() { $(this).remove(); });
+  };
+
+  // =============================================
+  // MODAL
+  // =============================================
+  window.openModal = function(type) {
+    const titles = { standard: 'System Overview', action: 'Create New Project', destructive: 'Delete Database?' };
+    const descs = {
+      standard: '현재 시스템의 통합 상태를 확인합니다.',
+      action: '새로운 프로젝트 구성을 위해 정보를 입력해주세요.',
+      destructive: '이 작업은 되돌릴 수 없으며 모든 데이터가 영구 삭제됩니다.'
+    };
+    $('#modalTitle').text(titles[type]);
+    $('#modalDesc').text(descs[type]);
+    if (type === 'action') {
+      $('#modalBody').html(
+        '<div class="gm-input-group" style="margin-bottom:32px;">' +
+          '<label class="gm-input-label">Project Name</label>' +
+          '<div class="gm-input-wrapper"><input type="text" class="gm-input gm-input-md" placeholder="Enter name"></div>' +
+        '</div>' +
+        '<div class="gm-input-group">' +
+          '<label class="gm-select-label">Category</label>' +
+          '<div class="gm-select-container gm-select-md"><div class="gm-select-trigger"><span class="gm-select-val">Software</span><svg class="gm-select-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div></div>' +
+        '</div>'
+      );
+    } else {
+      $('#modalBody').html('<p>Experience the smooth blur backdrop and professional easing of our design system.</p>');
+    }
+    if (type === 'destructive') {
+      $('#modalConfirmBtn').removeClass('gm-btn-primary').addClass('gm-btn-danger').text('Delete Forever');
+    } else {
+      $('#modalConfirmBtn').removeClass('gm-btn-danger').addClass('gm-btn-primary').text('Confirm');
+    }
+    $('#modal').addClass('open');
+    $('body').css('overflow','hidden');
+    initSelects();
+  };
+  window.closeModal = function() {
+    $('#modal').removeClass('open');
+    $('body').css('overflow','');
+  };
+
+  // =============================================
+  // DRAWER
+  // =============================================
+  window.openDrawer = function(pos, size) {
+    const $panel = $('#drawerPanel');
+    $panel.attr('class', 'gm-drawer ' + pos + ' gm-drawer-' + size);
+    $('#drawerTitle').text(size === 'lg' ? 'Detailed Analytics' : 'Quick Settings');
+    if (size === 'lg') {
+      $('#drawerBody').html(
+        '<div class="gm-flex-col-gap-40">' +
+          '<div class="gm-progress-md gm-progress-success">' +
+            '<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="gm-label" style="margin:0;">Active Users</span><span class="gm-label" style="margin:0;">82%</span></div>' +
+            '<div class="gm-progress-track"><div class="gm-progress-bar" style="width:82%;"></div></div>' +
+          '</div>' +
+          '<div class="gm-progress-md gm-progress-info">' +
+            '<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="gm-label" style="margin:0;">Server Uptime</span><span class="gm-label" style="margin:0;">99%</span></div>' +
+            '<div class="gm-progress-track"><div class="gm-progress-bar" style="width:99%;"></div></div>' +
+          '</div>' +
+          '<div class="gm-table-wrapper">' +
+            '<table class="gm-table"><thead><tr><th>Task</th><th>Status</th></tr></thead>' +
+            '<tbody><tr><td>Database Sync</td><td><span class="gm-badge gm-badge-success gm-badge-md">OK</span></td></tr>' +
+            '<tr><td>CDN Refresh</td><td><span class="gm-badge gm-badge-warning gm-badge-md">Wait</span></td></tr></tbody></table>' +
+          '</div>' +
+        '</div>'
+      );
+    } else {
+      $('#drawerBody').html(
+        '<div class="gm-flex-col-gap-24">' +
+          '<div class="gm-input-group"><label class="gm-input-label">Workspace Alias</label>' +
+          '<div class="gm-input-wrapper"><input type="text" class="gm-input gm-input-md" value="Gemini Master Pro"></div></div>' +
+          '<label class="gm-switch-label"><input type="checkbox" class="gm-switch" checked><span class="gm-switch-text">Enable Real-time Metrics</span></label>' +
+        '</div>'
+      );
+    }
+    $('#drawer').addClass('open');
+    $('body').css('overflow','hidden');
+  };
+  window.closeDrawer = function() {
+    $('#drawer').removeClass('open');
+    $('body').css('overflow','');
+  };
+
+  // =============================================
+  // PAGINATION
+  // =============================================
+  var currentPage = 1;
+  var totalPages = 10;
+  function renderPagination() {
+    const $pg = $('#pagination');
+    $pg.empty();
+    $pg.append('<button class="gm-page-btn" onclick="changePage(-1)" ' + (currentPage===1?'disabled':'') + '>‹</button>');
+    for (var i = 1; i <= totalPages; i++) {
+      $pg.append('<button class="gm-page-btn ' + (i===currentPage?'active':'') + '" data-page="' + i + '" onclick="goToPage(' + i + ')">' + i + '</button>');
+    }
+    $pg.append('<button class="gm-page-btn" onclick="changePage(1)" ' + (currentPage===totalPages?'disabled':'') + '>›</button>');
+  }
+  window.changePage = function(delta) { currentPage = Math.max(1, Math.min(totalPages, currentPage + delta)); renderPagination(); };
+  window.goToPage = function(p) { currentPage = p; renderPagination(); };
+  renderPagination();
+
+  // =============================================
+  // STEPS
+  // =============================================
+  var stepData = [
+    { title: 'Configuration', desc: 'Define system parameters' },
+    { title: 'Verification', desc: 'Security & Integrity check' },
+    { title: 'Deployment', desc: 'Publish to production' }
+  ];
+  var currentStep = 1;
+  function renderSteps() {
+    const $cont = $('#stepsContainer');
+    $cont.empty();
+    stepData.forEach(function(s, i) {
+      const stepNum = i + 1;
+      let cls = '';
+      if (stepNum < currentStep) cls = 'completed';
+      else if (stepNum === currentStep) cls = 'active';
+      const showLine = i < stepData.length - 1;
+      $cont.append(
+        '<div class="gm-step-item ' + cls + '">' +
+          '<div class="gm-step-header">' +
+            '<div class="gm-step-indicator">' + (stepNum < currentStep ? '✓' : stepNum) + '</div>' +
+            (showLine ? '<div class="gm-step-line"></div>' : '') +
+          '</div>' +
+          '<div class="gm-step-content">' +
+            '<div class="gm-step-title">' + s.title + '</div>' +
+            '<div class="gm-step-desc">' + s.desc + '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    });
+  }
+  window.changeStep = function(delta) { currentStep = Math.max(1, Math.min(stepData.length, currentStep + delta)); renderSteps(); };
+  renderSteps();
+
+  // =============================================
+  // SEGMENTED CONTROL
+  // =============================================
+  function updateSegIndicator(containerId) {
+    const $cont = $('#' + containerId);
+    const $active = $cont.find('.gm-seg-item.active');
+    const $ind = $('#' + containerId + '-ind');
+    if ($active.length) {
+      const contLeft = $cont.offset().left; // use position
+      const itemLeft = $active.position().left;
+      $ind.css({ left: itemLeft + 'px', width: $active.outerWidth() + 'px' });
+    }
+  }
+
+  window.clickSeg = function(containerId, btn) {
+    const $cont = $('#' + containerId);
+    $cont.find('.gm-seg-item').removeClass('active');
+    $(btn).addClass('active');
+    updateSegIndicator(containerId);
+    const val = $(btn).data('val');
+
+    if (containerId === 'seg2') {
+      $('#seg2-result').text(val === 'on' ? '🟢 SYSTEM ACTIVE' : '🔴 SYSTEM INACTIVE');
+    }
+    if (containerId === 'seg3') {
+      const texts = { daily: '오늘의 실시간 트래픽 데이터를 분석합니다.', weekly: '지난 7일간의 사용자 패턴 보고서입니다.', monthly: '이번 달 전체 목표 달성률 지표입니다.' };
+      $('#seg3-label').text('Current Report: ' + val.toUpperCase());
+      $('#seg3-result').text(texts[val]);
+    }
+    if (containerId === 'seg7') {
+      $('#seg7-result').text(val.toUpperCase());
+    }
+  };
+
+  // Init indicators after DOM ready
+  setTimeout(function() {
+    ['seg2','seg3','seg7'].forEach(function(id) { updateSegIndicator(id); });
+  }, 100);
+  $(window).on('resize', function() {
+    ['seg2','seg3','seg7'].forEach(function(id) { updateSegIndicator(id); });
+  });
+
+  // =============================================
+  // COMMAND PALETTE
+  // =============================================
+  var paletteItems = [
+    { id:'1', label:'Go to Dashboard', category:'Navigation', desc:'', icon:'🏠' },
+    { id:'2', label:'Create New User', category:'Action', desc:'', icon:'👤' },
+    { id:'3', label:'System Reboot', category:'Danger', desc:'Immediate hardware restart', icon:'⚡' },
+    { id:'4', label:'Clear Cache', category:'Maintenance', desc:'', icon:'🗑' }
+  ];
+  var paletteSelected = 0;
+
+  function renderPaletteItems(search) {
+    const filtered = paletteItems.filter(function(item) {
+      return item.label.toLowerCase().includes(search.toLowerCase()) ||
+             item.category.toLowerCase().includes(search.toLowerCase());
+    });
+    const $list = $('#paletteList');
+    $list.empty();
+    if (filtered.length === 0) {
+      $list.append('<div class="gm-palette-empty">No results found for "' + search + '"</div>');
+      return;
+    }
+    filtered.forEach(function(item, idx) {
+      $list.append(
+        '<div class="gm-palette-item ' + (idx===paletteSelected?'selected':'') + '" data-id="' + item.id + '">' +
+          '<div class="gm-palette-item-icon">' + item.icon + '</div>' +
+          '<div class="gm-palette-item-content">' +
+            '<div class="gm-palette-item-label">' + item.label + '</div>' +
+            (item.desc ? '<div class="gm-palette-item-desc">' + item.desc + '</div>' : '') +
+          '</div>' +
+          '<div class="gm-palette-item-cat">' + item.category + '</div>' +
+        '</div>'
+      );
+    });
+    return filtered;
+  }
+
+  window.openPalette = function() {
+    paletteSelected = 0;
+    $('#paletteInput').val('');
+    renderPaletteItems('');
+    $('#palette').addClass('open');
+    $('body').css('overflow','hidden');
+    setTimeout(function() { $('#paletteInput').focus(); }, 100);
+  };
+  window.closePalette = function(e) {
+    if (!e || $(e.target).is('#palette')) {
+      $('#palette').removeClass('open');
+      $('body').css('overflow','');
+    }
+  };
+
+  $('#paletteInput').on('input', function() {
+    paletteSelected = 0;
+    renderPaletteItems($(this).val());
+  });
+
+  $(document).on('click', '.gm-palette-item', function() {
+    const id = $(this).data('id');
+    const item = paletteItems.find(x => x.id == id);
+    if (item) { showToast(item.label + ' 실행됨', 'info'); }
+    $('#palette').removeClass('open');
+    $('body').css('overflow','');
+  });
+
+  $(document).on('mouseover', '.gm-palette-item', function() {
+    const idx = $(this).index();
+    paletteSelected = idx;
+    $('.gm-palette-item').removeClass('selected');
+    $(this).addClass('selected');
+  });
+
+  $(document).on('keydown', function(e) {
+    // Ctrl+K / Cmd+K
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      if ($('#palette').hasClass('open')) closePalette();
+      else openPalette();
+      return;
+    }
+    if (!$('#palette').hasClass('open')) return;
+    if (e.key === 'Escape') { closePalette(); return; }
+    const $items = $('.gm-palette-item');
+    if (e.key === 'ArrowDown') { e.preventDefault(); paletteSelected = Math.min($items.length-1, paletteSelected+1); $items.removeClass('selected'); $items.eq(paletteSelected).addClass('selected'); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); paletteSelected = Math.max(0, paletteSelected-1); $items.removeClass('selected'); $items.eq(paletteSelected).addClass('selected'); }
+    if (e.key === 'Enter') {
+      const $sel = $('.gm-palette-item.selected');
+      if ($sel.length) $sel.trigger('click');
+    }
+  });
+
+  // Close dropdowns on doc click
+  $(document).on('click', function() {
+    $('.gm-multiselect-container').removeClass('open');
+  });
+
+});
+</script>
+</body>
+</html>

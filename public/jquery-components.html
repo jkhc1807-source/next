@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Component Library | Gemini UI</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* --- GEMINI UI Master Design System --- */
+        :root {
+            --gm-black: #000000;
+            --gm-white: #FFFFFF;
+            --gm-gray-50: #F9F9F9;
+            --gm-gray-100: #F3F3F3;
+            --gm-gray-200: #EAEAEA;
+            --gm-gray-300: #D5D5D5;
+            --gm-gray-400: #999999;
+            --gm-gray-500: #666666;
+            --gm-error: #EE0000;
+            --gm-border-radius: 12px;
+            --gm-transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --gm-max-width: 1240px;
+            --gm-header-height: 80px;
+            --gm-spacing-xs: 4px;
+            --gm-spacing-sm: 8px;
+            --gm-spacing-md: 16px;
+            --gm-spacing-lg: 24px;
+            --gm-spacing-xl: 32px;
+            --gm-spacing-xxl: 48px;
+            --gm-shadow-md: 0 10px 30px rgba(0,0,0,0.06);
+            --gm-shadow-lg: 0 30px 60px rgba(0,0,0,0.12);
+        }
+
+        /* Base Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', sans-serif; color: var(--gm-black); background: var(--gm-white); line-height: 1.5; overflow-x: hidden; padding-top: var(--gm-header-height); }
+        a, button { text-decoration: none !important; outline: none; border: none; background: none; font-family: inherit; cursor: pointer; transition: var(--gm-transition); }
+
+        /* --- Layout --- */
+        .gm-navbar { height: var(--gm-header-height); width: 100%; border-bottom: 1px solid var(--gm-gray-100); display: flex; align-items: center; position: fixed; top: 0; background: white; z-index: 1000; }
+        .gm-container { max-width: var(--gm-max-width); margin: 0 auto; padding: 0 40px; width: 100%; }
+        .gm-section { padding: 140px 0; border-top: 1px solid var(--gm-gray-100); }
+        .gm-section:first-of-type { border-top: none; }
+        .gm-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 80px; }
+
+        /* Labels & Titles */
+        .gm-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; color: black; margin: 20px 0; display: block; border-left: 4px solid black; padding-left: 12px; line-height: 1; }
+        .gm-title-md { font-size: 42px; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 40px; text-transform: uppercase; line-height: 1.1; }
+
+        /* --- 01. Atoms: Badge & Avatar --- */
+        .gm-badge { display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; padding: 8px 16px; font-size: 11px; }
+        .badge-info { background: black; color: white; }
+        .badge-success { background: var(--gm-gray-100); color: black; border: 1px solid var(--gm-gray-200); }
+        .badge-error { background: var(--gm-error); color: white; }
+        .badge-warning { background: #FFD600; color: black; }
+        .badge-outline { background: transparent; border: 1.5px solid black; color: black; }
+
+        .gm-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--gm-gray-100); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; border: 2px solid white; }
+        .gm-avatar-stack { display: flex; align-items: center; }
+        .gm-avatar-stack .gm-avatar { margin-left: -12px; transition: 0.3s; }
+        .gm-avatar-stack .gm-avatar:hover { transform: translateY(-4px); z-index: 10; }
+
+        /* --- 02. Feedback: Skeleton --- */
+        .gm-skeleton { background: var(--gm-gray-100); border-radius: 8px; position: relative; overflow: hidden; animation: pulse 2s infinite; }
+        .gm-skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shimmer 1.8s infinite; }
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+        /* --- 03. Navigation: Pagination & Breadcrumb --- */
+        .gm-breadcrumb { display: flex; align-items: center; gap: 8px; list-style: none; }
+        .gm-breadcrumb-item { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gm-gray-400); display: flex; align-items: center; gap: 8px; }
+        .gm-breadcrumb-item.active { color: black; }
+        .gm-breadcrumb-separator { color: var(--gm-gray-300); }
+
+        .gm-pagination { display: flex; align-items: center; gap: 32px; justify-content: center; }
+        .gm-pagination-btn { height: 56px; padding: 0 28px; background: white; border: 2px solid var(--gm-gray-200); border-radius: 16px; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; gap: 12px; }
+        .gm-pagination-btn:hover { border-color: black; transform: translateY(-2px); box-shadow: var(--gm-shadow-md); }
+        .gm-pagination-list { display: flex; gap: 8px; }
+        .gm-pagination-item { width: 56px; height: 56px; border: 2px solid var(--gm-gray-100); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--gm-gray-400); }
+        .gm-pagination-item.active { background: black; color: white; border-color: black; }
+
+        /* --- 04. Status: Steps --- */
+        .gm-steps { display: flex; width: 100%; gap: 16px; }
+        .gm-step-item { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .gm-step-header { display: flex; align-items: center; width: 100%; }
+        .gm-step-indicator { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gm-gray-200); background: white; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+        .gm-step-line { flex: 1; height: 2px; background: var(--gm-gray-100); margin-left: 8px; transition: 0.4s; }
+        .gm-step-title { font-size: 14px; font-weight: 800; color: var(--gm-gray-400); }
+        
+        .step-active .gm-step-indicator { border-color: black; color: black; }
+        .step-active .gm-step-title { color: black; }
+        .step-completed .gm-step-indicator { background: black; border-color: black; color: white; }
+        .step-completed .gm-step-line { background: black; }
+        .step-completed .gm-step-title { color: black; }
+
+        /* --- 05. Forms: Search & Switch --- */
+        .gm-input-wrapper { position: relative; width: 100%; }
+        .gm-input { width: 100%; height: 60px; border: 2px solid var(--gm-gray-200); border-radius: 16px; padding: 0 52px 0 24px; font-size: 16px; font-weight: 600; background: var(--gm-gray-50); outline: none; transition: 0.4s; }
+        .gm-input:focus { border-color: black; background: white; box-shadow: 0 0 0 6px rgba(0,0,0,0.03); }
+        .gm-input-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 10px; display: none; align-items: center; justify-content: center; color: var(--gm-gray-400); font-weight: 900; }
+
+        /* --- 06. Interaction: Tabs & Accordion --- */
+        .gm-tabs-nav { display: flex; gap: 40px; border-bottom: 2px solid var(--gm-gray-100); margin-bottom: 40px; position: relative; }
+        .gm-tab-btn { padding-bottom: 24px; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gm-gray-400); }
+        .gm-tab-btn.active { color: black; }
+        .gm-tab-indicator { position: absolute; bottom: -2px; left: 0; height: 4px; background: black; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .gm-accordion-item { background: white; border: 2px solid var(--gm-gray-200); border-radius: 24px; overflow: hidden; margin-bottom: 24px; }
+        .gm-accordion-header { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 32px 40px; font-size: 19px; font-weight: 800; }
+        .gm-accordion-header.active { background: black; color: white; }
+        .gm-accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .gm-accordion-content { padding: 24px 40px 40px; font-size: 16px; color: var(--gm-gray-500); line-height: 1.8; }
+
+        /* --- Toast & Modal --- */
+        .gm-toast { position: fixed; bottom: 40px; right: 40px; background: black; color: white; padding: 16px 32px; border-radius: 12px; font-weight: 700; z-index: 2000; display: none; box-shadow: var(--gm-shadow-lg); }
+        
+        .gm-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1500; }
+        .gm-modal { background: white; width: 500px; padding: 48px; border-radius: 32px; box-shadow: var(--gm-shadow-lg); animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* Footer */
+        .gm-footer { padding: 80px 0; border-top: 4px solid black; background: var(--gm-gray-50); margin-top: 140px; }
+    </style>
+</head>
+<body>
+
+<nav class="gm-navbar">
+    <div class="gm-container">
+        <span style="font-weight: 900; letter-spacing: -0.05em; font-size: 20px;">GEMINI DESIGN SYSTEM</span>
+    </div>
+</nav>
+
+<main class="gm-container">
+    <!-- 01. Atoms -->
+    <section class="gm-section">
+        <header><span class="gm-label">01. Atoms</span><h2 class="gm-title-md">Foundation Elements</h2></header>
+        <div class="gm-grid-2">
+            <div>
+                <span class="gm-label" style="border:none; padding:0;">Badge Variants</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px;">
+                    <span class="gm-badge badge-info">Information</span>
+                    <span class="gm-badge badge-success">Success</span>
+                    <span class="gm-badge badge-error">Error State</span>
+                    <span class="gm-badge badge-warning">Warning</span>
+                    <span class="gm-badge badge-outline">Outline Mode</span>
+                </div>
+            </div>
+            <div>
+                <span class="gm-label" style="border:none; padding:0;">Avatar Stacks</span>
+                <div class="gm-avatar-stack" style="margin-top: 24px;">
+                    <div class="gm-avatar">JB</div>
+                    <div class="gm-avatar" style="background: #EAEAEA">SC</div>
+                    <div class="gm-avatar" style="background: #000; color: #fff">JD</div>
+                    <div class="gm-avatar" style="background: #F3F3F3">+8</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 02. Feedback (Skeleton) -->
+    <section class="gm-section">
+        <header><span class="gm-label">02. Feedback</span><h2 class="gm-title-md">Loading States</h2></header>
+        <div style="display: flex; flex-direction: column; gap: 40px;">
+            <div style="display: flex; gap: 24px; align-items: center;">
+                <div class="gm-skeleton" style="width: 80px; height: 80px; border-radius: 50%;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+                    <div class="gm-skeleton" style="width: 40%; height: 24px;"></div>
+                    <div class="gm-skeleton" style="width: 90%; height: 16px;"></div>
+                </div>
+            </div>
+            <div class="gm-skeleton" style="width: 100%; height: 240px; border-radius: 24px;"></div>
+        </div>
+    </section>
+
+    <!-- 03. Navigation -->
+    <section class="gm-section">
+        <header><span class="gm-label">03. Navigation</span><h2 class="gm-title-md">Path & Pagination</h2></header>
+        <div style="display: flex; flex-direction: column; gap: 80px;">
+            <ul class="gm-breadcrumb">
+                <li class="gm-breadcrumb-item">Home</li>
+                <li class="gm-breadcrumb-separator">/</li>
+                <li class="gm-breadcrumb-item">Components</li>
+                <li class="gm-breadcrumb-separator">/</li>
+                <li class="gm-breadcrumb-item active">Master Library</li>
+            </ul>
+            
+            <div class="gm-pagination">
+                <button class="gm-pagination-btn"><span>Previous</span></button>
+                <div class="gm-pagination-list">
+                    <div class="gm-pagination-item">1</div>
+                    <div class="gm-pagination-item active">2</div>
+                    <div class="gm-pagination-item">3</div>
+                    <div class="gm-pagination-item">...</div>
+                    <div class="gm-pagination-item">12</div>
+                </div>
+                <button class="gm-pagination-btn"><span>Next Page</span></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 04. Status (Steps) -->
+    <section class="gm-section">
+        <header><span class="gm-label">04. Status</span><h2 class="gm-title-md">Step Flow</h2></header>
+        <div class="gm-steps">
+            <div class="gm-step-item step-completed">
+                <div class="gm-step-header"><div class="gm-step-indicator">1</div><div class="gm-step-line"></div></div>
+                <div class="gm-step-title">Authentication</div>
+            </div>
+            <div class="gm-step-item step-active">
+                <div class="gm-step-header"><div class="gm-step-indicator">2</div><div class="gm-step-line"></div></div>
+                <div class="gm-step-title">Payment Method</div>
+            </div>
+            <div class="gm-step-item">
+                <div class="gm-step-header"><div class="gm-step-indicator">3</div><div class="gm-step-line"></div></div>
+                <div class="gm-step-title">Confirmation</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 05. Interaction -->
+    <section class="gm-section">
+        <header><span class="gm-label">05. Interaction</span><h2 class="gm-title-md">Complex Components</h2></header>
+        <div class="gm-grid-2">
+            <div>
+                <span class="gm-label" style="border:none; padding:0;">Tabs Navigation</span>
+                <div class="gm-tabs" style="margin-top: 24px;">
+                    <div class="gm-tabs-nav">
+                        <div class="gm-tab-btn active" data-tab="t1">Overview</div>
+                        <div class="gm-tab-btn" data-tab="t2">Specs</div>
+                        <div class="gm-tab-btn" data-tab="t3">History</div>
+                        <div class="gm-tab-indicator" id="tabInd"></div>
+                    </div>
+                    <div class="gm-tab-content active" id="t1"><p>전체적인 시스템의 아키텍처를 확인하세요.</p></div>
+                    <div class="gm-tab-content" id="t2"><p>정밀한 CSS 수치와 픽셀 단위의 정렬.</p></div>
+                    <div class="gm-tab-content" id="t3"><p>최근 업데이트: 2026.04.16</p></div>
+                </div>
+            </div>
+            <div>
+                <span class="gm-label" style="border:none; padding:0;">Accordion System</span>
+                <div class="gm-accordion" style="margin-top: 24px;">
+                    <div class="gm-accordion-item">
+                        <button class="gm-accordion-header"><span>Enterprise Security</span><span>↓</span></button>
+                        <div class="gm-accordion-body"><div class="gm-accordion-content">고수준의 보안 프로토콜이 적용되어 있습니다.</div></div>
+                    </div>
+                    <div class="gm-accordion-item">
+                        <button class="gm-accordion-header"><span>Custom Architecture</span><span>↓</span></button>
+                        <div class="gm-accordion-body"><div class="gm-accordion-content">모든 컴포넌트는 커스텀화가 가능합니다.</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 06. Overlay -->
+    <section class="gm-section">
+        <header><span class="gm-label">06. Overlay</span><h2 class="gm-title-md">Popups & Toasts</h2></header>
+        <div style="display: flex; gap: 24px;">
+            <button class="gm-btn btn-primary btn-lg" onclick="$('#modalOverlay').css('display', 'flex')">Open Modal Popup</button>
+            <button class="gm-btn btn-outline btn-lg" onclick="showToast('Success: Component Updated')">Show Toast Notification</button>
+        </div>
+    </section>
+</main>
+
+<!-- Modal Overlay -->
+<div class="gm-modal-overlay" id="modalOverlay">
+    <div class="gm-modal">
+        <h3 class="gm-title-md" style="font-size: 28px; margin-bottom: 16px;">System Notification</h3>
+        <p style="color: var(--gm-gray-500); margin-bottom: 32px;">이것은 원본과 동일한 디자인의 모달 팝업입니다. <br>부드러운 스케일 애니메이션이 적용되어 있습니다.</p>
+        <div style="display: flex; justify-content: flex-end;">
+            <button class="gm-btn btn-primary btn-md" onclick="$('#modalOverlay').hide()">Confirm & Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="gm-toast" id="toast">Notification</div>
+
+<footer class="gm-footer">
+    <div class="gm-container"><span class="gm-label" style="margin: 0;">GEMINI MASTER SYSTEM v2.0</span></div>
+</footer>
+
+<script>
+    $(document).ready(function() {
+        // --- Tabs Indicator Logic ---
+        function updateTab(el) {
+            $('#tabInd').css({ width: el.outerWidth(), transform: `translateX(${el.position().left}px)` });
+        }
+        updateTab($('.gm-tab-btn.active'));
+        $('.gm-tab-btn').click(function() {
+            $('.gm-tab-btn').removeClass('active'); $(this).addClass('active');
+            $('.gm-tab-content').removeClass('active'); $(`#${$(this).data('tab')}`).addClass('active');
+            updateTab($(this));
+        });
+
+        // --- Accordion Logic ---
+        $('.gm-accordion-header').click(function() {
+            const body = $(this).next();
+            const isOpen = $(this).hasClass('active');
+            $('.gm-accordion-header').removeClass('active'); $('.gm-accordion-body').css('max-height', 0);
+            if(!isOpen) { $(this).addClass('active'); body.css('max-height', body[0].scrollHeight + "px"); }
+        });
+
+        // --- Toast Logic ---
+        window.showToast = function(msg) {
+            $('#toast').text(msg).fadeIn().delay(2000).fadeOut();
+        };
+
+        $(window).resize(() => updateTab($('.gm-tab-btn.active')));
+        $('#modalOverlay').click(function(e) { if(e.target === this) $(this).hide(); });
+    });
+</script>
+
+</body>
+</html>

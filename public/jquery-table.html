@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Table Showcase | Gemini UI</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* --- GEMINI UI Master Design System --- */
+        :root {
+            --gm-black: #000000;
+            --gm-white: #FFFFFF;
+            --gm-gray-50: #F9F9F9;
+            --gm-gray-100: #F3F3F3;
+            --gm-gray-200: #EAEAEA;
+            --gm-gray-300: #D5D5D5;
+            --gm-gray-400: #999999;
+            --gm-gray-500: #666666;
+            --gm-error: #EE0000;
+            --gm-border-radius: 12px;
+            --gm-transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --gm-max-width: 1240px;
+            --gm-header-height: 80px;
+            --gm-spacing-sm: 8px;
+            --gm-spacing-md: 16px;
+            --gm-spacing-lg: 24px;
+            --gm-spacing-xl: 32px;
+        }
+
+        /* Base Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            color: var(--gm-black); 
+            background: var(--gm-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        
+        a, button { text-decoration: none !important; color: inherit; outline: none; border: none; background: none; font-family: inherit; cursor: pointer; }
+
+        /* --- Layout --- */
+        .gm-navbar {
+            height: var(--gm-header-height);
+            width: 100%;
+            border-bottom: 1px solid var(--gm-gray-100);
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            background: white;
+            z-index: 1000;
+        }
+
+        .gm-container { 
+            max-width: var(--gm-max-width); 
+            margin: 0 auto; 
+            padding: 0 40px; 
+            width: 100%;
+        }
+
+        .gm-main { margin-top: 104px; margin-bottom: 100px; }
+
+        /* --- Animation --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .gm-animate { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* --- Hero Section --- */
+        .gm-hero { padding: 120px 0 80px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+        .gm-hero-title { font-size: clamp(40px, 8vw, 100px); font-weight: 900; line-height: 0.9; letter-spacing: -0.04em; margin: 24px 0; text-transform: uppercase; }
+        .gm-hero-desc { font-size: 20px; color: var(--gm-gray-500); max-width: 640px; font-weight: 500; }
+
+        /* --- Section Styling --- */
+        section { margin-bottom: 140px; }
+        .gm-section-header { margin-top: 40px; margin-bottom: 80px; }
+        .gm-label { 
+            font-size: 11px; font-weight: 900; text-transform: uppercase; 
+            letter-spacing: 0.2em; color: black; margin: 20px 0; display: block;
+            border-left: 4px solid black; padding-left: 12px; line-height: 1;
+        }
+        .gm-title-md { font-size: 42px; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 12px; text-transform: uppercase; line-height: 1.1; }
+
+        /* --- Table System --- */
+        .gm-table-container { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+        
+        .gm-table-top-actions { display: flex; justify-content: space-between; align-items: center; gap: 24px; width: 100%; flex-wrap: wrap; }
+        
+        .gm-bulk-action-bar {
+            display: none; justify-content: space-between; align-items: center;
+            padding: 16px 24px; background: black; color: white; border-radius: 8px;
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .gm-table-wrapper {
+            width: 100%; background: white; border-top: 5px solid black;
+            border-left: 1px solid var(--gm-gray-100); border-right: 1px solid var(--gm-gray-100); border-bottom: 1px solid var(--gm-gray-100);
+            position: relative; overflow: hidden;
+        }
+
+        .gm-table-scroll { overflow-x: auto; width: 100%; position: relative; }
+        table { width: 100%; min-width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
+
+        th { 
+            padding: 24px; font-size: 11px; font-weight: 900; text-transform: uppercase; 
+            color: black; letter-spacing: 0.2em; background: var(--gm-gray-50);
+            border-bottom: 2px solid var(--gm-gray-100); white-space: nowrap;
+        }
+
+        td { padding: 24px; font-size: 15px; border-bottom: 1px solid var(--gm-gray-50); font-weight: 500; color: var(--gm-gray-500); background: white; white-space: nowrap; line-height: 1; }
+        
+        tr:hover td { background: #fafafa; color: black; }
+
+        /* Sticky Logic */
+        .sticky-header thead th { position: sticky; top: 0; z-index: 30; box-shadow: inset 0 -2px 0 var(--gm-gray-100); }
+        .sticky-column th:first-child, .sticky-column td:first-child { 
+            position: sticky; left: 0; z-index: 20; background: white; box-shadow: inset -2px 0 0 var(--gm-gray-100); 
+        }
+        .sticky-column th:first-child { background: var(--gm-gray-50); z-index: 31; }
+
+        /* Density */
+        .density-compact td, .density-compact th { padding: 8px 24px; font-size: 13px; }
+        .density-comfortable td, .density-comfortable th { padding: 32px 24px; font-size: 16px; }
+
+        /* --- Components --- */
+        .gm-badge { display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; padding: 8px 16px; font-size: 11px; }
+        .badge-primary { background: black; color: white; }
+        .badge-success { background: var(--gm-gray-100); color: black; border: 1px solid var(--gm-gray-200); }
+        .badge-neutral { background: var(--gm-gray-200); color: var(--gm-gray-500); }
+        .badge-info { background: black; color: white; }
+        .badge-warning { background: #FFD600; color: black; }
+
+        .gm-btn { height: 48px; padding: 0 24px; border-radius: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; transition: var(--gm-transition); display: inline-flex; align-items: center; justify-content: center; border: none; }
+        .btn-primary { background: black; color: white; }
+        .btn-outline { border: 3px solid black; color: black; background: transparent; }
+        .btn-outline:hover { background: black; color: white; }
+        .btn-ghost { background: transparent; color: black; }
+        .btn-ghost:hover { background: var(--gm-gray-50); }
+
+        /* Segmented Control */
+        .gm-segmented { display: flex; background: var(--gm-gray-100); padding: 4px; border-radius: 8px; }
+        .gm-segmented-item { padding: 8px 12px; font-size: 12px; font-weight: 900; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .gm-segmented-item.active { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+        /* Search Bar */
+        .gm-search-wrapper { position: relative; width: 400px; }
+        .gm-search-input { width: 100%; height: 48px; padding: 0 48px 0 16px; border: 1px solid var(--gm-gray-200); border-radius: 8px; font-size: 14px; outline: none; }
+        .gm-search-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: var(--gm-gray-100); border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: var(--gm-gray-500); cursor: pointer; }
+
+        /* Avatar */
+        .gm-avatar-row { display: flex; align-items: center; gap: 12px; }
+        .gm-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--gm-gray-100); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: black; }
+
+        /* Toast */
+        .gm-toast { position: fixed; bottom: 40px; right: 40px; background: black; color: white; padding: 16px 32px; border-radius: 12px; font-weight: 700; z-index: 2000; box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: none; animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Utility */
+        .gm-font-mono { font-family: 'Geist Mono', monospace; font-size: 13px; color: var(--gm-gray-400); }
+        .gm-user-name { font-weight: 800; color: black; font-size: 16px; }
+        .cell-label { font-weight: 900; font-size: 17px; letter-spacing: -0.02em; color: black; }
+        .id-cell { min-width: 180px; }
+        .name-cell { min-width: 250px; }
+
+        /* Footer */
+        .gm-footer { padding: 80px 0 60px; border-top: 4px solid black; background: var(--gm-gray-50); width: 100%; margin-top: 100px; }
+    </style>
+</head>
+<body>
+
+<nav class="gm-navbar">
+    <div class="gm-container">
+        <span style="font-weight: 900; letter-spacing: -0.05em; font-size: 20px;">GEMINI MASTER</span>
+    </div>
+</nav>
+
+<main class="gm-container gm-main">
+    <!-- Hero Section -->
+    <section class="gm-hero gm-animate">
+        <span class="gm-badge badge-primary" style="padding: 12px 24px; font-size: 13px;">Architectural Upgrade</span>
+        <h1 class="gm-hero-title">Compound <br>Architecture</h1>
+        <p class="gm-hero-desc">커스텀 훅과 컴파운드 패턴으로 설계된 최상급 테이블 시스템입니다.</p>
+    </section>
+
+    <!-- 01. Merging -->
+    <section class="gm-animate">
+        <header class="gm-section-header">
+            <span class="gm-label">01. Merging</span>
+            <h2 class="gm-title-md">Hierarchical Data Structure</h2>
+        </header>
+        <div class="gm-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Group</th>
+                        <th>Module</th>
+                        <th>Details</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="2" class="cell-label" style="background: var(--gm-gray-50)">Core</td>
+                        <td>Database Node</td>
+                        <td>PostgreSQL Cluster HA</td>
+                        <td><span class="gm-badge" style="background: #E8F5E9; color: #2E7D32;">OK</span></td>
+                    </tr>
+                    <tr>
+                        <td>Auth Service</td>
+                        <td>OAuth 2.0 Integration</td>
+                        <td><span class="gm-badge" style="background: #E8F5E9; color: #2E7D32;">OK</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 02. Interaction -->
+    <section class="gm-animate">
+        <header class="gm-section-header">
+            <span class="gm-label">02. Interaction</span>
+            <h2 class="gm-title-md">Real-time Data Control</h2>
+        </header>
+        <div class="gm-table-container">
+            <div class="gm-table-top-actions">
+                <div class="gm-search-wrapper">
+                    <input type="text" id="tableSearch" class="gm-search-input" placeholder="Search members...">
+                    <div id="clearSearch" class="gm-search-clear">✕</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="gm-btn btn-outline" id="refreshBtn" style="height: 40px; font-size: 12px;">Refresh</button>
+                    <div class="gm-segmented" id="densityControl">
+                        <div class="gm-segmented-item" data-val="compact">C</div>
+                        <div class="gm-segmented-item active" data-val="standard">S</div>
+                        <div class="gm-segmented-item" data-val="comfortable">B</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gm-bulk-action-bar" id="bulkBar">
+                <span style="font-size: 10px; font-weight: 900; background: white; color: black; padding: 2px 8px; border-radius: 4px;" id="selectedCountBadge">0 Selected Items</span>
+                <button class="gm-btn btn-primary" style="height: 32px; font-size: 12px; padding: 0 12px;" onclick="showToast('Items Activated')">Activate Items</button>
+            </div>
+
+            <div style="margin-bottom: 8px;">
+                <span class="gm-label" style="margin: 0; padding-left: 12px; border-left: 3px solid black;" id="totalCountLabel">12 ITEMS TOTAL</span>
+            </div>
+
+            <div class="gm-table-wrapper" id="mainTableWrapper">
+                <div class="gm-table-scroll">
+                    <table id="mainTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px; text-align: center;"><input type="checkbox" id="selectAll"></th>
+                                <th class="sortable">Name</th>
+                                <th class="sortable">Email</th>
+                                <th>Role</th>
+                                <th class="sortable">Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mainTableBody">
+                            <!-- JS Injection -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 03. Layouts -->
+    <section class="gm-animate">
+        <header class="gm-section-header">
+            <span class="gm-label">03. Layouts</span>
+            <h2 class="gm-title-md">High-Volume Data Management</h2>
+        </header>
+        
+        <div style="display: flex; flex-direction: column; gap: 80px;">
+            <!-- Vertical Only -->
+            <div>
+                <span class="gm-label" style="margin-bottom: 16px;">Frozen Header (Vertical Only)</span>
+                <div class="gm-table-wrapper sticky-header">
+                    <div class="gm-table-scroll" style="max-height: 300px;">
+                        <table>
+                            <thead>
+                                <tr><th>ID</th><th>Status</th><th>CPU</th><th>RAM</th></tr>
+                            </thead>
+                            <tbody id="verticalTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bidirectional -->
+            <div>
+                <span class="gm-label" style="margin-bottom: 16px;">Bidirectional Frozen (16 Columns)</span>
+                <div class="gm-table-wrapper sticky-header sticky-column">
+                    <div class="gm-table-scroll" style="max-height: 350px;">
+                        <table id="bidirectionalTable">
+                            <thead>
+                                <tr id="bidirectionalHead"></tr>
+                            </thead>
+                            <tbody id="bidirectionalBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="gm-toast" id="toast">Success</div>
+
+<footer class="gm-footer">
+    <div class="gm-container">
+        <span class="gm-label" style="margin: 0;">GEMINI MASTER ARCH v1.0</span>
+    </div>
+</footer>
+
+<script>
+    $(document).ready(function() {
+        // --- Data ---
+        const mainData = Array.from({ length: 12 }, (_, i) => ({
+            id: i + 1,
+            name: i % 2 === 0 ? "Byungheon Jung" : i % 3 === 0 ? "Sarah Connor" : "John Doe",
+            email: `member${i+1}@gemini-ui.com`,
+            role: i % 4 === 0 ? "Admin" : "Member",
+            status: i % 3 === 0 ? "Active" : i % 3 === 1 ? "Disabled" : "Pending"
+        }));
+
+        const frozenData = Array.from({ length: 20 }, (_, i) => ({
+            id: `NODE-00${String(i + 1).padStart(2, '0')}`,
+            status: i % 4 === 0 ? "Active" : "Idle",
+            cpu: `${(i * 7 + 10) % 100}%`,
+            ram: `${(i * 3 + 40) % 100}%`
+        }));
+
+        // --- Renderers ---
+        function renderMainTable(items) {
+            const $tbody = $('#mainTableBody');
+            $tbody.empty();
+            items.forEach(u => {
+                $tbody.append(`
+                    <tr data-search="${u.name.toLowerCase()} ${u.email.toLowerCase()}">
+                        <td style="text-align: center;"><input type="checkbox" class="row-checkbox" value="${u.id}"></td>
+                        <td><div class="gm-avatar-row"><div class="gm-avatar">${u.name.charAt(0)}</div><span class="gm-user-name">${u.name}</span></div></td>
+                        <td class="gm-font-mono">${u.email}</td>
+                        <td><span class="gm-badge badge-neutral">${u.role}</span></td>
+                        <td><span class="gm-badge ${u.status === 'Active' ? 'badge-info' : 'badge-warning'}">${u.status}</span></td>
+                        <td style="text-align: right;"><button class="btn-ghost" style="padding: 4px 8px;">•••</button></td>
+                    </tr>
+                `);
+            });
+            $('#totalCountLabel').text(`${items.length} ITEMS TOTAL`);
+        }
+
+        function renderVerticalTable() {
+            const $tbody = $('#verticalTableBody');
+            frozenData.forEach(d => {
+                $tbody.append(`
+                    <tr>
+                        <td class="gm-font-mono">${d.id}</td>
+                        <td><span class="gm-badge ${d.status === 'Active' ? 'badge-success' : 'badge-neutral'}">${d.status}</span></td>
+                        <td class="cell-label">${d.cpu}</td>
+                        <td>${d.ram}</td>
+                    </tr>
+                `);
+            });
+        }
+
+        function renderBidirectionalTable() {
+            const $head = $('#bidirectionalHead');
+            const $body = $('#bidirectionalBody');
+            
+            const cols = ["Node ID", "Status", "Name", "CPU", "RAM", "Region", "Uptime", "Owner", "Col 1", "Col 2", "Col 3", "Col 4", "Col 5", "Col 6", "Col 7", "Col 8"];
+            cols.forEach(c => $head.append(`<th>${c}</th>`));
+
+            frozenData.slice(0, 8).forEach(d => {
+                let row = `<tr><td class="cell-label id-cell">${d.id}</td><td><span class="gm-badge badge-info">${d.status}</span></td><td class="name-cell">Cluster Node</td><td>${d.cpu}</td><td>${d.ram}</td><td>Asia-East</td><td>120h</td><td>DevOps</td>`;
+                for(let i=1; i<=8; i++) row += `<td>Data</td>`;
+                row += `</tr>`;
+                $body.append(row);
+            });
+        }
+
+        renderMainTable(mainData);
+        renderVerticalTable();
+        renderBidirectionalTable();
+
+        // --- Interactions ---
+        $('#tableSearch').on('input', function() {
+            const val = $(this).val().toLowerCase();
+            $('#clearSearch').toggle(val.length > 0);
+            $('#mainTableBody tr').each(function() {
+                $(this).toggle($(this).data('search').includes(val));
+            });
+        });
+
+        $('#clearSearch').click(function() { $('#tableSearch').val('').trigger('input'); });
+
+        $('#densityControl .gm-segmented-item').click(function() {
+            const val = $(this).data('val');
+            $('#densityControl .gm-segmented-item').removeClass('active');
+            $(this).addClass('active');
+            $('#mainTableWrapper').removeClass('density-compact density-comfortable');
+            if(val !== 'standard') $('#mainTableWrapper').addClass('density-' + val);
+        });
+
+        $('#selectAll').change(function() {
+            $('.row-checkbox:visible').prop('checked', $(this).prop('checked'));
+            updateBulkBar();
+        });
+
+        $(document).on('change', '.row-checkbox', updateBulkBar);
+
+        function updateBulkBar() {
+            const count = $('.row-checkbox:checked').length;
+            if(count > 0) {
+                $('#selectedCountBadge').text(`${count} Selected Items`);
+                $('#bulkBar').css('display', 'flex');
+            } else {
+                $('#bulkBar').hide();
+                $('#selectAll').prop('checked', false);
+            }
+        }
+
+        window.showToast = function(msg) {
+            $('#toast').text(msg).fadeIn().delay(2000).fadeOut();
+        };
+
+        $('#refreshBtn').click(function() {
+            const $btn = $(this);
+            $btn.text('Loading...').prop('disabled', true);
+            $('#mainTableBody').css('opacity', '0.3');
+            showToast('Refreshing data...');
+            setTimeout(() => {
+                $btn.text('Refresh').prop('disabled', false);
+                $('#mainTableBody').css('opacity', '1');
+                renderMainTable(mainData);
+            }, 800);
+        });
+    });
+</script>
+
+</body>
+</html>
