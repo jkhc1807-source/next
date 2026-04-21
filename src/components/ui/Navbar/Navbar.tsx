@@ -41,8 +41,8 @@ export const Navbar = () => {
   const navLinks = [
     { name: "Components", href: "/" },
     { name: "Advanced Table", href: "/advanced-table" },
-    { name: "Documentation", href: "#" },
-    { name: "GitHub", href: "#" },
+    { name: "jQuery", href: "/jquery-full-page.html" },
+    { name: "Table (jQuery)", href: "/jquery-table.html" },
   ];
 
   const isLinkActive = (href: string) => {
@@ -68,7 +68,6 @@ export const Navbar = () => {
               {link.name}
             </Link>
           ))}
-          <Button variant="primary" size="sm">Get Started</Button>
         </nav>
 
         <button className={styles.navbarMobileToggle} onClick={() => setIsOpen(true)} aria-label="Open menu">
