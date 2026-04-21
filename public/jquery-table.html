@@ -51,8 +51,11 @@
             align-items: center;
             position: fixed;
             top: 0;
-            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
+            transition: var(--gm-transition);
         }
 
         .gm-container { 
@@ -60,6 +63,135 @@
             margin: 0 auto; 
             padding: 0 40px; 
             width: 100%;
+        }
+
+        .gm-navbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .gm-navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            color: black;
+            text-decoration: none;
+        }
+
+        .gm-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: black;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .gm-navbar-logo:hover .gm-logo-icon {
+            transform: rotate(90deg);
+        }
+
+        .gm-logo-dot {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .gm-navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .gm-navbar-link {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gm-gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: var(--gm-transition);
+            position: relative;
+            padding: 4px 0;
+        }
+
+        .gm-navbar-link:hover, .gm-navbar-link.active {
+            color: black;
+        }
+
+        .gm-navbar-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: black;
+        }
+
+        .gm-mobile-toggle {
+            display: none;
+            width: 44px;
+            height: 44px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* --- Mobile Overlay --- */
+        .gm-mobile-overlay {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 2500;
+            padding: 48px;
+            display: none;
+            flex-direction: column;
+            opacity: 0;
+        }
+
+        .gm-mobile-overlay.open {
+            display: flex;
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .gm-mobile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 48px;
+        }
+
+        .gm-mobile-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .gm-mobile-nav a {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gm-gray-400);
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            transition: var(--gm-transition);
+        }
+
+        .gm-mobile-nav a.active {
+            color: black;
+            font-weight: 900;
+        }
+
+        .gm-mobile-footer {
+            margin-top: auto;
+            padding: 40px 0;
         }
 
         .gm-main { margin-top: 104px; margin-bottom: 100px; }
@@ -145,14 +277,136 @@
         .gm-segmented-item { padding: 8px 12px; font-size: 12px; font-weight: 900; border-radius: 6px; cursor: pointer; transition: 0.2s; }
         .gm-segmented-item.active { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-        /* Search Bar */
-        .gm-search-wrapper { position: relative; width: 400px; }
-        .gm-search-input { width: 100%; height: 48px; padding: 0 48px 0 16px; border: 1px solid var(--gm-gray-200); border-radius: 8px; font-size: 14px; outline: none; }
-        .gm-search-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: var(--gm-gray-100); border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: var(--gm-gray-500); cursor: pointer; }
+        /* SearchBar (Premium) */
+        .gm-searchbar-wrapper {
+            position: relative;
+            width: 400px;
+        }
+
+        .gm-searchbar-input {
+            width: 100%;
+            height: 60px;
+            padding: 0 52px 0 56px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid var(--gm-gray-200);
+            border-radius: 16px;
+            background: var(--gm-gray-50);
+            outline: none;
+            transition: var(--gm-transition);
+            color: black;
+            font-family: inherit;
+        }
+
+        .gm-searchbar-input:focus {
+            border-color: black;
+            background: white;
+            box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .gm-searchbar-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gm-gray-400);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            transition: var(--gm-transition);
+        }
+
+        .gm-searchbar-input:focus + .gm-searchbar-icon {
+            color: black;
+        }
+
+        .gm-searchbar-clear {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: var(--gm-gray-200);
+            border-radius: 10px;
+            display: none; /* Initial */
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--gm-transition);
+            z-index: 2;
+        }
+
+        .gm-searchbar-clear.active {
+            display: flex !important;
+        }
+
+        .gm-searchbar-clear:hover {
+            background: black;
+            color: white;
+        }
+
+        .gm-searchbar-clear svg {
+            width: 16px;
+            height: 16px;
+        }
 
         /* Avatar */
         .gm-avatar-row { display: flex; align-items: center; gap: 12px; }
         .gm-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--gm-gray-100); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: black; }
+
+        /* Custom Checkbox */
+        .gm-checkbox-container {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+
+        .gm-checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .gm-checkmark {
+            height: 20px;
+            width: 20px;
+            background-color: white;
+            border: 2px solid var(--gm-gray-200);
+            border-radius: 6px;
+            transition: var(--gm-transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gm-checkbox-container:hover input ~ .gm-checkmark {
+            border-color: black;
+        }
+
+        .gm-checkbox-container input:checked ~ .gm-checkmark {
+            background-color: black;
+            border-color: black;
+        }
+
+        .gm-checkmark:after {
+            content: "";
+            display: none;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2.5px 2.5px 0;
+            transform: rotate(45deg);
+            margin-bottom: 2px;
+        }
+
+        .gm-checkbox-container input:checked ~ .gm-checkmark:after {
+            display: block;
+        }
 
         /* Toast */
         .gm-toast { position: fixed; bottom: 40px; right: 40px; background: black; color: white; padding: 16px 32px; border-radius: 12px; font-weight: 700; z-index: 2000; box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: none; animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -167,15 +421,96 @@
 
         /* Footer */
         .gm-footer { padding: 80px 0 60px; border-top: 4px solid black; background: var(--gm-gray-50); width: 100%; margin-top: 100px; }
+
+        /* Responsive Navbar */
+        @media (max-width: 768px) {
+            #desktopNav { display: none !important; }
+            #mobileToggle { display: flex !important; }
+            .gm-hero-title { font-size: 50px; }
+            .gm-container { padding: 0 20px; }
+            .gm-main { margin-top: 80px; }
+            
+            .gm-mobile-nav {
+                display: flex;
+                flex-direction: column;
+                gap: 32px;
+            }
+
+            .gm-mobile-nav a {
+                font-size: 28px;
+                font-weight: 700;
+                color: var(--gm-gray-400);
+                text-decoration: none !important;
+                text-transform: uppercase;
+                letter-spacing: -0.02em;
+                transition: var(--gm-transition);
+            }
+
+            .gm-mobile-nav a.active {
+                color: black;
+                font-weight: 900;
+            }
+
+            .gm-mobile-footer {
+                margin-top: auto;
+                padding: 40px 0;
+            }
+        }
     </style>
 </head>
 <body>
 
 <nav class="gm-navbar">
     <div class="gm-container">
-        <span style="font-weight: 900; letter-spacing: -0.05em; font-size: 20px;">GEMINI MASTER</span>
+        <div class="gm-navbar-inner">
+            <a href="/" class="gm-navbar-logo">
+                <div class="gm-logo-icon">
+                    <div class="gm-logo-dot"></div>
+                </div>
+                <span>GEMINI UI</span>
+            </a>
+            <nav class="gm-navbar-nav" id="desktopNav">
+                <a href="/" class="gm-navbar-link">Components</a>
+                <a href="/advanced-table" class="gm-navbar-link">Advanced Table</a>
+                <a href="/jquery-full-page.html" class="gm-navbar-link">jQuery</a>
+                <a href="/jquery-table.html" class="gm-navbar-link active">Table (jQuery)</a>
+            </nav>
+            <button class="gm-mobile-toggle" id="mobileToggle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
+        </div>
     </div>
 </nav>
+
+<!-- Mobile Overlay -->
+<div class="gm-mobile-overlay" id="mobileOverlay">
+    <div class="gm-mobile-header">
+        <a href="/" class="gm-navbar-logo">
+            <div class="gm-logo-icon">
+                <div class="gm-logo-dot"></div>
+            </div>
+            <span>GEMINI UI</span>
+        </a>
+        <button id="mobileClose" style="background: none; border: none; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    <nav class="gm-mobile-nav">
+        <a href="/">Components</a>
+        <a href="/advanced-table">Advanced Table</a>
+        <a href="/jquery-full-page.html">jQuery</a>
+        <a href="/jquery-table.html" class="active">Table (jQuery)</a>
+    </nav>
+    <div class="gm-mobile-footer">
+        <a href="#" class="gm-btn btn-primary" style="width: 100%; height: 72px; border-radius: 16px; font-size: 16px; display: flex; align-items: center; justify-content: center;">Get Started Free</a>
+    </div>
+</div>
 
 <main class="gm-container gm-main">
     <!-- Hero Section -->
@@ -226,9 +561,20 @@
         </header>
         <div class="gm-table-container">
             <div class="gm-table-top-actions">
-                <div class="gm-search-wrapper">
-                    <input type="text" id="tableSearch" class="gm-search-input" placeholder="Search members...">
-                    <div id="clearSearch" class="gm-search-clear">✕</div>
+                <div class="gm-searchbar-wrapper">
+                    <input type="text" id="tableSearch" class="gm-searchbar-input" placeholder="Search members...">
+                    <div class="gm-searchbar-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                    <div id="clearSearch" class="gm-searchbar-clear">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <button class="gm-btn btn-outline" id="refreshBtn" style="height: 40px; font-size: 12px;">Refresh</button>
@@ -254,7 +600,12 @@
                     <table id="mainTable">
                         <thead>
                             <tr>
-                                <th style="width: 60px; text-align: center;"><input type="checkbox" id="selectAll"></th>
+                                <th style="width: 60px; text-align: center;">
+                                    <label class="gm-checkbox-container">
+                                        <input type="checkbox" id="selectAll">
+                                        <span class="gm-checkmark"></span>
+                                    </label>
+                                </th>
                                 <th class="sortable">Name</th>
                                 <th class="sortable">Email</th>
                                 <th>Role</th>
@@ -345,7 +696,12 @@
             items.forEach(u => {
                 $tbody.append(`
                     <tr data-search="${u.name.toLowerCase()} ${u.email.toLowerCase()}">
-                        <td style="text-align: center;"><input type="checkbox" class="row-checkbox" value="${u.id}"></td>
+                        <td style="text-align: center;">
+                            <label class="gm-checkbox-container">
+                                <input type="checkbox" class="row-checkbox" value="${u.id}">
+                                <span class="gm-checkmark"></span>
+                            </label>
+                        </td>
                         <td><div class="gm-avatar-row"><div class="gm-avatar">${u.name.charAt(0)}</div><span class="gm-user-name">${u.name}</span></div></td>
                         <td class="gm-font-mono">${u.email}</td>
                         <td><span class="gm-badge badge-neutral">${u.role}</span></td>
@@ -390,16 +746,34 @@
         renderVerticalTable();
         renderBidirectionalTable();
 
+        // --- Mobile Menu ---
+        $('#mobileToggle').click(function() {
+            $('#mobileOverlay').addClass('open');
+            $('body').css('overflow', 'hidden');
+        });
+
+        $('#mobileClose').click(function() {
+            $('#mobileOverlay').removeClass('open');
+            $('body').css('overflow', '');
+        });
+
         // --- Interactions ---
         $('#tableSearch').on('input', function() {
             const val = $(this).val().toLowerCase();
-            $('#clearSearch').toggle(val.length > 0);
+            if(val.length > 0) {
+                $('#clearSearch').addClass('active');
+            } else {
+                $('#clearSearch').removeClass('active');
+            }
             $('#mainTableBody tr').each(function() {
                 $(this).toggle($(this).data('search').includes(val));
             });
         });
 
-        $('#clearSearch').click(function() { $('#tableSearch').val('').trigger('input'); });
+        $('#clearSearch').click(function() { 
+            $('#tableSearch').val('').trigger('input'); 
+            $(this).removeClass('active');
+        });
 
         $('#densityControl .gm-segmented-item').click(function() {
             const val = $(this).data('val');

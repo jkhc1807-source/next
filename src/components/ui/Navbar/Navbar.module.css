@@ -102,7 +102,6 @@
   padding: 8px;
   width: 44px; /* Touch target optimized */
   height: 44px;
-  display: flex;
   align-items: center;
   justify-content: center;
 }

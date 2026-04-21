@@ -520,14 +520,14 @@
       background: white;
       z-index: 2500;
       padding: 48px;
-      display: flex;
+      display: none;
       flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0;
     }
 
     .gm-mobile-overlay.open {
-      transform: translateX(0);
+      display: flex;
+      animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .gm-mobile-header {
@@ -556,13 +556,23 @@
     }
 
     .gm-mobile-nav a {
-      font-size: 32px;
-      font-weight: 900;
-      color: black;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gm-gray-400);
       text-decoration: none !important;
       text-transform: uppercase;
       letter-spacing: -0.02em;
       transition: var(--gm-transition);
+    }
+
+    .gm-mobile-nav a.active {
+      color: black;
+      font-weight: 900;
+    }
+
+    .gm-mobile-footer {
+      margin-top: auto;
+      padding: 40px 0;
     }
 
     /* =============================================
@@ -2932,7 +2942,6 @@
 
     .gm-segmented.full-width {
       display: flex;
-      width: 100% !important;
     }
 
     .gm-segmented.full-width .gm-seg-item {
@@ -3357,9 +3366,10 @@
             GEMINI UI
           </a>
           <nav class="gm-navbar-nav">
-            <a href="#" class="gm-navbar-link active">Components</a>
-            <a href="#" class="gm-navbar-link">Documentation</a>
-            <a href="#" class="gm-navbar-link">GitHub</a>
+            <a href="/" class="gm-navbar-link">Components</a>
+            <a href="/advanced-table" class="gm-navbar-link">Advanced Table</a>
+            <a href="/jquery-full-page.html" class="gm-navbar-link active">jQuery</a>
+            <a href="/jquery-table.html" class="gm-navbar-link">Table (jQuery)</a>
           </nav>
           <button class="gm-mobile-toggle" id="mobileToggle" aria-label="메뉴 열기">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -3389,10 +3399,14 @@
         </button>
       </div>
       <nav class="gm-mobile-nav">
-        <a href="#">Components</a>
-        <a href="#">Documentation</a>
-        <a href="#">GitHub</a>
+        <a href="/">Components</a>
+        <a href="/advanced-table">Advanced Table</a>
+        <a href="/jquery-full-page.html" class="active">jQuery</a>
+        <a href="/jquery-table.html">Table (jQuery)</a>
       </nav>
+      <div class="gm-mobile-footer">
+        <a href="#" class="gm-btn gm-btn-primary gm-btn-lg gm-btn-full">Get Started Free</a>
+      </div>
     </div>
 
     <!-- ===== MAIN ===== -->
