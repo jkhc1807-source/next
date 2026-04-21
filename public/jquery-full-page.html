@@ -485,6 +485,34 @@
       font-weight: 600;
     }
 
+    .gm-datepicker-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: black;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .gm-dp-range-desktop {
+        display: none !important;
+      }
+      .gm-dp-range-mobile {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        width: 100% !important;
+      }
+      .gm-dp-range-mobile .gm-dp-container {
+        width: 100% !important;
+        flex: none !important;
+      }
+      .gm-dp-range-mobile .gm-daterange-sep {
+        display: none !important;
+      }
+    }
+
     /* Range picker desktop/mobile split */
     .gm-dp-range-desktop {
       display: block;
@@ -493,6 +521,37 @@
     .gm-dp-range-mobile {
       display: none;
       align-items: center;
+      gap: 12px;
+    }
+
+    .gm-dp-panel {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 8px;
+      background: white;
+      border: 2px solid black;
+      border-radius: 24px;
+      z-index: 3000;
+      padding: 24px;
+      min-width: 300px;
+    }
+
+    .gm-dp-panel.open,
+    .gm-dp-container.open .gm-dp-panel {
+      display: block !important;
+    }
+
+    @media (max-width: 768px) {
+      .gm-dp-panel {
+        position: absolute;
+        width: 100%;
+        min-width: unset;
+        left: 0;
+        right: 0;
+      }
+    }
       gap: 8px;
       width: 100%;
     }
@@ -1462,8 +1521,9 @@
       bottom: calc(100% + 8px);
     }
 
-    .gm-dp-container.open .gm-dp-panel {
-      display: block;
+    .gm-dp-container.open .gm-dp-panel,
+    .gm-dp-panel.open {
+      display: block !important;
     }
 
     /* Header */
@@ -3393,24 +3453,30 @@
         display: flex;
       }
 
-      /* DatePicker 패널: 모바일에서 트리거 위치 기반으로 위치 설정 */
+      /* DatePicker 패널: 모바일에서 트리거 위치 기반으로 위치 설정 (Container 내 절대 위치로 고정) */
       .gm-dp-panel,
       .gm-dp-range-panel {
-        position: fixed !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
         transform: none !important;
         animation: none !important;
-        bottom: auto !important;
         max-height: 80vh;
         overflow-y: auto;
         z-index: 2000;
         min-width: 300px;
-        max-width: calc(100vw - 16px);
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 8px !important;
       }
 
       .gm-dp-panel.drop-up,
       .gm-dp-range-panel.drop-up {
-        bottom: auto !important;
-        transform: none !important;
+        top: auto !important;
+        bottom: 100% !important;
+        margin-top: 0 !important;
+        margin-bottom: 8px !important;
       }
     }
   </style>
@@ -4825,26 +4891,24 @@
         }
       }
 
-      // 트리거 위치 기반 패널 포지셔닝 (모바일용)
+      // 트리거 위치 기반 패널 포지셔닝 (모바일용 가로 정렬만 보정)
       function positionPanel($panel, triggerEl) {
         if (!triggerEl) return;
-        var rect = triggerEl.getBoundingClientRect();
-        var panelH = 440;
-        var panelW = Math.min($panel.outerWidth() || 320, window.innerWidth - 16);
-        var spaceBelow = window.innerHeight - rect.bottom;
-        // position:fixed 가 transform 조상 내부에 있으면 viewport 기준이 아닌 조상 기준으로 동작하므로 보정
-        var ancestor = $panel.closest('.gm-animate')[0];
-        var cbTop = ancestor ? ancestor.getBoundingClientRect().top : 0;
-        var cbLeft = ancestor ? ancestor.getBoundingClientRect().left : 0;
-        var topVal = (spaceBelow < panelH && rect.top > panelH)
-          ? (rect.top - 8 - panelH - cbTop)
-          : (rect.bottom + 8 - cbTop);
-        $panel.css({ top: topVal + 'px', bottom: 'auto' });
-        var left = rect.left - cbLeft;
-        if (rect.left + panelW > window.innerWidth - 8) left = (window.innerWidth - 8 - panelW) - cbLeft;
-        if (rect.left < 8) left = 8 - cbLeft;
-        $panel.css({ left: left + 'px', right: 'auto' });
+        if (window.innerWidth > 768) {
+          $panel.css({ top: '', left: '', width: '' });
+          return;
+        }
+        var panelW = Math.min(320, window.innerWidth - 32);
+        $panel.css({
+          width: '100%',
+          maxWidth: '340px'
+        });
       }
+
+      // 패널 내부 클릭 시 닫히지 않도록
+      $(document).on('click', '.gm-dp-panel, .gm-dp-range-panel', function(e) {
+        e.stopPropagation();
+      });
 
       function openSinglePicker() {
         closeAllPickers();
@@ -4854,7 +4918,45 @@
         var spaceBelow = window.innerHeight - triggerEl.getBoundingClientRect().bottom;
         if (spaceBelow < 420) $panel.addClass('drop-up'); else $panel.removeClass('drop-up');
         if (window.innerWidth <= 768) positionPanel($panel, triggerEl);
+        $panel.addClass('open');
         $('#singlePicker').addClass('open');
+        $('#singleTrigger').addClass('active');
+      }
+
+      renderSinglePanel();
+      updateSingleTrigger();
+
+      function closeSinglePicker() {
+        $('#singlePicker').removeClass('open');
+        $('#singlePanelEl').removeClass('open');
+        $('#singleTrigger').removeClass('active');
+      }
+
+      function openSinglePicker() {
+        var $picker = $('#singlePicker');
+        var $panel = $('#singlePanelEl');
+        var triggerEl = document.getElementById('singleTrigger');
+        if (!$picker.length || !triggerEl) return;
+        
+        var isAlreadyOpen = $panel.hasClass('open');
+        closeAllPickers();
+        if (isAlreadyOpen) return;
+
+        renderSinglePanel();
+        
+        var rect = triggerEl.getBoundingClientRect();
+        var spaceBelow = window.innerHeight - rect.bottom;
+        var panelH = $panel.outerHeight() || 400;
+        
+        if (spaceBelow < panelH && rect.top > panelH) {
+          $panel.addClass('drop-up');
+        } else {
+          $panel.removeClass('drop-up');
+        }
+
+        if (window.innerWidth <= 768) positionPanel($panel, triggerEl);
+        $picker.addClass('open');
+        $panel.addClass('open');
         $('#singleTrigger').addClass('active');
       }
 
@@ -4864,17 +4966,13 @@
       $('#singleTrigger').on('click', function (e) {
         e.stopPropagation();
         if ($(e.target).closest('.gm-dp-clear-btn').length) return;
-        if ($('#singlePicker').hasClass('open')) { closeSinglePicker(); } else { openSinglePicker(); }
+        openSinglePicker();
       });
+
       $('#singleClear').on('click', function (e) {
         e.stopPropagation();
         singleDate = null; updateSingleTrigger(); closeSinglePicker();
       });
-
-      function closeSinglePicker() {
-        $('#singlePicker').removeClass('open');
-        $('#singleTrigger').removeClass('active');
-      }
 
       // ---- RANGE PICKER ----
       var rangeStart = new Date(2026, 3, 15);
@@ -4927,18 +5025,35 @@
       }
 
       function openRangePicker() {
-        closeAllPickers();
-        renderRangePanel();
-        var triggerEl = document.getElementById('rangeTrigger');
+        var $picker = $('#rangePicker');
         var $panel = $('#rangePanelEl');
-        var spaceBelow = window.innerHeight - triggerEl.getBoundingClientRect().bottom;
-        if (spaceBelow < 420) $panel.addClass('drop-up'); else $panel.removeClass('drop-up');
+        var triggerEl = document.getElementById('rangeTrigger');
+        if (!$picker.length || !triggerEl) return;
+
+        var isAlreadyOpen = $panel.hasClass('open');
+        closeAllPickers();
+        if (isAlreadyOpen) return;
+
+        renderRangePanel();
+        
+        var rect = triggerEl.getBoundingClientRect();
+        var spaceBelow = window.innerHeight - rect.bottom;
+        var panelH = $panel.outerHeight() || 400;
+        
+        if (spaceBelow < panelH && rect.top > panelH) {
+          $panel.addClass('drop-up');
+        } else {
+          $panel.removeClass('drop-up');
+        }
+
         if (window.innerWidth <= 768) positionPanel($panel, triggerEl);
+        $picker.addClass('open');
         $panel.addClass('open');
         $('#rangeTrigger').addClass('active');
       }
 
       function closeRangePicker() {
+        $('#rangePicker').removeClass('open');
         $('#rangePanelEl').removeClass('open');
         $('#rangeTrigger').removeClass('active');
       }
@@ -4949,7 +5064,7 @@
       $('#rangeTrigger').on('click', function (e) {
         e.stopPropagation();
         if ($(e.target).closest('.gm-dp-clear-btn').length) return;
-        if ($('#rangePanelEl').hasClass('open')) { closeRangePicker(); } else { openRangePicker(); }
+        openRangePicker();
       });
       $('#rangeClear').on('click', function (e) {
         e.stopPropagation();
@@ -4960,8 +5075,10 @@
       function closeAllPickers() {
         closeSinglePicker();
         closeRangePicker();
-        $('#mRangeStartPicker').removeClass('open'); $('#mRangeStartTrigger').removeClass('active');
-        $('#mRangeEndPicker').removeClass('open'); $('#mRangeEndTrigger').removeClass('active');
+        $('#mRangeStartPicker, #mRangeStartPanel').removeClass('open'); 
+        $('#mRangeStartTrigger').removeClass('active');
+        $('#mRangeEndPicker, #mRangeEndPanel').removeClass('open'); 
+        $('#mRangeEndTrigger').removeClass('active');
       }
 
       // ---- MOBILE RANGE: Start picker ----
@@ -4999,24 +5116,38 @@
       $('#mRangeStartTrigger').on('click', function (e) {
         e.stopPropagation();
         if ($(e.target).closest('.gm-dp-clear-btn').length) return;
-        if ($('#mRangeStartPicker').hasClass('open')) { closeAllPickers(); return; }
-        closeAllPickers(); renderMobileStartPanel();
+        var isAlreadyOpen = $('#mRangeStartPanel').hasClass('open');
+        closeAllPickers();
+        if (isAlreadyOpen) return;
+
+        renderMobileStartPanel();
         var $panel = $('#mRangeStartPanel');
-        var tb = this.getBoundingClientRect().bottom;
-        if (window.innerHeight - tb < 420) $panel.addClass('drop-up'); else $panel.removeClass('drop-up');
+        var rect = this.getBoundingClientRect();
+        var spaceBelow = window.innerHeight - rect.bottom;
+        if (spaceBelow < 400 && rect.top > 400) $panel.addClass('drop-up'); else $panel.removeClass('drop-up');
+        
         positionPanel($panel, this);
-        $('#mRangeStartPicker').addClass('open'); $(this).addClass('active');
+        $('#mRangeStartPicker').addClass('open');
+        $panel.addClass('open');
+        $(this).addClass('active');
       });
       $('#mRangeEndTrigger').on('click', function (e) {
         e.stopPropagation();
         if ($(e.target).closest('.gm-dp-clear-btn').length) return;
-        if ($('#mRangeEndPicker').hasClass('open')) { closeAllPickers(); return; }
-        closeAllPickers(); renderMobileEndPanel();
+        var isAlreadyOpen = $('#mRangeEndPanel').hasClass('open');
+        closeAllPickers();
+        if (isAlreadyOpen) return;
+
+        renderMobileEndPanel();
         var $panel = $('#mRangeEndPanel');
-        var tb = this.getBoundingClientRect().bottom;
-        if (window.innerHeight - tb < 420) $panel.addClass('drop-up'); else $panel.removeClass('drop-up');
+        var rect = this.getBoundingClientRect();
+        var spaceBelow = window.innerHeight - rect.bottom;
+        if (spaceBelow < 400 && rect.top > 400) $panel.addClass('drop-up'); else $panel.removeClass('drop-up');
+
         positionPanel($panel, this);
-        $('#mRangeEndPicker').addClass('open'); $(this).addClass('active');
+        $('#mRangeEndPicker').addClass('open');
+        $panel.addClass('open');
+        $(this).addClass('active');
       });
       $('#mRangeStartClear').on('click', function (e) { e.stopPropagation(); rangeStart = null; updateMobileRangeTriggers(); updateRangeTrigger(); closeAllPickers(); });
       $('#mRangeEndClear').on('click', function (e) { e.stopPropagation(); rangeEnd = null; updateMobileRangeTriggers(); updateRangeTrigger(); closeAllPickers(); });
