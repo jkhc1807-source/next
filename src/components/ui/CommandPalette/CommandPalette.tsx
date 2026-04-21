@@ -90,15 +90,22 @@ export const CommandPalette = ({
     <div className={`${styles.overlay} ${styles.visible}`} onClick={onClose}>
       <div className={`${styles.palette} ${styles.scaleIn}`} onClick={(e) => e.stopPropagation()}>
         <div className={styles.searchWrapper}>
-          <Input 
-            placeholder={placeholder}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onClear={() => setSearch("")}
-            autoFocus={isOpen}
-            className={styles.searchInput}
-            size="lg"
-          />
+          <button className={styles.mobileCloseBtn} onClick={onClose} aria-label="Close">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <div className={styles.searchInputField}>
+            <Input 
+              placeholder={placeholder}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onClear={() => setSearch("")}
+              autoFocus={isOpen}
+              className={styles.searchInput}
+              size="lg"
+            />
+          </div>
         </div>
         <div className={styles.list}>
           {filteredItems.length > 0 ? (
